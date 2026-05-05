@@ -1,0 +1,49 @@
+name: Update README
+
+on:
+  # Re-run after every CI run on main to reflect latest test status
+  workflow_run:
+    workflows: ["Run Suites"]
+    types: [completed]
+    branches: [main]
+  # Re-run when conda.yaml files change (version bumps propagated by task generate)
+  push:
+    branches: [main]
+    paths:
+      - "examples/*/conda.yaml"
+      - "templates/*/conda.yaml"
+      - ".github/scripts/update_suite_table.py"
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Push back to main requires a token with write access
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Update suite table in README.md
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python3 .github/scripts/update_suite_table.py ${{ github.workspace }}
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet && echo "No changes to commit." && exit 0
+          git add README.md
+          git commit -m "docs: update suite table [skip ci]"
+          git push
