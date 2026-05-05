@@ -1,0 +1,137 @@
+name: Run Suites
+
+on:
+  push:
+    branches: ["main", "compat/**"]
+    paths:
+      - "examples/**"
+      - "templates/**"
+  pull_request:
+    paths:
+      - "examples/**"
+      - "templates/**"
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Single suite to test, with parent folder (e.g. examples/cryptolibrary)"
+        required: false
+        default: ""
+
+jobs:
+  # ── Stage 1: detect which suites changed ──────────────────────────────────
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed suites
+        id: set-matrix
+        run: |
+          # Manual trigger with explicit suite override
+          if [[ -n "${{ github.event.inputs.suite }}" ]]; then
+            echo "matrix=[\"${{ github.event.inputs.suite }}\"]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Detect changed folders under examples/ and templates/
+          CHANGED=$(git diff --name-only HEAD~1 HEAD \
+            | grep -E '^(examples|templates)/' \
+            | cut -d/ -f1-2 \
+            | sort -u \
+            | jq -R . | jq -sc .)
+
+          # Fall back to all examples + templates if nothing detected (e.g. first commit)
+          if [[ "${CHANGED}" == "[]" || -z "${CHANGED}" ]]; then
+            CHANGED=$(ls -d examples/*/ templates/*/ 2>/dev/null | sed 's|/$||' | jq -R . | jq -sc .)
+          fi
+
+          echo "matrix=${CHANGED}" >> "$GITHUB_OUTPUT"
+          echo "The following subfolder have changed and will be tested:"
+          echo "${CHANGED}"
+
+  # ── Stage 2: test matrix (os × suite) ─────────────────────────────────────
+  test:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.matrix != '[]' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      # We have 2 OS and want to run max 1 job per OS (make use of pre-build RCC environments!)
+      max-parallel: 2
+      matrix:
+        suite: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read RCC space from .rcc file
+        id: rcc-space
+        shell: bash
+        run: |
+          SPACE=$(grep '^SPACE=' ${{ matrix.suite }}/.rcc | cut -d= -f2 | tr -d '[:space:]')
+          echo "space=${SPACE}" >> "$GITHUB_OUTPUT"
+          # Sanitize matrix.suite (e.g. examples/cryptolibrary → examples-cryptolibrary)
+          echo "safe_name=$(echo '${{ matrix.suite }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
+
+      - name: Download RCC
+        shell: bash
+        run: |
+          BASE="https://github.com/elabit/robotmk/releases/download/v4.0.0"
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            curl -fsSL -o rcc.exe "${BASE}/rcc_windows64.exe"
+            echo "RCC_BIN=./rcc.exe" >> "$GITHUB_ENV"
+          else
+            curl -fsSL -o rcc "${BASE}/rcc_linux64"
+            chmod +x rcc
+            echo "RCC_BIN=./rcc" >> "$GITHUB_ENV"
+          fi
+          ${RCC_BIN:-./rcc} --version
+
+      - name: Cache RCC holotree environment
+        uses: actions/cache@v4
+        with:
+          path: ~/.robocorp/holotree
+          key: rcc-holotree-${{ steps.rcc-space.outputs.space }}-${{ runner.os }} 
+
+      - name: Build RCC holotree environment
+        shell: bash
+        run: |
+          $RCC_BIN holotree vars \
+            --space ${{ steps.rcc-space.outputs.space }} \
+            --robot ${{ matrix.suite }}/robot.yaml
+
+      - name: Load .env if present
+        shell: bash
+        run: |
+          ENV_FILE="${{ matrix.suite }}/.env"
+          if [[ -f "${ENV_FILE}" ]]; then
+            echo "Loading variables from ${ENV_FILE}"
+            grep -v '^\s*#' "${ENV_FILE}" | grep -v '^\s*$' >> "$GITHUB_ENV"
+          fi
+
+
+
+
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+
+      - name: Run Robot Framework suite
+        shell: bash
+        run: |
+          $RCC_BIN task script \
+            --space ${{ steps.rcc-space.outputs.space }} \
+            --robot ${{ matrix.suite }}/robot.yaml \
+            -- robot .
+
+      - name: Upload RF output artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rf-output-${{ steps.rcc-space.outputs.safe_name }}-${{ matrix.os }}
+          path: ${{ matrix.suite }}/log.html
+          if-no-files-found: ignore

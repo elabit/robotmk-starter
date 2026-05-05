@@ -1,0 +1,94 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+  VENV_COPIER: .venv/bin/copier
+
+tasks:
+
+  # ── Setup ──────────────────────────────────────────────────────────────────
+
+  setup:
+    desc: "Full onboarding: install copier + download RCC + install git hooks (run once after cloning)"
+    cmds:
+      - task: install-copier
+      - task: download-rcc
+      - task: install-hooks
+
+  install-hooks:
+    desc: Register .githooks/ as the git hooks directory
+    cmds:
+      - git config core.hooksPath .githooks
+    status:
+      - test "$(git config core.hooksPath)" = ".githooks"
+
+  install-copier:
+    desc: Install copier into .venv (required for generate tasks)
+    cmds:
+      - pip install copier
+    status:
+      - test -x {{.VENV_COPIER}}
+
+  download-rcc:
+    desc: Download RCC binary into _dev/.rcc/ (not committed to git)
+    platforms: [linux, darwin]
+    cmds:
+      - bash _dev/scripts/download-rcc.sh
+
+  download-rcc-windows:
+    desc: Download RCC binary into _dev\.rcc\ (Windows)
+    platforms: [windows]
+    cmds:
+      - powershell -ExecutionPolicy Bypass -File _dev\scripts\download-rcc.ps1
+
+  # ── Generate ───────────────────────────────────────────────────────────────
+
+  generate:
+    desc: "Regenerate all (or one) example from its Copier template. Usage: task generate / task generate EXAMPLE=cryptolibrary"
+    platforms: [linux, darwin]
+    cmds:
+      - _dev/scripts/generate-all.sh {{.EXAMPLE}}
+
+  generate-windows:
+    desc: "Regenerate all (or one) example (Windows). Usage: task generate-windows / task generate-windows EXAMPLE=cryptolibrary"
+    platforms: [windows]
+    cmds:
+      - powershell -ExecutionPolicy Bypass -File _dev\scripts\generate-all.ps1 {{if .EXAMPLE}}-Filter {{.EXAMPLE}}{{end}}
+
+  # ── Test ───────────────────────────────────────────────────────────────────
+
+  test:
+    desc: "Run a Robot Framework example locally via RCC. Usage: task test EXAMPLE=cryptolibrary"
+    platforms: [linux, darwin]
+    vars:
+      EXAMPLE: '{{.EXAMPLE | default "cryptolibrary"}}'
+      RCC: _dev/.rcc/rcc
+      SPACE:
+        sh: grep '^SPACE=' examples/{{.EXAMPLE}}/.rcc | cut -d= -f2 | tr -d '[:space:]'
+    cmds:
+      - '{{.RCC}} holotree vars --space {{.SPACE}} --robot examples/{{.EXAMPLE}}/robot.yaml'
+      - '{{.RCC}} task script --space {{.SPACE}} --robot examples/{{.EXAMPLE}}/robot.yaml -- robot .'
+
+  test-windows:
+    desc: "Run a Robot Framework example locally via RCC (Windows). Usage: task test-windows EXAMPLE=cryptolibrary"
+    platforms: [windows]
+    vars:
+      EXAMPLE: '{{.EXAMPLE | default "cryptolibrary"}}'
+      SPACE:
+        sh: grep '^SPACE=' examples/{{.EXAMPLE}}/.rcc | cut -d= -f2 | tr -d '[:space:]'
+    cmds:
+      - '_dev\.rcc\rcc.exe holotree vars --space {{.SPACE}} --robot examples\{{.EXAMPLE}}\robot.yaml'
+      - '_dev\.rcc\rcc.exe task script --space {{.SPACE}} --robot examples\{{.EXAMPLE}}\robot.yaml -- robot .'
+
+  # ── Shell ──────────────────────────────────────────────────────────────────
+
+  shell:
+    desc: "Open an interactive RCC shell inside an example's environment. Usage: task shell EXAMPLE=cryptolibrary"
+    platforms: [linux, darwin]
+    vars:
+      EXAMPLE: '{{.EXAMPLE | default "cryptolibrary"}}'
+      RCC: _dev/.rcc/rcc
+      SPACE:
+        sh: grep '^SPACE=' examples/{{.EXAMPLE}}/.rcc | cut -d= -f2 | tr -d '[:space:]'
+    cmds:
+      - '{{.RCC}} task shell --space {{.SPACE}} --robot examples/{{.EXAMPLE}}/robot.yaml'

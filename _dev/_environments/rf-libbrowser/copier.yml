@@ -1,0 +1,25 @@
+# Environment: RF + Browser Library + CryptoLibrary
+# Shared by all examples/templates that declare SPACE=rf-libbrowser-libcrypto in their .rcc file.
+
+_subdirectory: template
+_answers_file: .copier-env-answers.yml
+
+rf_version:
+  type: str
+  default: "7.1.1"
+
+rf_lib_browser_version:
+  type: str
+  default: "19.12.5"
+
+python_version:
+  type: str
+  default: "3.12"
+
+pip_version:
+  type: str
+  default: "23.2.1"
+
+nodejs_version:
+  type: str
+  default: "22.11.0"

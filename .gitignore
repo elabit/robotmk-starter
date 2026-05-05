@@ -1,0 +1,28 @@
+# Python virtualenv (used for copier by maintainers)
+.venv/
+
+# RCC binaries – download via _dev/scripts/download-rcc.sh, do not commit
+_dev/.rcc/rcc*
+
+# Robot Framework output artifacts
+output/
+results/
+log.html
+report.html
+output.xml
+browser/screenshot/
+
+# RCC holotree (local environment cache)
+.robocorp/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/settings.json
+*.swp
+
+# BMAD
+.agents/
+_bmad/
+_bmad-output/

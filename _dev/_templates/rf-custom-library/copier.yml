@@ -1,0 +1,38 @@
+# Copier template for the web-webshop example.
+# Maintainer-only: generates examples/web-webshop/ from this template.
+# Run via: _dev/scripts/generate-all.sh
+
+_subdirectory: template
+_answers_file: .copier-answers.yml
+
+# --- Version parameters ---
+
+rf_version:
+  type: str
+  default: "7.1.1"
+  help: Robot Framework version (pip specifier)
+
+rf_lib_browser_version:
+  type: str
+  default: "19.12.5"
+  help: robotframework-browser version
+
+rf_lib_crypto_version:
+  type: str
+  default: "0.3.0"
+  help: robotframework-crypto version (used for encrypted credentials)
+
+python_version:
+  type: str
+  default: "3.12"
+  help: Python version (conda)
+
+pip_version:
+  type: str
+  default: "23.2.1"
+  help: pip version (conda)
+
+nodejs_version:
+  type: str
+  default: "22.11.0"
+  help: Node.js version (conda)

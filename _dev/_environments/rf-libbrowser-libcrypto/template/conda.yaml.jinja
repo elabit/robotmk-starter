@@ -1,0 +1,14 @@
+channels:
+  - conda-forge
+dependencies:
+  - python={{ python_version }}
+  - pip={{ pip_version }}
+  - nodejs={{ nodejs_version }}
+  - pip:
+      - robotframework=={{ rf_version }}
+      - robotframework-browser=={{ rf_lib_browser_version }}
+      - robotframework-crypto=={{ rf_lib_crypto_version }}
+# foo
+# Install Browser Library binaries after environment creation.
+rccPostInstall:
+  - rfbrowser init

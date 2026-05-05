@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# pre-push hook: regenerates all examples and templates before pushing.
+# Aborts the push if generated files are not committed.
+#
+# Install: task setup  (or: git config core.hooksPath .githooks)
+
+set -euo pipefail
+
+echo "→ Running task generate ..."
+task generate
+
+if ! git diff --quiet; then
+  echo ""
+  echo "ERROR: task generate produced uncommitted changes." >&2
+  echo "Please review, stage and commit the following files:" >&2
+  git diff --name-only >&2
+  echo ""
+  echo "Then push again." >&2
+  exit 1
+fi
+
+echo "✓ All generated files are up to date."
