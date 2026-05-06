@@ -1,0 +1,29 @@
+{% include 'README.partial.md' %}
+
+## Prerequisites
+
+**RCC**  to create isolated self contained environments. Download from the [Robotmk release page](https://github.com/elabit/robotmk/releases/download/v4.0.0/) or use the provided script (`_dev/scripts/download-rcc.sh` / `download-rcc.ps1`).
+  
+## Libraries & Versions
+
+| Library | Version |
+|---|---|
+| Python | `{{ python_version }}` |
+| Robot Framework | `{{ rf_version }}` |
+{% if use_browser -%}
+| robotframework-browser | `{{ rf_lib_browser_version }}` |
+{% endif -%}
+{% if use_crypto -%}
+| robotframework-crypto | `{{ rf_lib_crypto_version }}` |
+{% endif %}
+> All versions are pinned in `_dev/config/versions.env` and injected into `conda.yaml` at generation time.
+
+## How to Run
+
+Run with RCC (creates the isolated environment on first run):
+
+```bash
+rcc run
+```
+
+> **In the devcontainer:** RCC is pre-installed. Open the integrated terminal and run `rcc run` directly.

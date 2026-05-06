@@ -5,3 +5,11 @@
 
 _subdirectory: template
 _answers_file: .copier-answers.yml
+
+use_browser:
+  type: bool
+  default: false
+
+use_crypto:
+  type: bool
+  default: true

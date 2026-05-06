@@ -70,6 +70,8 @@ inject_env() {
   rm -f "${src}/template/.copier-env-answers.yml"
 }
 
+SHARED_DIR="${REPO_ROOT}/_dev/_shared"
+
 generate() {
   local name="$1"
   local src_base="$2"
@@ -79,8 +81,21 @@ generate() {
   echo "→ ${label}/${name}"
   echo "  src: ${src_base}/${name}"
   echo "  dst: ${dst_base}/${name}"
+
+  # Inject shared README template if the example has a partial
+  local shared_readme="${SHARED_DIR}/README.md.jinja"
+  local partial="${src_base}/${name}/README.partial.md"
+  if [[ -f "${shared_readme}" && -f "${partial}" ]]; then
+    echo "  ↳ Injecting shared README.md.jinja ..."
+    cp "${shared_readme}" "${src_base}/${name}/template/README.md.jinja"
+  fi
+
   inject_env "${src_base}/${name}"
   "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" "${src_base}/${name}" "${dst_base}/${name}"
+
+  # Remove the injected shared README template from the source tree
+  rm -f "${src_base}/${name}/template/README.md.jinja"
+
   echo "  ✓ Done"
 }
 

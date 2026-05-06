@@ -1,6 +1,9 @@
 # Python virtualenv (used for copier by maintainers)
 .venv/
 
+# Shared README template — injected temporarily into each example's template/ dir at generation time
+_dev/_examples/*/template/README.md.jinja
+
 # RCC binaries – download via _dev/scripts/download-rcc.sh, do not commit
 _dev/.rcc/rcc*
 
@@ -11,6 +14,7 @@ log.html
 report.html
 output.xml
 browser/screenshot/
+playwright-log.txt
 
 # RCC holotree (local environment cache)
 .robocorp/

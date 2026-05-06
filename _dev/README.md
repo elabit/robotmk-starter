@@ -164,6 +164,67 @@ rf_version: 7.1.1
 browser_version: 19.12.5
 ```
 
+### Shared README — `_shared/` und Partials
+
+Jedes generierte Beispiel erhält ein einheitlich aufgebautes `README.md`. Die Struktur ist
+aufgeteilt in einen **gemeinsamen** und einen **beispiel-spezifischen** Teil:
+
+```
+_dev/
+├── _shared/
+│   └── README.md.jinja          ← Gemeinsame Sektionen (Prerequisites, Libraries & Versions,
+│                                   How to Run); enthält {% include 'README.partial.md' %}
+└── _examples/
+    └── <name>/
+        ├── README.partial.md    ← Beispiel-spezifisch: Titel, Beschreibung, What This
+        │                           Demonstrates, Test Cases, Key Files, Links
+        └── template/            ← README.partial.md liegt bewusst NICHT hier
+            └── README.md.jinja  ← wird vom Skript temporär hierhin kopiert (s. u.)
+```
+
+**Ablauf beim Generieren:**
+
+1. `generate-all.sh` prüft, ob `_dev/_shared/README.md.jinja` und
+   `_dev/_examples/<name>/README.partial.md` beide existieren.
+2. Falls ja: `README.md.jinja` wird temporär nach `_dev/_examples/<name>/template/` kopiert
+   (damit Copier es als Output-Datei `README.md` rendert).
+3. Copier rendert `README.md.jinja` — dabei löst `{% include 'README.partial.md' %}` die
+   Partial-Datei auf. Copier's Jinja-Loader sucht Includes im **Root** des Quell-Verzeichnisses
+   (neben `copier.yml`), deshalb liegt `README.partial.md` dort und nicht in `template/`.
+4. Das temporäre `README.md.jinja` wird nach dem Copier-Lauf wieder entfernt.
+
+**Bedingte Library-Tabelle:**
+
+`README.md.jinja` rendert die Versions-Tabelle bedingt — gesteuert durch Flags in `copier.yml`:
+
+```yaml
+# _dev/_examples/<name>/copier.yml
+use_browser:
+  type: bool
+  default: true   # oder false für Beispiele ohne Browser-Library
+
+use_crypto:
+  type: bool
+  default: true
+```
+
+Im Template:
+```jinja
+{% if use_browser %}| robotframework-browser | `{{ rf_lib_browser_version }}` |{% endif %}
+{% if use_crypto %}| robotframework-crypto  | `{{ rf_lib_crypto_version }}`  |{% endif %}
+```
+
+**Neues Beispiel mit README:**
+
+1. `_dev/_examples/<name>/README.partial.md` anlegen (Inhalt s. bestehende Partials als
+   Vorlage). Die Partial-Datei darf selbst Jinja-Variablen (`{{ rf_version }}` etc.) nutzen.
+2. `use_browser` / `use_crypto` in `copier.yml` korrekt setzen.
+3. `task generate EXAMPLE=<name>` — der Rest passiert automatisch.
+
+**`_dev/_templates/` (Skeletons)** erhalten kein README — dort existiert kein
+`README.partial.md`, und `generate-all.sh` überspringt die README-Injektion in diesem Fall
+stillschweigend.
+
 ---
 
 ## 3. Versionen pflegen

@@ -20,6 +20,7 @@ $TemplatesSrc = Join-Path $RepoRoot "_dev\_templates"
 $Environments = Join-Path $RepoRoot "_dev\_environments"
 $ExamplesOut  = Join-Path $RepoRoot "examples"
 $TemplatesOut = Join-Path $RepoRoot "templates"
+$SharedDir    = Join-Path $RepoRoot "_dev\_shared"
 
 # ─── Version pins (read from _dev/config/versions.env) ───────────────────────
 $VersionsFile = Join-Path $RepoRoot "_dev\config\versions.env"
@@ -61,9 +62,22 @@ function Generate-Item {
     param([string]$Name, [string]$SrcBase, [string]$DstBase, [string]$Label)
     $src = Join-Path $SrcBase $Name
     Write-Host "→ ${Label}\$Name"
+
+    # Inject shared README template if the example has a partial
+    $sharedReadme = Join-Path $SharedDir "README.md.jinja"
+    $partial = Join-Path $src "README.partial.md"
+    if ((Test-Path $sharedReadme) -and (Test-Path $partial)) {
+        Write-Host "  ↳ Injecting shared README.md.jinja ..."
+        Copy-Item $sharedReadme (Join-Path $src "README.md.jinja")
+    }
+
     Invoke-EnvInject -Src $src
     & copier copy --overwrite --defaults @CommonData $src (Join-Path $DstBase $Name)
     if ($LASTEXITCODE -ne 0) { throw "copier failed for $Name" }
+
+    # Remove the injected shared README template from the source tree
+    Remove-Item -Path (Join-Path $src "template\README.md.jinja") -ErrorAction SilentlyContinue
+
     Write-Host "  ✓ Done"
 }
 
@@ -81,16 +95,6 @@ Get-ChildItem -Path $TemplatesSrc -Directory | ForEach-Object {
     $name = $_.Name
     if ([string]::IsNullOrEmpty($Filter) -or $name -eq $Filter) {
         Generate-Item -Name $name -SrcBase $TemplatesSrc -DstBase $TemplatesOut -Label "templates"
-    }
-}
-
-Write-Host ""
-Write-Host "All done."
-Write-Host "=== templates\ (minimal skeletons) ==="
-Get-ChildItem -Path $SkeletonsDir -Directory | ForEach-Object {
-    $name = $_.Name
-    if ([string]::IsNullOrEmpty($Filter) -or $name -eq $Filter) {
-        Generate-Item -Name $name -SrcBase $SkeletonsDir -DstBase $TemplOutDir -Label "templates"
     }
 }
 

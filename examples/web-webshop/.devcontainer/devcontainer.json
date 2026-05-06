@@ -1,0 +1,36 @@
+{
+  "name": "web-webshop",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "vscode",
+      "webPort": "6080",
+      "vncPort": "5901"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "d-biehl.robotcode",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+      ]
+    }
+  },
+  "postCreateCommand": "curl -fsSL -o /usr/local/bin/rcc https://github.com/elabit/robotmk/releases/download/v4.0.0/rcc_linux64 && chmod +x /usr/local/bin/rcc && rcc holotree vars --robot robot.yaml",
+  "remoteEnv": {
+    "DISPLAY": ":1",
+    "ROBOTMK_HEADLESS_HOST": "false"
+  },
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": {
+      "label": "noVNC Desktop",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}
