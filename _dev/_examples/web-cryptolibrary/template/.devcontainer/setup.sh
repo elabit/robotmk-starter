@@ -27,7 +27,7 @@ ok "RCC $(${RCC_BIN} --version 2>&1 | head -1) ready at ${RCC_BIN}"
 
 # ── Step 2: Build holotree environment ────────────────────────────────────────
 step "Building RCC holotree environment (this takes a few minutes on first run) ..."
-info "Reading robot.yaml: $(pwd)/robot.yaml"
+info "robot.yaml: $(pwd)/robot.yaml"
 SPACE_ROOT=$(
   "$RCC_BIN" holotree vars --robot robot.yaml 2>&1 \
     | grep '^export RCC_HOLOTREE_SPACE_ROOT=' \
@@ -54,8 +54,14 @@ fi
 # ── Step 5: Write .vscode/settings.json ──────────────────────────────────────
 step "Writing .vscode/settings.json ..."
 mkdir -p .vscode
-printf '{\n  "python.defaultInterpreterPath": "%s/bin/python"\n}\n' \
-  "${SPACE_ROOT}" > .vscode/settings.json
+cat > .vscode/settings.json <<EOF
+{
+  "python.defaultInterpreterPath": "${SPACE_ROOT}/bin/python",
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "robotcode.run.openOutputAfterRun": "log",
+  "window.autoDetectColorScheme": true
+}
+EOF
 ok "python.defaultInterpreterPath → ${SPACE_ROOT}/bin/python"
 
 echo ""

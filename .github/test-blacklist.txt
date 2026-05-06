@@ -3,5 +3,6 @@
 # Lines starting with # are ignored.
 #
 # examples/web-webshop
-examples/web-cryptolibrary
+# examples/cryptolibrary-simple
+# examples/web-cryptolibrary
 examples/web-webshop

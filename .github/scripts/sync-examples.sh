@@ -52,6 +52,11 @@ build_codespaces_badge() {
 
 build_header() {
   local name="$1"
+  local repo_id="$2"
+  local has_devcontainer="$3"
+  local badge
+  badge="$(build_codespaces_badge "${repo_id}" "${has_devcontainer}")"
+  [[ -n "${badge}" ]] && printf '%s\n\n' "${badge}"
   cat <<EOF
 > **This repository is automatically synced from [${SOURCE_REPO}](https://github.com/${SOURCE_REPO}/tree/main/examples/${name}).**
 > Do not edit files here directly — changes will be overwritten on the next sync.
@@ -138,7 +143,7 @@ sync_example() {
 
   # Prepend sync header and append footer (Codespaces badge) to README if present
   if [[ -f "${tmpdir}/README.md" ]]; then
-    prepend_header "${tmpdir}/README.md" "$(build_header "${name}")"
+    prepend_header "${tmpdir}/README.md" "$(build_header "${name}" "${repo_id}" "${has_devcontainer}")"
     append_footer  "${tmpdir}/README.md" "$(build_footer "${repo_id}" "${has_devcontainer}")"
   fi
 
