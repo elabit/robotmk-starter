@@ -9,35 +9,49 @@
 
 ```
 _dev/
-├── _environments/       ← Gemeinsame RCC-Environments (conda.yaml-Quellen)
-│   └── rf-libbrowser-libcrypto/
-│       ├── copier.yml
-│       └── template/
-│           └── conda.yaml.jinja
-├── _examples/           ← Copier-Quellen für examples/ (vollständige Beispiele)
-│   ├── cryptolibrary/
-│   │   ├── .rcc         ← Zeigt auf Environment: SPACE=rf-libbrowser-libcrypto
+├── _devcontainers/      ← Zentralisierte Devcontainer-Templates
+│   ├── headless/        ← Für Beispiele ohne VNC (VNC=false oder nicht gesetzt)
 │   │   ├── copier.yml
 │   │   └── template/
-│   └── web-webshop/
-│       ├── .rcc
+│   │       └── .devcontainer/
+│   │           ├── devcontainer.json.jinja
+│   │           └── setup.sh
+│   └── desktop/         ← Für Beispiele mit VNC (VNC=true)
 │       ├── copier.yml
 │       └── template/
-├── _templates/          ← Copier-Quellen für templates/ (minimale Skeletons)
-│   ├── cryptolibrary/
-│   │   ├── .rcc
-│   │   └── template/
-│   └── web-webshop/
-│       ├── .rcc
+│           └── .devcontainer/
+│               ├── devcontainer.json.jinja
+│               └── setup.sh
+├── _environments/       ← Gemeinsame RCC-Environments (conda.yaml-Quellen)
+│   ├── rf/
+│   ├── rf-libbrowser/
+│   ├── rf-libbrowser-libcrypto/
+│   └── rf-libcrypto/
+│       ├── copier.yml
 │       └── template/
+│           ├── conda.yaml.jinja
+│           └── versions.partial.md.jinja   ← Versions-Tabelle für README
+├── _examples/           ← Copier-Quellen für examples/ (vollständige Beispiele)
+│   ├── cryptolibrary-simple/
+│   │   ├── .rcc                 ← SPACE=rf-libcrypto
+│   │   ├── copier.yml
+│   │   ├── README.partial.md    ← Beispiel-spezifischer README-Teil
+│   │   └── template/
+│   ├── web-cryptolibrary/
+│   │   ├── .rcc                 ← SPACE=rf-libbrowser-libcrypto
+│   │   ├── copier.yml
+│   │   ├── README.partial.md
+│   │   └── template/
+│   │       └── .env             ← VNC=true, VNC_RESOLUTION optional
+│   └── web-webshop/
+│       └── …
+├── _shared/
+│   └── README.md.jinja          ← Gemeinsame README-Sektionen
+├── _templates/          ← Copier-Quellen für templates/ (minimale Skeletons)
 ├── config/
 │   └── versions.env     ← Versionspins (einzige Pflegestelle!)
-├── .rcc/                ← RCC-Binaries (NICHT committed, lokal herunterladen)
-│   ├── rcc              ← nach task download-rcc (Linux/macOS)
-│   └── rcc.exe          ← nach task download-rcc-windows (Windows)
+├── .rcc/                ← RCC-Binaries (NICHT committed)
 └── scripts/
-    ├── download-rcc.sh   ← RCC-Binary herunterladen (Linux/macOS)
-    ├── download-rcc.ps1  ← RCC-Binary herunterladen (Windows)
     ├── generate-all.sh   ← Alle examples/ und templates/ generieren (Linux/macOS)
     └── generate-all.ps1  ← Alle examples/ und templates/ generieren (Windows)
 ```
@@ -193,33 +207,32 @@ _dev/
    (neben `copier.yml`), deshalb liegt `README.partial.md` dort und nicht in `template/`.
 4. Das temporäre `README.md.jinja` wird nach dem Copier-Lauf wieder entfernt.
 
-**Bedingte Library-Tabelle:**
+**Versions-Tabelle im README:**
 
-`README.md.jinja` rendert die Versions-Tabelle bedingt — gesteuert durch Flags in `copier.yml`:
+Jedes Environment legt in `template/versions.partial.md.jinja` fest, welche Pakete es
+mitbringt. `generate-all.sh` injiziert diese Datei zusammen mit `conda.yaml` ins Beispiel.
+Das Shared-README inkludiert sie mit `{% include 'versions.partial.md' %}`.
 
-```yaml
-# _dev/_examples/<name>/copier.yml
-use_browser:
-  type: bool
-  default: true   # oder false für Beispiele ohne Browser-Library
+```
+_dev/_environments/rf-libbrowser-libcrypto/template/versions.partial.md.jinja:
 
-use_crypto:
-  type: bool
-  default: true
+| Library | Version |
+|---|---|
+| Python | `{{ python_version }}` |
+| Node.js | `{{ nodejs_version }}` |
+| Robot Framework | `{{ rf_version }}` |
+| robotframework-browser | `{{ rf_lib_browser_version }}` |
+| robotframework-crypto | `{{ rf_lib_crypto_version }}` |
 ```
 
-Im Template:
-```jinja
-{% if use_browser %}| robotframework-browser | `{{ rf_lib_browser_version }}` |{% endif %}
-{% if use_crypto %}| robotframework-crypto  | `{{ rf_lib_crypto_version }}`  |{% endif %}
-```
+Dadurch ist die Tabelle **automatisch korrekt** für jedes Environment — keine bedingten
+`{% if use_browser %}` Flags in `copier.yml` nötig.
 
 **Neues Beispiel mit README:**
 
 1. `_dev/_examples/<name>/README.partial.md` anlegen (Inhalt s. bestehende Partials als
    Vorlage). Die Partial-Datei darf selbst Jinja-Variablen (`{{ rf_version }}` etc.) nutzen.
-2. `use_browser` / `use_crypto` in `copier.yml` korrekt setzen.
-3. `task generate EXAMPLE=<name>` — der Rest passiert automatisch.
+2. `task generate EXAMPLE=<name>` — der Rest passiert automatisch.
 
 **`_dev/_templates/` (Skeletons)** erhalten kein README — dort existiert kein
 `README.partial.md`, und `generate-all.sh` überspringt die README-Injektion in diesem Fall
@@ -338,21 +351,19 @@ Für eine andere Version: URL und Tag in `download-rcc.sh` / `download-rcc.ps1` 
 
 2-stufiges Design:
 
-```
-Push zu main (examples/** geändert)
+```mermaid
+flowchart TD
+    A(["Push zu main,\nexamples/** geändert"]) --> B
 
-  │
-  ▼
-Job: detect-changes
-  git diff HEAD~1 HEAD 
-  → welche Ordner in examples/ geändert?
-  Output: JSON-Array, z. B. ["cryptolibrary"]
+    B["Job: detect-changes\n→ welche Ordner in examples/ geändert?\n(Output: JSON-Array)"]
 
-  │
-  ▼
-Job: test  (Matrix: os × example)
-  ubuntu-latest  ×  cryptolibrary  → Download RCC → holotree build → robot run
-  windows-latest ×  cryptolibrary  → Download RCC → holotree build → robot run
+    B --> C1["ubuntu-latest × example\nDownload RCC → holotree build → robot run"]
+    B --> C2["windows-latest × example\nDownload RCC → holotree build → robot run"]
+
+    subgraph "Job: test (Matrix: os × example)"
+        C1
+        C2
+    end 
 ```
 
 - **`fail-fast: false`**: Ein fehlgeschlagenes Beispiel bricht nicht den Rest ab
@@ -418,9 +429,159 @@ Der CI-Workflow läuft automatisch auch auf `compat/**`-Branches (`branches: ["m
 
 Für Workshops und schnellen Einstieg ohne lokale Installation.
 
-- `.devcontainer/devcontainer.json` — Basis: Ubuntu 24.04
-- Port **6080** → noVNC-Desktop (Browser-Tests sichtbar, `ROBOTMK_HEADLESS_HOST=false`)
-- `on-create.sh`: installiert xfce4, tigervnc, noVNC, Playwright-Systemdeps, lädt RCC herunter
-- `post-start.sh`: startet VNC-Server + noVNC-Proxy bei jedem Start
+### Zentralisierte Devcontainer-Templates (`_devcontainers/`)
 
-Nach dem Start: im Forwarded-Ports-Tab auf Port 6080 klicken → Browser-Desktop öffnet sich.
+Devcontainer-Konfigurationen werden **nicht** direkt in den Beispiel-Templates gepflegt,
+sondern zentral in `_dev/_devcontainers/` und beim Generieren injiziert.
+
+```
+_dev/_devcontainers/
+├── headless/           ← Reines Python-Image, kein VNC
+│   ├── copier.yml
+│   └── template/.devcontainer/
+│       ├── devcontainer.json.jinja
+│       └── setup.sh
+└── desktop/            ← Python-Image + desktop-lite (noVNC, Port 6080)
+    ├── copier.yml
+    └── template/.devcontainer/
+        ├── devcontainer.json.jinja
+        └── setup.sh
+```
+
+**Steuerung über `.env`:**
+
+`generate-all.sh` liest `VNC` aus `template/.env` des jeweiligen Beispiels:
+
+| `.env`-Eintrag | Injizierter Typ | Beschreibung |
+|---|---|---|
+| `VNC=true` | `desktop` | noVNC-Desktop, Port 6080 forwarded, `DISPLAY=:1` gesetzt |
+| `VNC=false` oder fehlend | `headless` | Kein VNC, kein Desktop-Feature |
+| keine `.env` | kein Devcontainer | Injektion wird übersprungen (z. B. `templates/`) |
+
+### VNC-Auflösung (`VNC_RESOLUTION`)
+
+Für `desktop`-Container kann die Auflösung des VNC-Desktops in `.env` konfiguriert werden.
+`setup.sh` liest `VNC_RESOLUTION` und setzt sie via `xrandr` in `~/.fluxbox/startup`.
+
+```dotenv
+# .env — optionaler Eintrag
+VNC_RESOLUTION=1920x1080   # Standard: 1280x1024 wenn nicht gesetzt
+```
+
+Der Eintrag ist **auskommentiert** in den generierten `.env`-Dateien vorhanden — als
+Hinweis für Nutzer. Die Änderung erfordert **keinen Rebuild** des Containers; `setup.sh`
+läuft bei `postCreateCommand`, also einmalig nach der Erstellung.
+
+### `setup.sh` — Was beim Container-Start passiert
+
+Beide Typen führen `setup.sh` per `postCreateCommand` aus. Das Skript:
+
+1. Lädt RCC nach `~/bin/rcc`
+2. Baut das holotree-Environment (`rcc holotree vars`)
+3. Legt Symlink `~/.rcc-env` → holotree-Root an
+4. Ergänzt `~/.bashrc` mit `PATH` (idempotent, Marker-basiert)
+5. Schreibt `.vscode/settings.json` (Python-Interpreter, RobotCode-Settings)
+6. *(nur `desktop`)* Trägt `xrandr --output VNC-0 --mode <VNC_RESOLUTION>` in
+   `~/.fluxbox/startup` vor `exec fluxbox` ein (idempotent)
+
+### Devcontainer für ein neues Beispiel
+
+Kein manuelles Anlegen nötig — einfach in `template/.env` eintragen:
+
+```dotenv
+VNC=true          # → desktop-Devcontainer wird injiziert
+# oder weglassen  # → headless-Devcontainer wird injiziert
+```
+
+`task generate EXAMPLE=<name>` erledigt den Rest.
+
+### Codespaces-Badge in Sub-Repos
+
+Sub-Repos, die ein `.devcontainer/` haben, erhalten beim Sync automatisch einen
+„Open in GitHub Codespaces"-Badge oben und unten in der README. Die Repo-ID wird
+zur Sync-Zeit via `gh api` ermittelt (s. `.github/scripts/sync-examples.sh`).
+
+---
+
+## 9. Sub-Repo-Sync
+
+Jedes Beispiel in `examples/` wird als Snapshot in ein eigenes GitHub-Repo
+(`robotmk/example-<name>`) gespiegelt — damit Nutzer ein einzelnes Repo klonen oder
+in Codespaces öffnen können, ohne den ganzen Starter zu clonen.
+
+### Workflow: `sync-examples.yml`
+
+Wird ausgelöst nach erfolgreichem CI-Lauf (`workflow_run` auf `Run Suites`) oder manuell.
+Benötigt das Secret `SYNC_TOKEN` (PAT mit `Contents` + `Administration` Write auf die
+`robotmk`-Org).
+
+### Skript: `.github/scripts/sync-examples.sh`
+
+```bash
+# Alle Beispiele syncen
+.github/scripts/sync-examples.sh
+
+# Nur ein Beispiel
+.github/scripts/sync-examples.sh cryptolibrary-simple
+```
+
+**Ablauf pro Beispiel:**
+
+1. `ensure_repo` — erstellt `robotmk/example-<name>` falls noch nicht vorhanden (`gh repo create`)
+2. Repo-ID via `gh api repos/robotmk/example-<name> --jq '.id'` abrufen
+3. Sub-Repo clonen (shallow), Token in Remote-URL einbetten (Auth)
+4. Alle getrakten Dateien löschen (`git rm -rf .`)
+5. Inhalte rsync-en, Exclude-Liste anwenden (`.copier-answers.yml`, `output/`, `browser/`, …)
+6. Sync-Header **und** Sync-Footer in `README.md` einsetzen:
+   - Header: Hinweis "synced from …" + Codespaces-Badge (falls `.devcontainer/` vorhanden)
+   - Footer: Codespaces-Badge (Wiederholung am Ende)
+7. Commit + Push (nur wenn Änderungen vorhanden)
+
+**Exclude-Liste** (wird nicht ins Sub-Repo übertragen):
+`.copier-answers.yml`, `output/`, `log.html`, `report.html`, `output.xml`, `browser/`,
+`playwright-log.txt`
+
+---
+
+## 10. README-Automatisierung und Git Hooks
+
+### `update_suite_table.py` — Automatische Tabellen-Aktualisierung
+
+Das Skript `.github/scripts/update_suite_table.py` aktualisiert die Suite-Tabellen in der
+Root-`README.md` automatisch:
+
+- Liest `conda.yaml` jedes `examples/`- und `templates/`-Verzeichnisses für Versionen
+- Liest die `Documentation`-Sektion aus der ersten `.robot`-Datei als Beschreibung
+- Schreibt zwischen die Marker `<!-- EXAMPLES-TABLE-START/END -->` und
+  `<!-- TEMPLATES-TABLE-START/END -->`
+- Für `examples/`: 4. Spalte „try out online" mit Link auf `robotmk/example-<name>`
+
+```bash
+# Lokal ausführen (setzt pyyaml voraus):
+source .venv/bin/activate
+python3 .github/scripts/update_suite_table.py .
+```
+
+### Workflow: `update-readme.yml`
+
+Wird ausgelöst:
+- Nach erfolgreichem CI-Lauf (`workflow_run` auf `Run Suites`)
+- Bei Push auf `main` mit Änderungen in `conda.yaml`-Dateien
+- Manuell (`workflow_dispatch`)
+
+Committet Änderungen mit `[skip ci]` um Endlosschleifen zu vermeiden.
+
+### Git Hook: `pre-push`
+
+Registriert via `task install-hooks`. Läuft vor jedem `git push`:
+
+1. `task generate` ausführen
+2. Prüfen ob nicht-committete Änderungen entstanden sind
+3. Falls ja: Push abbrechen und Änderungen anzeigen
+
+```bash
+task install-hooks   # Einmalig nach dem Klonen
+```
+
+Der Hook liegt in `.githooks/pre-push` und wird über
+`git config core.hooksPath .githooks` aktiviert.

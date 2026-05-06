@@ -4,7 +4,7 @@
 [![Run Suites](https://github.com/YOUR_ORG/robotmk-starter/actions/workflows/run-suites.yml/badge.svg)](https://github.com/YOUR_ORG/robotmk-starter/actions/workflows/run-suites.yml)
 <!-- CI-BADGE-END -->
 
-> **Ready-to-run Robot Framework suites for [Checkmk](https://checkmk.com) synthetic monitoring with [Robotmk](https://www.robotmk.org).**
+> **Ready-to-run Robot Framework suites for [Checkmk](https://checkmk.com) synthetic monitoring with [Robotmk](https://www.robotmk.org), the [Robot Framework](https://robotframework.org/) integration for Checkmk.**
 
 No local Python. No `pip install`. No `venv`. Just RCC and one command.
 

@@ -75,10 +75,9 @@ jobs:
       # We have 2 OS and want to run max 1 job per OS (make use of pre-build RCC environments!)
       max-parallel: 2
       matrix:
-        suite: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
-        # TODO: re-enable
-        #os: [ubuntu-latest, windows-latest]
-        os: [ubuntu-latest]
+        suite: ${{ fromJson(needs.detect-changes.outputs.matrix) }}        
+        os: [ubuntu-latest, windows-latest]
+        # os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -127,7 +126,8 @@ jobs:
             echo "Loading variables from ${ENV_FILE}"
             grep -v '^\s*#' "${ENV_FILE}" | grep -v '^\s*$' >> "$GITHUB_ENV"
           fi
-
+          echo "Environment variables set for this suite:"
+          grep -v '^\s*#' "${ENV_FILE}" | grep -v '^\s*$'
 
 
 

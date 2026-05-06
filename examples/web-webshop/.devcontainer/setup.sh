@@ -64,5 +64,21 @@ cat > .vscode/settings.json <<EOF
 EOF
 ok "python.defaultInterpreterPath → ${SPACE_ROOT}/bin/python"
 
+# ── Step 6: Configure fluxbox resolution ─────────────────────────────────────
+step "Configuring fluxbox resolution ..."
+FLUXBOX_STARTUP="$HOME/.fluxbox/startup"
+# Read VNC_RESOLUTION from .env if present, otherwise fall back to default
+VNC_RESOLUTION="1280x1024"
+if grep -q '^VNC_RESOLUTION=' .env 2>/dev/null; then
+  VNC_RESOLUTION="$(grep '^VNC_RESOLUTION=' .env | cut -d= -f2 | tr -d '[:space:]')"
+fi
+XRANDR_LINE="xrandr --output VNC-0 --mode ${VNC_RESOLUTION}"
+if grep -qF "xrandr --output VNC-0 --mode" "${FLUXBOX_STARTUP}" 2>/dev/null; then
+  info "xrandr entry already present — skipping."
+else
+  sed -i "s|^exec fluxbox|${XRANDR_LINE}\nexec fluxbox|" "${FLUXBOX_STARTUP}"
+  ok "Set VNC resolution to ${VNC_RESOLUTION} in ${FLUXBOX_STARTUP}"
+fi
+
 echo ""
 echo -e "${GREEN}${BOLD}Setup complete.${RESET} Open a new terminal to activate the PATH."
