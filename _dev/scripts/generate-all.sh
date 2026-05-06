@@ -50,21 +50,25 @@ COMMON_DATA=(
 
 DEVCONTAINERS="${REPO_ROOT}/_dev/_devcontainers"
 
-# inject_devcontainer: reads ROBOTMK_HEADLESS_HOST from template/.env, injects the
+# inject_devcontainer: reads VNC from template/.env, injects the
 # matching devcontainer config (headless or desktop) into template/.devcontainer/
+# VNC=true → desktop (with VNC/noVNC); absent or VNC=false → headless
 inject_devcontainer() {
   local src="$1"   # e.g. _dev/_examples/cryptolibrary-simple
   local name
   name="$(basename "${src}")"
   local env_file="${src}/template/.env"
-  if [[ ! -f "${env_file}" ]]; then
+  local vnc="false"
+  if [[ -f "${env_file}" ]]; then
+    local val
+    val=$(grep '^VNC=' "${env_file}" | cut -d= -f2 | tr -d '[:space:]' || true)
+    [[ "${val}" == "true" ]] && vnc="true"
+  else
     echo "  (no .env found in ${src}/template/, skipping devcontainer injection)"
     return
   fi
-  local headless
-  headless=$(grep '^ROBOTMK_HEADLESS_HOST=' "${env_file}" | cut -d= -f2 | tr -d '[:space:]')
   local dc_type
-  if [[ "${headless}" == "false" ]]; then
+  if [[ "${vnc}" == "true" ]]; then
     dc_type="desktop"
   else
     dc_type="headless"
