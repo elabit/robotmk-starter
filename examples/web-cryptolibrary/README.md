@@ -45,11 +45,12 @@ exposing the plaintext in suite files.
 | Library | Version |
 |---|---|
 | Python | `3.12` |
+| Node.js | `22.11.0` |
 | Robot Framework | `7.4` |
 | robotframework-browser | `19.14.2` |
 | robotframework-crypto | `0.3` |
 
-> All versions are pinned in `_dev/config/versions.env` and injected into `conda.yaml` at generation time.
+
 
 ## How to Run
 

@@ -44,7 +44,7 @@ Demonstrates how to store an encrypted secret in a Robot Framework suite and dec
 | Robot Framework | `7.4` |
 | robotframework-crypto | `0.3` |
 
-> All versions are pinned in `_dev/config/versions.env` and injected into `conda.yaml` at generation time.
+
 
 ## How to Run
 

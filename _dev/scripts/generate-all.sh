@@ -91,10 +91,17 @@ generate() {
   fi
 
   inject_env "${src_base}/${name}"
+  # Move the generated versions partial from template/ to root so Jinja can find it
+  # (Copier's include loader searches the source root, not the _subdirectory)
+  if [[ -f "${src_base}/${name}/template/versions.partial.md" ]]; then
+    mv "${src_base}/${name}/template/versions.partial.md" "${src_base}/${name}/versions.partial.md"
+  fi
   "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" "${src_base}/${name}" "${dst_base}/${name}"
 
   # Remove the injected shared README template from the source tree
   rm -f "${src_base}/${name}/template/README.md.jinja"
+  # Remove the versions partial (now at root; not in template/ so never in output)
+  rm -f "${src_base}/${name}/versions.partial.md"
 
   echo "  ✓ Done"
 }

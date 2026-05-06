@@ -6,17 +6,8 @@
   
 ## Libraries & Versions
 
-| Library | Version |
-|---|---|
-| Python | `{{ python_version }}` |
-| Robot Framework | `{{ rf_version }}` |
-{% if use_browser -%}
-| robotframework-browser | `{{ rf_lib_browser_version }}` |
-{% endif -%}
-{% if use_crypto -%}
-| robotframework-crypto | `{{ rf_lib_crypto_version }}` |
-{% endif %}
-> All versions are pinned in `_dev/config/versions.env` and injected into `conda.yaml` at generation time.
+{% include 'versions.partial.md' %}
+
 
 ## How to Run
 
