@@ -1,0 +1,39 @@
+name: Sync Examples to Sub-Repos
+
+on:
+  # Run after a successful CI run on main
+  workflow_run:
+    workflows: ["Run Suites"]
+    types: [completed]
+    branches: [main]
+  # Manual trigger (e.g. to sync a single example or force a full sync)
+  workflow_dispatch:
+    inputs:
+      example:
+        description: "Single example to sync (leave empty for all)"
+        required: false
+        default: ""
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # For workflow_run: only proceed if the triggering workflow succeeded
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync examples to sub-repos
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          bash .github/scripts/sync-examples.sh ${{ github.event.inputs.example }}

@@ -36,11 +36,8 @@ using a private key file — no plaintext passwords anywhere in the codebase.
 
 ## Prerequisites
 
-- **RCC** — Robocorp Command Center. Download from [robocorp.com/tools/rcc](https://robocorp.com/tools/rcc)
-  or use the provided script (`_dev/scripts/download-rcc.sh` / `download-rcc.ps1`).
-- **Robotmk Scheduler** — [Robotmk](https://robotmk.org) triggers and monitors the suite.
-  RCC handles the isolated Python environment automatically.
-
+**RCC**  to create isolated self contained environments. Download from the [Robotmk release page](https://github.com/elabit/robotmk/releases/download/v4.0.0/) or use the provided script (`_dev/scripts/download-rcc.sh` / `download-rcc.ps1`).
+  
 ## Libraries & Versions
 
 | Library | Version |
