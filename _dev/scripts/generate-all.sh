@@ -48,6 +48,39 @@ COMMON_DATA=(
   --data "nodejs_version=${NODEJS_VERSION}"
 )
 
+DEVCONTAINERS="${REPO_ROOT}/_dev/_devcontainers"
+
+# inject_devcontainer: reads ROBOTMK_HEADLESS_HOST from template/.env, injects the
+# matching devcontainer config (headless or desktop) into template/.devcontainer/
+inject_devcontainer() {
+  local src="$1"   # e.g. _dev/_examples/cryptolibrary-simple
+  local name
+  name="$(basename "${src}")"
+  local env_file="${src}/template/.env"
+  if [[ ! -f "${env_file}" ]]; then
+    echo "  (no .env found in ${src}/template/, skipping devcontainer injection)"
+    return
+  fi
+  local headless
+  headless=$(grep '^ROBOTMK_HEADLESS_HOST=' "${env_file}" | cut -d= -f2 | tr -d '[:space:]')
+  local dc_type
+  if [[ "${headless}" == "false" ]]; then
+    dc_type="desktop"
+  else
+    dc_type="headless"
+  fi
+  local dc_src="${DEVCONTAINERS}/${dc_type}"
+  if [[ ! -d "${dc_src}" ]]; then
+    echo "  Error: devcontainer type '${dc_type}' not found in _dev/_devcontainers/" >&2
+    exit 1
+  fi
+  echo "  ↳ Injecting devcontainer '${dc_type}' ..."
+  "${COPIER}" copy --overwrite --defaults \
+    --data "example_name=${name}" \
+    "${dc_src}" "${src}/template"
+  rm -f "${src}/template/.copier-devcontainer-answers.yml"
+}
+
 # inject_env: reads .rcc from source dir, injects conda.yaml from matching environment
 inject_env() {
   local src="$1"   # e.g. _dev/_examples/cryptolibrary
@@ -90,6 +123,7 @@ generate() {
     cp "${shared_readme}" "${src_base}/${name}/template/README.md.jinja"
   fi
 
+  inject_devcontainer "${src_base}/${name}"
   inject_env "${src_base}/${name}"
   # Move the generated versions partial from template/ to root so Jinja can find it
   # (Copier's include loader searches the source root, not the _subdirectory)
@@ -102,6 +136,8 @@ generate() {
   rm -f "${src_base}/${name}/template/README.md.jinja"
   # Remove the versions partial (now at root; not in template/ so never in output)
   rm -f "${src_base}/${name}/versions.partial.md"
+  # Remove the injected devcontainer files from the source tree
+  rm -rf "${src_base}/${name}/template/.devcontainer"
 
   echo "  ✓ Done"
 }

@@ -1,0 +1,9 @@
+# Devcontainer: headless (no VNC)
+# Injected into examples where ROBOTMK_HEADLESS_HOST=true.
+
+_subdirectory: template
+_answers_file: .copier-devcontainer-answers.yml
+
+example_name:
+  type: str
+  default: "example"

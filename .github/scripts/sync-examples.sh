@@ -62,15 +62,14 @@ build_header() {
 > Do not edit files here directly — changes will be overwritten on the next sync.
 > Last sync: [\`${SOURCE_SHA:0:7}\`](https://github.com/${SOURCE_REPO}/commit/${SOURCE_SHA})
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://www.robotmk.org/rmk_crop_transp_w150.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://www.robotmk.org/rmk_crop_transp_150.png">
-</picture>
-
-
 ---
 
 EOF
+
+# <picture>
+#   <source media="(prefers-color-scheme: dark)" srcset="https://www.robotmk.org/rmk_crop_transp_w150.png">
+#   <source media="(prefers-color-scheme: light)" srcset="https://www.robotmk.org/rmk_crop_transp_150.png">
+# </picture>
 }
 
 build_footer() {

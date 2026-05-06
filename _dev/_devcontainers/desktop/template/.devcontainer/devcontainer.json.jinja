@@ -1,5 +1,5 @@
 {
-  "name": "web-webshop",
+  "name": "{{ example_name }}",
   "image": "mcr.microsoft.com/devcontainers/python:3.12",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
@@ -21,8 +21,7 @@
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "remoteEnv": {
-    "DISPLAY": ":1",
-    "ROBOTMK_HEADLESS_HOST": "false"
+    "DISPLAY": ":1"
   },
   "forwardPorts": [6080],
   "portsAttributes": {

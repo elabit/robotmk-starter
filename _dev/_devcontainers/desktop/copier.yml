@@ -1,0 +1,9 @@
+# Devcontainer: desktop (VNC via desktop-lite)
+# Injected into examples where ROBOTMK_HEADLESS_HOST=false.
+
+_subdirectory: template
+_answers_file: .copier-devcontainer-answers.yml
+
+example_name:
+  type: str
+  default: "example"
