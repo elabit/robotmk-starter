@@ -91,21 +91,26 @@ def get_space(suite_dir: Path) -> str:
 
 
 def build_table(repo_root: Path, parent: str) -> str:
-    header = "| Suite | Description | Dependencies |"
-    sep    = "|---|---|---|"
+    is_examples = parent == "examples"
+    header = "| Suite | Description | Dependencies |" + (" Repo |" if is_examples else "")
+    sep    = "|---|---|---|" + ("---|" if is_examples else "")
     rows = []
     parent_dir = repo_root / parent
     if parent_dir.exists():
         for suite_dir in sorted(parent_dir.iterdir()):
             if not suite_dir.is_dir() or suite_dir.name.startswith("."):
                 continue
+            name = suite_dir.name
             v = parse_conda_versions(suite_dir / "conda.yaml")
             doc = parse_suite_doc(suite_dir)
-            rel = f"{parent}/{suite_dir.name}"
+            rel = f"{parent}/{name}"
             deps = "<br>".join(
-                f"• {name}=={version}" for name, version in sorted(v.items())
+                f"• {pkg}=={version}" for pkg, version in sorted(v.items())
             )
-            rows.append(f"| [{rel}]({rel}) | {doc} | {deps} |")
+            repo_col = ""
+            if is_examples:
+                repo_col = f" [try out online](https://github.com/robotmk/example-{name}) |"
+            rows.append(f"| [{name}]({rel}) | {doc} | {deps} |{repo_col}")
     return "\n".join([header, sep] + rows)
 
 
