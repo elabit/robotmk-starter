@@ -41,8 +41,7 @@ with its own credentials and a timestamped output directory.
 - [Practice Software Testing – Webshop](https://practicesoftwaretesting.com)
 - [robotframework-browser](https://robotframework-browser.org)
 - [robotframework-crypto](https://github.com/Snooz82/robotframework-crypto)
-- [Robotmk documentation](https://robotmk.org)
-- [RCC (Robocorp Command Center)](https://robocorp.com/tools/rcc)
+- [Robotmk Homepage](https://robotmk.org)
 
 
 ## Prerequisites
@@ -62,10 +61,26 @@ with its own credentials and a timestamped output directory.
 
 ## How to Run
 
-Run with RCC (creates the isolated environment on first run):
+### On the console
+
+Run directly with RCC (creates the isolated environment on first run):
 
 ```bash
-rcc run
+rcc task script --robot robot.yaml -- robot suite.robot
 ```
 
-> **In the devcontainer:** RCC is pre-installed. Open the integrated terminal and run `rcc run` directly.
+### In VS Code / Locally
+
+Create and activate the environment, then open VS Code from the activated environment: 
+
+```bash
+rcc task shell
+code . 
+```
+
+Install the [RobtoCode](https://marketplace.visualstudio.com/items?itemName=d-biehl.robotcode) extension for VS Code to run the robot with the integrated run/debug tools.  
+**This is the recommended way for the implementation of Robot Framework suites.**
+
+### In VS Code / Devcontainer
+
+Just press the button below. RCC is pre-installed, will create the environment and activate it for VS Code. 

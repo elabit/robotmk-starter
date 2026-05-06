@@ -34,5 +34,4 @@ exposing the plaintext in suite files.
 - [robotframework-browser](https://robotframework-browser.org)
 - [robotframework-crypto](https://github.com/Snooz82/robotframework-crypto)
 - [Practice Test Automation – Login page](https://practicetestautomation.com/practice-test-login/)
-- [Robotmk documentation](https://robotmk.org)
-- [RCC (Robocorp Command Center)](https://robocorp.com/tools/rcc)
+- [Robotmk Homepage](https://robotmk.org)

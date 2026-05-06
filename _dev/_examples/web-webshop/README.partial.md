@@ -41,5 +41,4 @@ with its own credentials and a timestamped output directory.
 - [Practice Software Testing – Webshop](https://practicesoftwaretesting.com)
 - [robotframework-browser](https://robotframework-browser.org)
 - [robotframework-crypto](https://github.com/Snooz82/robotframework-crypto)
-- [Robotmk documentation](https://robotmk.org)
-- [RCC (Robocorp Command Center)](https://robocorp.com/tools/rcc)
+- [Robotmk Homepage](https://robotmk.org)

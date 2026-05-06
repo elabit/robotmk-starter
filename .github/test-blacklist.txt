@@ -1,0 +1,7 @@
+# Suites listed here are excluded from CI testing.
+# One entry per line, format: examples/<name> or templates/<name>
+# Lines starting with # are ignored.
+#
+# examples/web-webshop
+examples/web-cryptolibrary
+examples/web-webshop

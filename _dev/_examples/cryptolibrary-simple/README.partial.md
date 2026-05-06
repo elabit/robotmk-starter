@@ -1,8 +1,7 @@
 # cryptolibrary-simple
 
 Minimal example for using [robotframework-crypto](https://github.com/Snooz82/robotframework-crypto) with Robotmk.
-Demonstrates how to store an encrypted secret in a Robot Framework suite and decrypt it at runtime
-using a private key file — no plaintext passwords anywhere in the codebase.
+Demonstrates how to store an encrypted secret in a Robot Framework suite and decrypt it at runtime using a private key file — no plaintext passwords anywhere in the codebase.
 
 ## What This Demonstrates
 
@@ -30,5 +29,4 @@ using a private key file — no plaintext passwords anywhere in the codebase.
 
 - [robotframework-crypto](https://github.com/Snooz82/robotframework-crypto)
 - [Robot Framework](https://robotframework.org)
-- [Robotmk documentation](https://robotmk.org)
-- [RCC (Robocorp Command Center)](https://robocorp.com/tools/rcc)
+- [Robotmk Homepage](https://robotmk.org)

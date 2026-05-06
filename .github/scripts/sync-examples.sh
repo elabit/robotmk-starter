@@ -22,7 +22,6 @@ SOURCE_REPO="${GITHUB_REPOSITORY:-elabit/robotmk-starter}"
 # Files/dirs to exclude from sub-repos (relative to examples/<name>/)
 EXCLUDE=(
   ".copier-answers.yml"
-  ".env"
   "output"
   "log.html"
   "report.html"
@@ -43,6 +42,14 @@ ensure_repo() {
   fi
 }
 
+build_codespaces_badge() {
+  local repo_id="$1"
+  local has_devcontainer="$2"   # "true" or "false"
+  if [[ "${has_devcontainer}" == "true" ]]; then
+    printf '[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=%s)\n' "${repo_id}"
+  fi
+}
+
 build_header() {
   local name="$1"
   cat <<EOF
@@ -50,9 +57,25 @@ build_header() {
 > Do not edit files here directly — changes will be overwritten on the next sync.
 > Last sync: [\`${SOURCE_SHA:0:7}\`](https://github.com/${SOURCE_REPO}/commit/${SOURCE_SHA})
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://www.robotmk.org/rmk_crop_transp_w150.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://www.robotmk.org/rmk_crop_transp_150.png">
+</picture>
+
+
 ---
 
 EOF
+}
+
+build_footer() {
+  local repo_id="$1"
+  local has_devcontainer="$2"
+  local badge
+  badge="$(build_codespaces_badge "${repo_id}" "${has_devcontainer}")"
+  if [[ -n "${badge}" ]]; then
+    printf '\n%s\n' "${badge}"
+  fi
 }
 
 prepend_header() {
@@ -60,9 +83,17 @@ prepend_header() {
   local header="$2"
   local tmp
   tmp="$(mktemp)"
-  printf '%s' "${header}" > "${tmp}"
+  printf '%s\n' "${header}" > "${tmp}"
   cat "${readme}" >> "${tmp}"
   mv "${tmp}" "${readme}"
+}
+
+append_footer() {
+  local readme="$1"
+  local footer="$2"
+  if [[ -n "${footer}" ]]; then
+    printf '%s\n' "${footer}" >> "${readme}"
+  fi
 }
 
 sync_example() {
@@ -77,8 +108,20 @@ sync_example() {
 
   ensure_repo "${repo}"
 
+  # Fetch the GitHub repo ID (needed for the Codespaces badge URL)
+  local repo_id
+  repo_id="$(gh api "repos/${repo}" --jq '.id')"
+  echo "  ✓ Repo ID: ${repo_id}"
+
+  # Check whether this example ships a devcontainer
+  local has_devcontainer="false"
+  [[ -d "${src}/.devcontainer" ]] && has_devcontainer="true"
+
   # Clone (shallow, only default branch)
   gh repo clone "${repo}" "${tmpdir}" -- --depth=1 --quiet
+
+  # Inject token into remote URL so git push can authenticate
+  git -C "${tmpdir}" remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git"
 
   # Wipe tracked content (skip if repo is empty / no commits yet)
   if git -C "${tmpdir}" rev-parse HEAD &>/dev/null; then
@@ -93,9 +136,10 @@ sync_example() {
     rm -rf "${tmpdir:?}/${item}"
   done
 
-  # Prepend sync header to README if present
+  # Prepend sync header and append footer (Codespaces badge) to README if present
   if [[ -f "${tmpdir}/README.md" ]]; then
     prepend_header "${tmpdir}/README.md" "$(build_header "${name}")"
+    append_footer  "${tmpdir}/README.md" "$(build_footer "${repo_id}" "${has_devcontainer}")"
   fi
 
   # Commit and push if anything changed

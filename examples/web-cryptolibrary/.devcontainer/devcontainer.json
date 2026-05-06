@@ -15,13 +15,11 @@
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "d-biehl.robotcode",
-        "GitHub.copilot",
-        "GitHub.copilot-chat"
+        "d-biehl.robotcode"
       ]
     }
   },
-  "postCreateCommand": "curl -fsSL -o /usr/local/bin/rcc https://github.com/elabit/robotmk/releases/download/v4.0.0/rcc_linux64 && chmod +x /usr/local/bin/rcc && rcc holotree vars --robot robot.yaml",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
   "remoteEnv": {
     "DISPLAY": ":1",
     "ROBOTMK_HEADLESS_HOST": "false"

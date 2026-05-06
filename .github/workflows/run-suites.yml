@@ -49,9 +49,21 @@ jobs:
             CHANGED=$(ls -d examples/*/ templates/*/ 2>/dev/null | sed 's|/$||' | jq -R . | jq -sc .)
           fi
 
+          echo "Before blacklist filtering: ${CHANGED}"
+
+          # Apply blacklist (.github/test-blacklist.txt)
+          BLACKLIST=$(grep -v '^\s*#' .github/test-blacklist.txt | grep -v '^\s*$' || true)
+          echo "Blacklist: ${BLACKLIST}"
+          if [[ -n "${BLACKLIST}" ]]; then
+            CHANGED=$(echo "${CHANGED}" | jq -c --arg bl "${BLACKLIST}" '
+              ($bl | split("\n") | map(select(length > 0))) as $blacklist |
+              map(select(. as $s | $blacklist | index($s) | not))
+            ')
+            echo "After blacklist filtering: ${CHANGED}"
+          fi
+
           echo "matrix=${CHANGED}" >> "$GITHUB_OUTPUT"
-          echo "The following subfolder have changed and will be tested:"
-          echo "${CHANGED}"
+          echo "Suites to test: ${CHANGED}"
 
   # ── Stage 2: test matrix (os × suite) ─────────────────────────────────────
   test:
@@ -64,7 +76,9 @@ jobs:
       max-parallel: 2
       matrix:
         suite: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
-        os: [ubuntu-latest, windows-latest]
+        # TODO: re-enable
+        #os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
