@@ -109,7 +109,7 @@ def build_table(repo_root: Path, parent: str) -> str:
             )
             repo_col = ""
             if is_examples:
-                repo_col = f" [try out online](https://github.com/robotmk/example-{name}) |"
+                repo_col = f" [try out](https://github.com/robotmk/example-{name}) |"
             rows.append(f"| [{name}]({rel}) | {doc} | {deps} |{repo_col}")
     return "\n".join([header, sep] + rows)
 

@@ -405,6 +405,22 @@ Auf jedem Merge in `main` prüft Release Please, ob Conventional-Commit-Messages
 einen Release rechtfertigen (`feat:`, `fix:`, etc.). Falls ja, öffnet es automatisch
 einen Release-PR mit Changelog. Nach dem Merge wird ein GitHub Release erzeugt.
 
+Basic:
+
+- `build` Commits that affect build-related components such as build tools, dependencies, project version, ...
+- `chore` Commits that represent tasks like initial commit, modifying `.gitignore`, ...
+- `docs` Commits that exclusively affect documentation
+- `feat` Commits that add, adjust or remove a feature to/of/from the API or UI
+- `fix` Commits that fix an API or UI bug of a preceded `feat` commit
+- `test` Commits that add missing tests or correct existing ones
+- `ops` Commits that affect operational aspects like infrastructure (IaC), deployment scripts, CI/CD pipelines, backups, monitoring, or recovery procedures, ...
+
+Advanced: 
+
+- `refactor` Commits that rewrite or restructure code without altering API or UI behavior
+- `perf` Commits are special type of `refactor` commits that specifically improve performance
+- `style` Commits that address code style (e.g., white-space, formatting, missing semi-colons) and do not affect application behavior
+
 ---
 
 ## 7. Branch-Strategie für ältere Versionen
@@ -585,3 +601,50 @@ task install-hooks   # Einmalig nach dem Klonen
 
 Der Hook liegt in `.githooks/pre-push` und wird über
 `git config core.hooksPath .githooks` aktiviert.
+
+---
+
+## 11. CheckMK Devcontainer (`.devcontainer/`)
+
+Das Repo-Root enthält ein eigenes `.devcontainer/` — unabhängig von den Beispiel-Devcontainern.
+Es startet eine vollständige **CheckMK Pro**-Instanz mit VNC-Desktop, um die Robotmk-Integration
+lokal zu entwickeln und testen (z. B. Regeln konfigurieren, Scheduler beobachten).
+
+### Image & Desktop
+
+| Eigenschaft | Wert |
+|---|---|
+| Base-Image | `checkmk/check-mk-pro:2.5.0-daily` |
+| Desktop | `desktop-lite`-Feature (Fluxbox + TigerVNC + noVNC) |
+| noVNC Web | Port **6080** → wird auto-forwarded und im Browser geöffnet |
+| VNC-Passwort | `vscode` |
+| CheckMK Web UI | Port **5000** → `http://localhost:5000/cmk/` |
+| Login | `cmkadmin` / `cmk` |
+
+### Wie es funktioniert
+
+- **`overrideCommand: false`**: Der CheckMK-Entrypoint startet OMD (inkl. Apache, Livestatus,
+  Scheduler). Ohne diesen Eintrag würde VS Code den Entrypoint mit `sleep infinity` ersetzen
+  — CheckMK würde nie hochfahren.
+- **`CMK_PASSWORD: cmk`**: Der Entrypoint setzt beim ersten Start das `cmkadmin`-Passwort.
+- **`CMK_SITE_ID: cmk`**: Setzt den Site-Namen (Standard wäre `cmk`, hier explizit).
+- **`desktop-lite`-Feature**: Installiert Fluxbox + TigerVNC + noVNC über den devcontainer-
+  Feature-Mechanismus — kein eigenes Image nötig.
+- **`--shm-size=1g`**: Verhindert Abstürze bei GUI-Anwendungen im VNC-Desktop.
+
+### Workflow im Container
+
+1. **Reopen in Container** → CheckMK startet (OMD-Init dauert ~30 s)
+2. Port **6080** öffnet sich automatisch im Browser → noVNC-Desktop → Passwort `vscode`
+3. Port **5000** → `http://localhost:5000/cmk/` → CheckMK-Weboberfläche
+4. Im Fluxbox-Desktop laufen grafische Tools (Browser, xterm) im selben Container-Kontext
+
+### Upgraden
+
+Nur das Image-Tag in `.devcontainer/devcontainer.json` ändern:
+
+```json
+"image": "checkmk/check-mk-pro:2.5.0p1"
+```
+
+Dann **Rebuild Container** — OMD-Init läuft beim nächsten Start erneut durch.

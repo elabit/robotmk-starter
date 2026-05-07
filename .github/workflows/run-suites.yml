@@ -127,7 +127,7 @@ jobs:
             grep -v '^\s*#' "${ENV_FILE}" | grep -v '^\s*$' >> "$GITHUB_ENV"
           fi
           echo "Environment variables set for this suite:"
-          grep -v '^\s*#' "${ENV_FILE}" | grep -v '^\s*$'
+          grep -v '^\s*#' "${ENV_FILE}" | grep -v '^\s*$' || echo "No .env file or no variables found."
 
 
 

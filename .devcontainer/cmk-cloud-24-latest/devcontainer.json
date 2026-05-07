@@ -1,0 +1,32 @@
+{
+  "name": "CheckMK Cloud 2.4.0",
+  "image": "checkmk/check-mk-cloud:2.4.0-latest",
+  "overrideCommand": false,
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "vscode",
+      "webPort": "6080",
+      "vncPort": "5901"
+    }
+  },
+  "containerEnv": {
+    "CMK_PASSWORD": "cmk",
+    "CMK_SITE_ID": "cmk"
+  },
+  "remoteEnv": {
+    "DISPLAY": ":1"
+  },
+  "runArgs": ["--shm-size=1g"],
+  "postCreateCommand": "bash .devcontainer/cmk-cloud-24-latest/post-create.sh",
+  "forwardPorts": [6080, 5000],
+  "portsAttributes": {
+    "6080": {
+      "label": "noVNC Desktop",
+      "onAutoForward": "openBrowser"
+    },
+    "5000": {
+      "label": "CheckMK Web UI",
+      "onAutoForward": "notify"
+    }
+  }
+}
