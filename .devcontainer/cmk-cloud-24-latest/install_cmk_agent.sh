@@ -16,8 +16,7 @@ VANILLA_DEB="/omd/sites/cmk/var/check_mk/agents/linux_deb/references/_VANILLA"
 
 echo "▹ Installing the Checkmk agent..."
 
-dpkg -i $VANILLA_DEB
+dpkg -i $VANILLA_DEB 2> /dev/null
 
-echo "▹ Starting the Checkmk agent..."
-
-nohup xinetd 2>&1
+bash /var/lib/cmk-agent/scripts/super-server/1_xinetd/setup deploy
+bash /var/lib/cmk-agent/scripts/super-server/1_xinetd/setup trigger
