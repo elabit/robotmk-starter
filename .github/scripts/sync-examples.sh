@@ -144,6 +144,8 @@ sync_example() {
   if [[ -f "${tmpdir}/README.md" ]]; then
     prepend_header "${tmpdir}/README.md" "$(build_header "${name}" "${repo_id}" "${has_devcontainer}")"
     append_footer  "${tmpdir}/README.md" "$(build_footer "${repo_id}" "${has_devcontainer}")"
+  else
+    echo "  ❌ No README.md found — skipping header/footer injection."
   fi
 
   # Commit and push if anything changed

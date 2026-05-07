@@ -1,0 +1,13 @@
+{
+  "name": "rf-python-varfiles",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "d-biehl.robotcode"
+      ]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh"
+}
