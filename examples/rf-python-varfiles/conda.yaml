@@ -5,3 +5,4 @@ dependencies:
   - pip=23.2.1
   - pip:
       - robotframework==7.4
+      - pyyaml==6.0.3

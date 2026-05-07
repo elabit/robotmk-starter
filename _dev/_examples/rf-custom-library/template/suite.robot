@@ -1,7 +1,5 @@
 *** Settings ***
-Documentation  This suite demonstrates the use of a custom library.
-...  The Keyword "Add Numbers" is defined in the custom library
-...  by a Python function.
+Documentation  This suite demonstrates the use of a custom library, written with a simple Python class.
 Library  CustomLibrary.py
 
 *** Test Cases ***

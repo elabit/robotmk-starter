@@ -1,0 +1,20 @@
+# Environment: RF
+
+_subdirectory: template
+_answers_file: .copier-env-answers.yml
+
+rf_version:
+  type: str
+  default: "7.1.1"
+
+python_version:
+  type: str
+  default: "3.12"
+
+pip_version:
+  type: str
+  default: "23.2.1"
+
+pyyaml_version:
+  type: str
+  default: "6.0.3"
