@@ -1,6 +1,7 @@
 {
   "name": "CheckMK Pro 2.5.0",
   "image": "checkmk/check-mk-pro:2.5.0-latest",
+  "workspaceFolder": "/workspaces/robotmk-starter",
   "overrideCommand": false,
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {

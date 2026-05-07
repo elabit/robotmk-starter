@@ -1,6 +1,7 @@
 {
   "name": "CheckMK Cloud 2.4.0",
   "image": "checkmk/check-mk-cloud:2.4.0-latest",
+  "workspaceFolder": "/workspaces/robotmk-starter",
   "overrideCommand": false,
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {
