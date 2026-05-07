@@ -1,0 +1,15 @@
+# Copier template for the cryptolibrary example.
+# Maintainer-only: generates examples/cryptolibrary/ from this template.
+# The conda.yaml is injected automatically from _dev/_environments/ based on .rcc.
+# Run via: task generate
+
+_subdirectory: template
+_answers_file: .copier-answers.yml
+
+use_browser:
+  type: bool
+  default: true
+
+use_crypto:
+  type: bool
+  default: true
