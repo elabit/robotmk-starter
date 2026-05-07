@@ -9,7 +9,7 @@ Library     Browser
 ...             auto_delete_passed_tracing=True
 Library     CryptoLibrary
 ...             key_path=${CURDIR}/keys
-...             password=%{RMKCRYPTPW}
+...             password=%{RMKCRYPTPW=rmksecret}
 ...             variable_decryption=True
 
 Suite Setup     Suite Initialization
