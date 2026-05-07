@@ -10,7 +10,7 @@
 [![Run Suites](https://github.com/elabit/robotmk-starter/actions/workflows/run-suites.yml/badge.svg)](https://github.com/elabit/robotmk-starter/actions/workflows/run-suites.yml)
 <!-- CI-BADGE-END -->
 
-
+![alt text](docs/img/cmk_rmk_small.png)
 
 > **Ready-to-run Robot Framework suites for [Checkmk](https://checkmk.com) synthetic monitoring with [Robotmk](https://www.robotmk.org), the [Robot Framework](https://robotframework.org/) integration for Checkmk.**
 
@@ -47,19 +47,15 @@ Click on "*try out*" to open the example repo, where you find instructions to ru
 
 ### Your Checkmk Playground: Codespace
 
-As a **bonus**, this repo also contains a Checkmk `.devcontainer/` that spins up a full **CheckMK Pro** instance (image: `checkmk/check-mk-pro:2.5.0-daily`) with a Fluxbox/noVNC desktop.  
+As a **bonus**, this repo also contains a Checkmk `.devcontainer/` that spins up a full **CheckMK Pro** instance with a **Fluxbox/noVNC desktop**.  
+
+![alt text](docs/img/cmk_disc_small.png)
+
 This is useful to play around with **Checkmk**, **Robotmk** and all the examples together in a pre-configured environment **without installing anything locally**.  
-A dedicated tutorial on this will follow, stay tuned!
-
-| Access | URL / Password |
-|---|---|
-| CheckMK Web UI | `http://localhost:5000/cmk/` — `cmkadmin` / `cmk` |
-| noVNC Desktop | `http://localhost:6080` — password `vscode` |
-
-- [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json) 
-- [Full docs](_dev/README.md#11-checkmk-devcontainer-devcontainer)
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1229554077)
+
+Also read the [Full Guide: How to use Checkmk in Codespace](docs/CMK-Codespace.md)
 
 
 ---
