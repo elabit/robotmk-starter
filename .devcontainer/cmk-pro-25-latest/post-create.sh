@@ -5,7 +5,7 @@ set -euo pipefail
 # Checkmk agent
 # ---------------------------------------------------------------------------
 echo ">>> Installing Checkmk agent..."
-bash "$(dirname "$0")/install_cmk_agent.sh"
+bash "$(dirname "$0")/install_cmk_agent.sh" vanilla
 
 # ---------------------------------------------------------------------------
 # Firefox

@@ -3,7 +3,7 @@ Documentation       TODO
 
 Library     CryptoLibrary
 ...             key_path=${CURDIR}/keys
-...             password=%{RMKCRYPTPW}
+...             password=%{RMKCRYPTPW=secret}
 
 
 *** Variables ***

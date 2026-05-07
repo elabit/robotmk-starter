@@ -7,7 +7,7 @@ Documentation     Synthetic monitoring demo – Checkout flow (no payment).
 Library           Browser    run_on_failure=Take A Screenshot
 Library           CryptoLibrary
 ...                 key_path=${CURDIR}/keys
-...                 password=%{RMKCRYPTPW}
+...                 password=%{RMKCRYPTPW=secret}
 ...                 variable_decryption=True
 Resource          Resources/authentication.resource
 Resource          Resources/catalog.resource

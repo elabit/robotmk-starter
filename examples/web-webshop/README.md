@@ -79,9 +79,30 @@ rcc task shell
 code . 
 ```
 
-Install the [RobtoCode](https://marketplace.visualstudio.com/items?itemName=d-biehl.robotcode) extension for VS Code to run the robot with the integrated run/debug tools.  
+Install the [RobotCode](https://marketplace.visualstudio.com/items?itemName=d-biehl.robotcode) extension for VS Code to run the robot with the integrated run/debug tools.  
 **This is the recommended way for the implementation of Robot Framework suites.**
 
 ### In VS Code / Devcontainer
 
 Just press the button below. RCC is pre-installed, will create the environment and activate it for VS Code. 
+
+## Closing Notes
+
+Also try the other RF example suites, they all work in the Codespace environment.  
+
+This is only the beginning of the journey, there is a lot more to explore in the world of Robot Framework, Robotmk and Checkmk.  
+
+If you want to learn more, there are several ways of how we can support you:
+
+- [Synthetic Monitoring Trainings](https://lp.robotmk.org/robotmk-masterclass-4d-en)
+- Implementing a **Robotmk POC** in your company
+- Know How Transfer
+- Code Review of existing Tests & Coaching Sessions
+- "Extended Workbench" - We work together on your test automation projects for a defined period of time
+
+Reach out to us via mail at robotmk.org or book a free [clarification call](https://meet.brevo.com/simon-meggle).
+
+**Simon Meggle**  
+*CEO Elabit GmbH*  
+*Founder of Robotmk*  
+*Product Manager of Synthetic Monitoring at Checkmk*
