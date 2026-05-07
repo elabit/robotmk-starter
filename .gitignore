@@ -30,3 +30,5 @@ playwright-log.txt
 .agents/
 _bmad/
 _bmad-output/
+
+nohup.out
