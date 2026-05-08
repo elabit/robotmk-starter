@@ -1,8 +1,5 @@
 *** Settings ***
-Documentation       This suite shows how to perform a login with the CryptoLibrary.
-...                 The encrypted password is stored in suite.robot. The private key
-...                 (keys/private_key.json) allows RCC/Robotmk to decrypt it at runtime.
-...                 The key password is passed via the environment variable RMKCRYPTPW.
+Documentation       A example of how to use the **CryptoLibrary** in a web test (**BrowserLibrary**).
 
 Library     Browser
 ...             enable_playwright_debug=disabled

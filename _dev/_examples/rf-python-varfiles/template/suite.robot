@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    This suite demonstrates how to load variables from Python and YAML variable files.
+Documentation    A suite to demonstrate how to load **variables** from **Python**, **JSON** and **YAML** variable files, including nested data structures.
 Variables        Data/pyvars-simple.py
 Variables        Data/pyvars-nested.py
 Variables        Data/pyvars-getvariables.py  ${BROWSER}

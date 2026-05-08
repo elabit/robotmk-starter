@@ -4,36 +4,38 @@
   <img alt="Robotmk" src="https://www.robotmk.org/rmk_crop_transp_150.png">
 </picture>
 
-# robotmk-starter
-
 <!-- CI-BADGE-START -->
 [![Run Suites](https://github.com/elabit/robotmk-starter/actions/workflows/run-suites.yml/badge.svg)](https://github.com/elabit/robotmk-starter/actions/workflows/run-suites.yml)
 <!-- CI-BADGE-END -->
-
-![alt text](docs/img/cmk_rmk_small.png)
-
-> **Ready-to-run Robot Framework suites for [Checkmk](https://checkmk.com) synthetic monitoring with [Robotmk](https://www.robotmk.org), the [Robot Framework](https://robotframework.org/) integration for Checkmk.**
-
-This repo gives you a running starting point.
-
-## Overview
-
-Two kinds of content live here:
-
-|                  | [`examples/`](examples/)         | [`templates/`](templates/)              |
-|------------------|----------------------------------|-----------------------------------------|
-| **What**         | Full working RF suites              | Minimal skeletons                       |
-| **Purpose**      | Learn by example, adapt and copy | Blank canvas for your own suite         |
-
-The tables below are auto-generated from each suite's content and refreshed on every CI run.
+# robotmk-starter
 
 
-## /examples
 
-All examples are automatically deployed to individual GitHub repositories.  
-Click on "*try out*" to open the example repo, where you find instructions to run it locally, in VS Code, or online in the Github Codespace.
+## What is this?
+
+This repository provides **working examples** to learn and test [Robot Framework](https://robotframework.org/) automation - the test scripting language used by [Robotmk](https://www.robotmk.org) for *Synthetic Monitoring* in [Checkmk](https://checkmk.com).
+
+## Choose your path:
+
+You want to...
+
+- ... play around with working **Robot Framework** examples?  
+  → Read the [example guide](docs/example_guide.md) - *Copy/Paste the examples or try them online.*
+- ... need a skeleton to start your own **Robot Framework** suite?  
+  → Check out the [templates](templates/) folder - *Copy one, fill in your test steps, run it.*
+- ... 🚀 want to **start a Checkmk playground** to live test **Robotmk** for Synthetic Monitoring*?  
+  → Read the [Checkmk codespace documentation](docs/CMK-Codespace.md).  
 
 
+
+
+## Content
+
+### Folder "/examples"
+
+A great starting point to **learn** from working Robot Framework test suites. 
+
+To try them out, just click on "*try out*" which opens the repository, where you find instructions.
 
 <!-- EXAMPLES-TABLE-START -->
 
@@ -45,25 +47,13 @@ Click on "*try out*" to open the example repo, where you find instructions to ru
 
 <!-- EXAMPLES-TABLE-END -->
 
-### Your Checkmk Playground: Codespace
-
-As a **bonus**, this repo also contains a Checkmk `.devcontainer/` that spins up a full **CheckMK Pro** instance with a **Fluxbox/noVNC desktop**.  
-
-![alt text](docs/img/cmk_disc_small.png)
-
-This is useful to play around with **Checkmk**, **Robotmk** and all the examples together in a pre-configured environment **without installing anything locally**.  
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1229554077)
-
-Also read the [Full Guide: How to use Checkmk in Codespace](docs/CMK-Codespace.md)
-
-
 ---
 
-## /templates
+### Folder "/templates"
 
-Templates are minimal — they contain the structure/concept but not the logic.
-Copy one, fill in your test steps, run it.
+These templates provide useful **skeletons** when you want to start your own Robot Framework suite.  
+
+Each template focuses on a specific use case or integration, providing a ready-to-use structure and example test cases.
 
 <!-- TEMPLATES-TABLE-START -->
 
@@ -78,30 +68,17 @@ Copy one, fill in your test steps, run it.
 ## For maintainers
 
 Examples and templates are generated from Copier sources in `_dev/`.
-Version pins live in a single file — one edit, one `task generate`, done.
+Version pins live in a single file with packages and versions — edit, `task generate`, done.
 
-→ [_dev/README.md](_dev/README.md)
+→ [Dev documentation](_dev/README.md)
 
 
-## Closing Notes
+## About
 
-This is only the beginning of the journey, there is a lot more to explore in the world of **Robot Framework, Robotmk and Checkmk**.  
+Found a bug or have a suggestion?  
+→ [Open an issue](https://github.com/robotmk/robotmk-starter/issues) or submit a [pull request](https://github.com/robotmk/robotmk-starter/pulls) — contributions are welcome.
 
-In case you have found a bug or have suggestions for improvements, please feel free to open an issue or even better, a pull request.
+Want to go deeper? Want ot get a certified professional?  
+→ I offer [Synthetic Monitoring Trainings](https://lp.robotmk.org/robotmk-masterclass-4d-en) or book a free [call](https://meet.brevo.com/simon-meggle).
 
-If you want to learn more, there are several ways of how we can support you:
-
-- [Synthetic Monitoring Trainings](https://lp.robotmk.org/robotmk-masterclass-4d-en)
-- Implementing a **Robotmk POC** in your company
-- Know How Transfer
-- Code Review of existing Tests & Coaching Sessions
-- "Extended Workbench" - We work together on your test automation projects for a defined period of time
-
-Reach out to us via mail at robotmk.org or book a free [clarification call](https://meet.brevo.com/simon-meggle).
-
-![alt text](docs/img/portrait_simon_meggle_rund_feiner_rahmen_KLEIN.png)
-
-**Simon Meggle**  
-*CEO Elabit GmbH*  
-*Founder of Robotmk*  
-*Product Manager of Synthetic Monitoring at Checkmk*
+**Simon Meggle** — Founder of Robotmk, Product Manager Synthetic Monitoring at Checkmk

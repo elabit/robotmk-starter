@@ -92,8 +92,8 @@ def get_space(suite_dir: Path) -> str:
 
 def build_table(repo_root: Path, parent: str) -> str:
     is_examples = parent == "examples"
-    header = "| Suite | Description | Dependencies |" + (" Repo |" if is_examples else "")
-    sep    = "|---|---|---|" + ("---|" if is_examples else "")
+    header = "| Robot Framework Suite | Description |" + (" Repository Link |" if is_examples else "")
+    sep    = "|---|---|" + ("---|" if is_examples else "")
     rows = []
     parent_dir = repo_root / parent
     if parent_dir.exists():
@@ -101,16 +101,12 @@ def build_table(repo_root: Path, parent: str) -> str:
             if not suite_dir.is_dir() or suite_dir.name.startswith("."):
                 continue
             name = suite_dir.name
-            v = parse_conda_versions(suite_dir / "conda.yaml")
             doc = parse_suite_doc(suite_dir)
             rel = f"{parent}/{name}"
-            deps = "<br>".join(
-                f"• {pkg}=={version}" for pkg, version in sorted(v.items())
-            )
             repo_col = ""
             if is_examples:
                 repo_col = f" [try out](https://github.com/robotmk/example-{name}) |"
-            rows.append(f"| [{name}]({rel}) | {doc} | {deps} |{repo_col}")
+            rows.append(f"| [{name}]({rel}) | {doc} |{repo_col}")
     return "\n".join([header, sep] + rows)
 
 

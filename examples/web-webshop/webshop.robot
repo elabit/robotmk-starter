@@ -1,8 +1,5 @@
 *** Settings ***
-Documentation     Synthetic monitoring demo – Checkout flow (no payment).
-...               Tests the full user journey: login → add items to cart → checkout.
-...               Credentials are encrypted with CryptoLibrary (key in keys/).
-...               The key password is read from RF_CRYPT_PWD (default: robotmk).
+Documentation     A **BrowserLibrary** suite running against a demo web shop, showing a full user journey: login → add items to cart → checkout.
 
 Library           Browser    run_on_failure=Take A Screenshot
 Library           CryptoLibrary

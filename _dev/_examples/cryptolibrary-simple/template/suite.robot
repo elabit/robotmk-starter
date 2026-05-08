@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation       TODO
+Documentation       A minimalistic example of how to use the **CryptoLibrary**, without bells and whistles.
 
 Library     CryptoLibrary
 ...             key_path=${CURDIR}/keys
@@ -12,6 +12,6 @@ ${PASSWORD_CRYPT}   crypt:CorBEZOtizedq5WviZc7nTGiIPle6Bwd5r222Er0sUIS/7jTrkTkxm
 
 *** Test Cases ***
 Test Password Equality
-    [Documentation]    TODO
+    [Documentation]    Tests whether the decrypted text matches the expected value.
     ${pass}   Get Decrypted Text  ${PASSWORD_CRYPT}
     Should Be Equal As Strings  ${pass}  password123456

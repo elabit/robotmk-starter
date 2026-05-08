@@ -1,9 +1,12 @@
-# Using Robotmk in Codespace
+# Using Checkmk/Robotmk in a Github Codespace
 
 [< back to README](../README.md)
 
 
 ![alt text](img/cmk_rmk_small.png)
+
+> **What is a GitHub Codespace?**  
+> A Codespace is a browser-based development environment (VS Code) hosted by GitHub — no local installation needed. You can run codespace environment up to 60 hours for free per month. It’s a great way to quickly test and play around with Code without the need to set up a local environment.
 
 ## Step 1: Start Codespace
 
@@ -17,13 +20,25 @@ Choose a Checkmk version (2.4 or 2.5) and set the CPUs at least to 4 (to shorten
 
 ![alt text](../docs/img/codespace-cfg.png)
 
-Wait for VS Code to open in the Browser and the Codespace to be provisioned (this can take a few minutes, especially on the first run).  
-Open the **integrated terminal** to see the provisioning logs.  
-Once it's done, you should see a message like this:
+### Startup Checklist
+
+**Don't proceed to the next section until the environment is fully built.** Have an eye on the following things:
+
+Wait for the web version of VS Code to open. 
+
+Click on "*Building Codespace*" to see the build log in the integrated terminal:
+
+![alt text](img/build-log.png)
+
+Close all messages about open ports like these: 
+
+![alt text](img/vscode-openport.png)
+
+After some time, in the **integrated terminal**, you should see a message like this:
 
 ![alt text](../docs/img/codespace-ready.png)
 
-## Step 2: Open Checkmk in the Browser
+## Step 2: Start VNC, open Checkmk in the Browser
 
 Switch to the "**PORTS**" tab where you can connect to the Checkmk instance by clicking on the published port: 
 
@@ -33,11 +48,11 @@ In the "noVNC" viewer page, click on "*connect*":
 
 ![alt text](../docs/img/noVNC.png)
 
-Right-Click on the desktop (yes, this black thing is a desktop) and choose to open "Checkmk". This will open Firefox and navigate to the Checkmk instance running in the container. The default credentials are `cmkadmin` / `cmk`:
+Right-Click on the desktop (yes, this *is* a desktop) and choose to open "Checkmk". This will open Firefox and navigate to the Checkmk instance running in the container. The default credentials are `cmkadmin` / `cmk`:
 
 ![alt text](../docs/img/opencmk.gif)
 
-Now yyou should see the Checmk Web UI: 
+Now you should see the Checkmk Web UI: 
 
 ![alt text](img/cmk.png)
 
@@ -134,26 +149,13 @@ Voila, you have successfully run your first Robot Framework suite with Robotmk i
 
 ---
 
-## Closing Notes
 
-Also try the other RF suites in the `/examples` folder, they all work in the Codespace environment.  
-This is only the beginning of the journey, there is a lot more to explore in the world of Robot Framework, Robotmk and Checkmk.  
+## About
 
-I have tried my best to make the Codespace environment as close as possible to a real production environment, but of course there are some limitations (e.g. no systemd, limited resources, etc.). In case you have found a bug or have suggestions for improvements, please feel free to open an issue or even better, a pull request.
+Found a bug or have a suggestion?  
+→ [Open an issue](https://github.com/robotmk/robotmk-starter/issues) or submit a [pull request](https://github.com/robotmk/robotmk-starter/pulls) — contributions are welcome.
 
-If you want to learn more, there are several ways of how we can support you:
+Want to go deeper? Want ot get a certified professional?  
+→ I offer [Synthetic Monitoring Trainings](https://lp.robotmk.org/robotmk-masterclass-4d-en) or book a free [call](https://meet.brevo.com/simon-meggle).
 
-- [Synthetic Monitoring Trainings](https://lp.robotmk.org/robotmk-masterclass-4d-en)
-- Implementing a **Robotmk POC** in your company
-- Know How Transfer
-- Code Review of existing Tests & Coaching Sessions
-- "Extended Workbench" - We work together on your test automation projects for a defined period of time
-
-Reach out to us via mail at robotmk.org or book a free [clarification call](https://meet.brevo.com/simon-meggle).
-
-![alt text](../docs/img/portrait_simon_meggle_rund_feiner_rahmen_KLEIN.png)
-
-**Simon Meggle**  
-*CEO Elabit GmbH*  
-*Founder of Robotmk*  
-*Product Manager of Synthetic Monitoring at Checkmk*
+**Simon Meggle** — Founder of Robotmk, Product Manager Synthetic Monitoring at Checkmk

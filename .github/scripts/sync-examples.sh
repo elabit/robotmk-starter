@@ -55,16 +55,9 @@ build_header() {
   local repo_id="$2"
   local has_devcontainer="$3"
   local badge
-  badge="$(build_codespaces_badge "${repo_id}" "${has_devcontainer}")"
+  # no button at the beginning
+  #badge="$(build_codespaces_badge "${repo_id}" "${has_devcontainer}")"
   [[ -n "${badge}" ]] && printf '%s\n\n' "${badge}"
-  cat <<EOF
-> **This repository is automatically synced from [${SOURCE_REPO}](https://github.com/${SOURCE_REPO}/tree/main/examples/${name}).**
-> Do not edit files here directly — changes will be overwritten on the next sync.
-> Last sync: [\`${SOURCE_SHA:0:7}\`](https://github.com/${SOURCE_REPO}/commit/${SOURCE_SHA})
-
----
-
-EOF
 
 # <picture>
 #   <source media="(prefers-color-scheme: dark)" srcset="https://www.robotmk.org/rmk_crop_transp_w150.png">
@@ -73,13 +66,19 @@ EOF
 }
 
 build_footer() {
-  local repo_id="$1"
-  local has_devcontainer="$2"
-  local badge
-  badge="$(build_codespaces_badge "${repo_id}" "${has_devcontainer}")"
-  if [[ -n "${badge}" ]]; then
-    printf '\n%s\n' "${badge}"
-  fi
+
+
+  cat <<EOF
+> ---
+>
+> **This repository is automatically synced from [${SOURCE_REPO}](https://github.com/${SOURCE_REPO}/tree/main/examples/${name}).**
+> Do not edit files here directly — changes will be overwritten on the next sync.
+> Last sync: [\`${SOURCE_SHA:0:7}\`](https://github.com/${SOURCE_REPO}/commit/${SOURCE_SHA})
+
+---
+
+EOF
+
 }
 
 prepend_header() {

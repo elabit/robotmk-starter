@@ -1,9 +1,12 @@
 # rf-custom-library
 
+{% include 'how-to-run.partial.md' %}
+
+## About this Robot Framework test
+
 Minimal example for extending Robot Framework with a custom Python library.
 Demonstrates how to write a simple Python class, expose its methods as keywords via the `@keyword` decorator, and import the library directly into a suite.
 
-## What This Demonstrates
 
 - Writing a custom Robot Framework library as a plain Python class (`CustomLibrary.py`)
 - Exposing Python methods as RF keywords with `@keyword` from `robot.api.deco`
@@ -17,17 +20,13 @@ Demonstrates how to write a simple Python class, expose its methods as keywords 
 | `Test Hello` | Calls the `Say Hello` keyword and logs a greeting |
 | `Test Addition` | Calls `Add Numbers` with two integers and logs the result |
 
-## Key Files
-
-| File | Purpose |
-|---|---|
-| `suite.robot` | Suite importing `CustomLibrary.py` with two test cases |
-| `CustomLibrary.py` | Custom library with `Say Hello` and `Add Numbers` keywords |
-| `conda.yaml` | Python environment (Python `{{ python_version }}`, robotframework `{{ rf_version }}`) |
-| `robot.yaml` | RCC task and environment configuration |
 
 ## Links
 
+### Recommended links for this example
 - [Robot Framework — Extending with Python](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#creating-test-libraries)
+
+### General links & Documentation
+
 - [Robot Framework](https://robotframework.org)
 - [Robotmk Homepage](https://robotmk.org)

@@ -1,11 +1,14 @@
 # web-webshop
 
+{% include 'how-to-run.partial.md' %}
+
+## About this Robot Framework test
+
 Full checkout-flow example using [robotframework-browser](https://robotframework-browser.org) and
 [robotframework-crypto](https://github.com/Snooz82/robotframework-crypto), driven by the
 Robotmk **multi-profile** feature.
 The same suite runs once per user profile with profile-specific encrypted credentials.
 
-## What This Demonstrates
 
 - Robotmk **multi-profile** execution: one `robot.toml` defines three user profiles (`JaneDoe`, `JackHowe`, `BobSmith`)
 - Per-profile `extend-variables` override `USER_EMAIL`, `USER_PASSWORD`, and `USER_NAME`
@@ -22,21 +25,10 @@ The same suite runs once per user profile with profile-specific encrypted creden
 The suite is executed **three times** — once per profile (JaneDoe, JackHowe, BobSmith) — each
 with its own credentials and a timestamped output directory.
 
-## Key Files
-
-| File | Purpose |
-|---|---|
-| `webshop.robot` | Main suite: login → add items to cart → checkout |
-| `robot.toml` | Multi-profile config with 3 user profiles and encrypted passwords |
-| `conda.yaml` | Environment (Python `{{ python_version }}`, Browser `{{ rf_lib_browser_version }}`, Crypto `{{ rf_lib_crypto_version }}`) |
-| `keys/private_key.json` | Demo private key for credential decryption |
-| `Resources/authentication.resource` | `Login As User` keyword |
-| `Resources/catalog.resource` | `Add Item To Cart` / `Add Items To Cart` keywords |
-| `Resources/cart.resource` | `Open Cart` keyword |
-| `Resources/checkout.resource` | `Fill Billing Address` / `Execute Payment` keywords |
-| `.devcontainer/devcontainer.json` | Devcontainer with noVNC desktop for headed browser testing |
 
 ## Links
+
+### General links & Documentation
 
 - [Practice Software Testing – Webshop](https://practicesoftwaretesting.com)
 - [robotframework-browser](https://robotframework-browser.org)

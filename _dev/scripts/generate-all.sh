@@ -127,6 +127,13 @@ generate() {
     cp "${shared_readme}" "${src_base}/${name}/template/README.md.jinja"
   fi
 
+  # Inject shared how-to-run partial (included by README.partial.md after H1)
+  local shared_intro="${SHARED_DIR}/how-to-run.partial.md"
+  if [[ -f "${shared_intro}" && -f "${partial}" ]]; then
+    echo "  ↳ Injecting shared how-to-run.partial.md ..."
+    cp "${shared_intro}" "${src_base}/${name}/how-to-run.partial.md"
+  fi
+
   inject_devcontainer "${src_base}/${name}"
   inject_env "${src_base}/${name}"
   # Move the generated versions partial from template/ to root so Jinja can find it
@@ -134,12 +141,16 @@ generate() {
   if [[ -f "${src_base}/${name}/template/versions.partial.md" ]]; then
     mv "${src_base}/${name}/template/versions.partial.md" "${src_base}/${name}/versions.partial.md"
   fi
-  "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" "${src_base}/${name}" "${dst_base}/${name}"
+  "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" \
+    --data "example_name=${name}" \
+    "${src_base}/${name}" "${dst_base}/${name}"
 
   # Remove the injected shared README template from the source tree
   rm -f "${src_base}/${name}/template/README.md.jinja"
   # Remove the versions partial (now at root; not in template/ so never in output)
   rm -f "${src_base}/${name}/versions.partial.md"
+  # Remove the injected how-to-run partial from the source tree
+  rm -f "${src_base}/${name}/how-to-run.partial.md"
   # Remove the injected devcontainer files from the source tree
   rm -rf "${src_base}/${name}/template/.devcontainer"
 
