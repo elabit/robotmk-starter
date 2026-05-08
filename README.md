@@ -39,11 +39,13 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 <!-- EXAMPLES-TABLE-START -->
 
-| Suite | Description | Dependencies | Repo |
-|---|---|---|---|
-| [cryptolibrary-simple](examples/cryptolibrary-simple) | TODO | • pip==23.2.1<br>• python==3.12<br>• robotframework==7.4<br>• robotframework-crypto==0.3 | [try out](https://github.com/robotmk/example-cryptolibrary-simple) |
-| [web-cryptolibrary](examples/web-cryptolibrary) | This suite shows how to perform a login with the CryptoLibrary. The encrypted password is stored in suite.robot. The private key (keys/private_key.json) allows RCC/Robotmk to decrypt it at runtime. The key password is passed via the environment variable RMKCRYPTPW. | • nodejs==22.11.0<br>• pip==23.2.1<br>• python==3.12<br>• robotframework==7.4<br>• robotframework-browser==19.14.2<br>• robotframework-crypto==0.3 | [try out](https://github.com/robotmk/example-web-cryptolibrary) |
-| [web-webshop](examples/web-webshop) | Synthetic monitoring demo – Checkout flow (no payment). Tests the full user journey: login → add items to cart → checkout. Credentials are encrypted with CryptoLibrary (key in keys/). The key password is read from RF_CRYPT_PWD (default: robotmk). | • nodejs==22.11.0<br>• pip==23.2.1<br>• python==3.12<br>• robotframework==7.4<br>• robotframework-browser==19.14.2<br>• robotframework-crypto==0.3 | [try out](https://github.com/robotmk/example-web-webshop) |
+| Robot Framework Suite | Description | Repository Link |
+|---|---|---|
+| [cryptolibrary-simple](examples/cryptolibrary-simple) | A minimalistic example of how to use the **CryptoLibrary**, without bells and whistles. | [try out](https://github.com/robotmk/example-cryptolibrary-simple) |
+| [rf-custom-library](examples/rf-custom-library) | This suite demonstrates the use of a custom library, written with a simple Python class. | [try out](https://github.com/robotmk/example-rf-custom-library) |
+| [rf-python-varfiles](examples/rf-python-varfiles) | A suite to demonstrate how to load **variables** from **Python**, **JSON** and **YAML** variable files, including nested data structures. | [try out](https://github.com/robotmk/example-rf-python-varfiles) |
+| [web-cryptolibrary](examples/web-cryptolibrary) | A example of how to use the **CryptoLibrary** in a web test (**BrowserLibrary**). | [try out](https://github.com/robotmk/example-web-cryptolibrary) |
+| [web-webshop](examples/web-webshop) | A **BrowserLibrary** suite running against a demo web shop, showing a full user journey: login → add items to cart → checkout. | [try out](https://github.com/robotmk/example-web-webshop) |
 
 <!-- EXAMPLES-TABLE-END -->
 
@@ -57,9 +59,9 @@ Each template focuses on a specific use case or integration, providing a ready-t
 
 <!-- TEMPLATES-TABLE-START -->
 
-| Suite | Description | Dependencies |
-|---|---|---|
-| [rf-custom-library](templates/rf-custom-library) | This suite demonstrates the use of a custom library. The Keyword "Add Numbers" is defined in the custom library by a Python function. | • pip==23.2.1<br>• python==3.12<br>• robotframework==7.4 |
+| Robot Framework Suite | Description |
+|---|---|
+| [web-browserlibrary](templates/web-browserlibrary) | A minimal skeleton to start with BrowserLibrary and Resource files. |
 
 <!-- TEMPLATES-TABLE-END -->
 
