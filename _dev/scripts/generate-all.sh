@@ -57,6 +57,25 @@ inject_devcontainer() {
   local src="$1"   # e.g. _dev/_examples/cryptolibrary-simple
   local name
   name="$(basename "${src}")"
+
+  # Check for explicit .devcontainer-type override (used by labs)
+  local type_file="${src}/.devcontainer-type"
+  if [[ -f "${type_file}" ]]; then
+    local dc_type
+    dc_type=$(tr -d '[:space:]' < "${type_file}")
+    local dc_src="${DEVCONTAINERS}/${dc_type}"
+    if [[ ! -d "${dc_src}" ]]; then
+      echo "  Error: devcontainer type '${dc_type}' (from .devcontainer-type) not found in _dev/_devcontainers/" >&2
+      exit 1
+    fi
+    echo "  ↳ Injecting devcontainer '${dc_type}' (from .devcontainer-type) ..."
+    "${COPIER}" copy --overwrite --defaults \
+      --data "example_name=${name}" \
+      "${dc_src}" "${src}/template"
+    rm -f "${src}/template/.copier-devcontainer-answers.yml"
+    return
+  fi
+
   local env_file="${src}/template/.env"
   local vnc="false"
   if [[ -f "${env_file}" ]]; then
@@ -134,6 +153,12 @@ generate() {
     cp "${shared_intro}" "${src_base}/${name}/how-to-run.partial.md"
   fi
 
+  # Inject lab-specific how-to-run partial (for labs using how-to-run-lab.partial.md)
+  local shared_lab_intro="${SHARED_DIR}/how-to-run-lab.partial.md"
+  if [[ -f "${shared_lab_intro}" ]]; then
+    cp "${shared_lab_intro}" "${src_base}/${name}/how-to-run-lab.partial.md"
+  fi
+
   inject_devcontainer "${src_base}/${name}"
   inject_env "${src_base}/${name}"
   # Move the generated versions partial from template/ to root so Jinja can find it
@@ -149,8 +174,9 @@ generate() {
   rm -f "${src_base}/${name}/template/README.md.jinja"
   # Remove the versions partial (now at root; not in template/ so never in output)
   rm -f "${src_base}/${name}/versions.partial.md"
-  # Remove the injected how-to-run partial from the source tree
+  # Remove the injected how-to-run partials from the source tree
   rm -f "${src_base}/${name}/how-to-run.partial.md"
+  rm -f "${src_base}/${name}/how-to-run-lab.partial.md"
   # Remove the injected devcontainer files from the source tree
   rm -rf "${src_base}/${name}/template/.devcontainer"
 
@@ -175,6 +201,19 @@ for dir in "${TEMPLATES_SRC}"/*/; do
     generate "${name}" "${TEMPLATES_SRC}" "${TEMPLATES_OUT}" "templates"
   fi
 done
+
+echo ""
+echo "=== labs/ (Checkmk practice labs) ==="
+LABS_SRC="${REPO_ROOT}/_dev/_labs"
+LABS_OUT="${REPO_ROOT}/labs"
+if [[ -d "${LABS_SRC}" ]]; then
+  for dir in "${LABS_SRC}"/*/; do
+    name="$(basename "${dir}")"
+    if [[ -z "${FILTER}" || "${name}" == "${FILTER}" ]]; then
+      generate "${name}" "${LABS_SRC}" "${LABS_OUT}" "labs"
+    fi
+  done
+fi
 
 echo ""
 echo "All done."

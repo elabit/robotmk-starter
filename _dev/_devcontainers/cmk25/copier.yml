@@ -1,0 +1,12 @@
+# Devcontainer: cmk25 — Checkmk Pro 2.5 + VNC desktop (desktop-lite)
+# Injected into labs that have .devcontainer-type = cmk25.
+# Uses checkmk/check-mk-pro:2.5.0-latest as base image.
+# setup.sh installs RCC, builds the holotree environment, installs the
+# Checkmk agent, Firefox, and configures the Fluxbox menu.
+
+_subdirectory: template
+_answers_file: .copier-devcontainer-answers.yml
+
+example_name:
+  type: str
+  default: "example"

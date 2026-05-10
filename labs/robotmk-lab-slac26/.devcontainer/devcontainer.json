@@ -1,0 +1,41 @@
+{
+  "name": "robotmk-lab-slac26",
+  "image": "checkmk/check-mk-pro:2.5.0-latest",
+  "workspaceFolder": "/workspaces/robotmk-lab-slac26",
+  "overrideCommand": false,
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "vscode",
+      "webPort": "6080",
+      "vncPort": "5901"
+    }
+  },
+  "containerEnv": {
+    "CMK_PASSWORD": "cmk",
+    "CMK_SITE_ID": "cmk"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "d-biehl.robotcode"
+      ]
+    }
+  },
+  "runArgs": ["--shm-size=1g"],
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "remoteEnv": {
+    "DISPLAY": ":1"
+  },
+  "forwardPorts": [6080, 5000],
+  "portsAttributes": {
+    "6080": {
+      "label": "noVNC Desktop",
+      "onAutoForward": "openBrowser"
+    },
+    "5000": {
+      "label": "CheckMK Web UI",
+      "onAutoForward": "notify"
+    }
+  }
+}

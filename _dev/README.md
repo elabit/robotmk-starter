@@ -48,6 +48,13 @@ _dev/
 ├── _shared/
 │   └── README.md.jinja          ← Gemeinsame README-Sektionen
 ├── _templates/          ← Copier-Quellen für templates/ (minimale Skeletons)
+├── _labs/               ← Copier-Quellen für labs/ (Checkmk-Praxislabs für Studenten)
+│   └── robotmk-lab-slac26/
+│       ├── .devcontainer-type   ← Zeigt auf den cmk25-Devcontainer-Typ
+│       ├── .rcc                 ← SPACE=rf-full
+│       ├── copier.yml
+│       ├── README.partial.md    ← Lab-spezifischer README-Teil
+│       └── template/
 ├── config/
 │   └── versions.env     ← Versionspins (einzige Pflegestelle!)
 ├── .rcc/                ← RCC-Binaries (NICHT committed)
@@ -225,9 +232,6 @@ _dev/_environments/rf-libbrowser-libcrypto/template/versions.partial.md.jinja:
 | robotframework-crypto | `{{ rf_lib_crypto_version }}` |
 ```
 
-Dadurch ist die Tabelle **automatisch korrekt** für jedes Environment — keine bedingten
-`{% if use_browser %}` Flags in `copier.yml` nötig.
-
 **Neues Beispiel mit README:**
 
 1. `_dev/_examples/<name>/README.partial.md` anlegen (Inhalt s. bestehende Partials als
@@ -308,7 +312,72 @@ Falls das neue Beispiel andere Dependencies braucht (z. B. nur SeleniumLibrary):
 
 ---
 
-## 5. RCC — Robot Command Center
+## 5. Labs hinzufügen
+
+Labs sind Checkmk-basierte Praxisumgebungen für Studenten. Sie werden als eigenständige
+GitHub-Repos veröffentlicht, die direkt als Codespace geöffnet werden können.
+
+**Unterschiede zu `examples/` und `templates/`:**
+
+| Aspekt | examples/ | templates/ | labs/ |
+|---|---|---|---|
+| Zweck | Vollständige Beispiele | Minimale Skeletons | Praxislabs (mehrere Suites) |
+| Devcontainer | `desktop` oder `headless` | keiner | `cmk25` (Checkmk-Image) |
+| Devcontainer-Steuerung | VNC in `.env` | — | `.devcontainer-type`-Datei |
+| CI (GitHub Actions) | ✓ | — | — |
+| Codespace-Zielrepo | `robotmk/example-<name>` | — | eigenes Repo (manuell pushen) |
+| Suiten-Status | vollständig & lauffähig | Skeleton | können unvollständig sein |
+
+### Neues Lab anlegen
+
+1. **Quellen anlegen**:
+   ```
+   _dev/_labs/<name>/
+   ├── .devcontainer-type   ← Inhalt: cmk25
+   ├── .rcc                 ← SPACE=<env-name>
+   ├── copier.yml           ← minimal: nur _subdirectory: template
+   ├── README.partial.md    ← Lab-spezifischer README-Teil (s. u.)
+   └── template/
+       ├── robot.yaml
+       ├── .env
+       └── rf-suites/       ← oder beliebige Struktur
+           ├── robot.toml
+           └── suite.robot
+   ```
+
+2. **`.devcontainer-type` anlegen**:
+   ```bash
+   echo "cmk25" > _dev/_labs/<name>/.devcontainer-type
+   ```
+
+3. **`README.partial.md` anlegen** — enthält `{% include 'how-to-run-lab.partial.md' %}`
+   statt `how-to-run.partial.md`. Als Vorlage kann `_dev/_labs/robotmk-lab-slac26/README.partial.md`
+   dienen.
+
+4. **Generieren**:
+   ```bash
+   task generate EXAMPLE=<name>
+   ```
+   Erzeugt `labs/<name>/` mit fertigem `.devcontainer/`.
+
+5. **Veröffentlichen** (manuell):
+   ```bash
+   cd labs/<name>
+   git init && git add . && git commit -m "initial"
+   git remote add origin git@github.com:robotmk/<name>.git
+   git push -u origin main
+   ```
+
+### `how-to-run-lab.partial.md`
+
+Für Labs gibt es eine eigene shared-Partial in `_dev/_shared/how-to-run-lab.partial.md`
+mit angepasstem Codespaces-Badge und labsspezifischem Text. Der README.partial.md eines
+Labs inkludiert diese statt `how-to-run.partial.md`.
+
+---
+
+## 6. RCC — Robot Command Center
+
 
 RCC ist das Umgebungs- und Task-Runner-Tool von Robocorp, das auch Robotmk intern nutzt.
 Es baut isolierte Python-Environments aus `conda.yaml` und führt Robot Framework-Suites aus.
@@ -345,7 +414,7 @@ Für eine andere Version: URL und Tag in `download-rcc.sh` / `download-rcc.ps1` 
 
 ---
 
-## 6. GitHub Actions CI
+## 7. GitHub Actions CI
 
 ### Workflow: `test-examples.yml`
 
@@ -423,7 +492,7 @@ Advanced:
 
 ---
 
-## 7. Branch-Strategie für ältere Versionen
+## 8. Branch-Strategie für ältere Versionen
 
 `main` enthält immer die **aktuellste** Dependency-Kombination.
 
@@ -441,7 +510,7 @@ Der CI-Workflow läuft automatisch auch auf `compat/**`-Branches (`branches: ["m
 
 ---
 
-## 8. Codespaces / Devcontainer
+## 9. Codespaces / Devcontainer
 
 Für Workshops und schnellen Einstieg ohne lokale Installation.
 
@@ -457,22 +526,33 @@ _dev/_devcontainers/
 │   └── template/.devcontainer/
 │       ├── devcontainer.json.jinja
 │       └── setup.sh
-└── desktop/            ← Python-Image + desktop-lite (noVNC, Port 6080)
+├── desktop/            ← Python-Image + desktop-lite (noVNC, Port 6080)
+│   ├── copier.yml
+│   └── template/.devcontainer/
+│       ├── devcontainer.json.jinja
+│       └── setup.sh
+└── cmk25/              ← Checkmk Pro 2.5 + desktop-lite + RCC (für Labs)
     ├── copier.yml
     └── template/.devcontainer/
         ├── devcontainer.json.jinja
-        └── setup.sh
+        ├── setup.sh
+        └── install_cmk_agent.sh
 ```
 
-**Steuerung über `.env`:**
+**Steuerung über `.env` oder `.devcontainer-type`:**
 
-`generate-all.sh` liest `VNC` aus `template/.env` des jeweiligen Beispiels:
+`generate-all.sh` wählt den Devcontainer-Typ nach folgender Priorität:
 
-| `.env`-Eintrag | Injizierter Typ | Beschreibung |
-|---|---|---|
-| `VNC=true` | `desktop` | noVNC-Desktop, Port 6080 forwarded, `DISPLAY=:1` gesetzt |
-| `VNC=false` oder fehlend | `headless` | Kein VNC, kein Desktop-Feature |
-| keine `.env` | kein Devcontainer | Injektion wird übersprungen (z. B. `templates/`) |
+1. **`.devcontainer-type`-Datei** im Quell-Verzeichnis (für Labs): Enthält den gewünschten
+   Typ explizit (z. B. `cmk25`). Überschreibt die VNC-Erkennung vollständig.
+2. **`VNC`-Variable** in `template/.env` (für Beispiele): Wie bisher.
+
+| Mechanismus | Wert | Injizierter Typ | Beschreibung |
+|---|---|---|---|
+| `.devcontainer-type` | `cmk25` | `cmk25` | Checkmk Pro 2.5 + desktop-lite + RCC |
+| `.env` | `VNC=true` | `desktop` | Python-Image + noVNC-Desktop |
+| `.env` | `VNC=false` oder fehlend | `headless` | Python-Image, kein VNC |
+| keine `.env`, kein `.devcontainer-type` | — | kein Devcontainer | Injektion übersprungen |
 
 ### VNC-Auflösung (`VNC_RESOLUTION`)
 
@@ -490,7 +570,9 @@ läuft bei `postCreateCommand`, also einmalig nach der Erstellung.
 
 ### `setup.sh` — Was beim Container-Start passiert
 
-Beide Typen führen `setup.sh` per `postCreateCommand` aus. Das Skript:
+Alle Typen führen `setup.sh` per `postCreateCommand` aus.
+
+**`headless` und `desktop`** (Schritte 1–5 bzw. 1–6):
 
 1. Lädt RCC nach `~/bin/rcc`
 2. Baut das holotree-Environment (`rcc holotree vars`)
@@ -500,7 +582,14 @@ Beide Typen führen `setup.sh` per `postCreateCommand` aus. Das Skript:
 6. *(nur `desktop`)* Trägt `xrandr --output VNC-0 --mode <VNC_RESOLUTION>` in
    `~/.fluxbox/startup` vor `exec fluxbox` ein (idempotent)
 
-### Devcontainer für ein neues Beispiel
+**`cmk25`** (Schritte 1–9, auf Basis des `checkmk/check-mk-pro:2.5.0-latest`-Images):
+
+1–6. Identisch mit `desktop`
+7. Installiert den Checkmk-Agenten via `install_cmk_agent.sh vanilla`
+8. Installiert Firefox via Mozilla PPA (`firefox-esr`)
+9. Fügt einen `Checkmk`-Eintrag im Fluxbox-Menü hinzu und startet Fluxbox neu
+
+### Devcontainer für ein neues Beispiel (examples/templates)
 
 Kein manuelles Anlegen nötig — einfach in `template/.env` eintragen:
 
@@ -511,6 +600,16 @@ VNC=true          # → desktop-Devcontainer wird injiziert
 
 `task generate EXAMPLE=<name>` erledigt den Rest.
 
+### Devcontainer für ein neues Lab
+
+Eine `.devcontainer-type`-Datei im Lab-Verzeichnis anlegen:
+
+```bash
+echo "cmk25" > _dev/_labs/<name>/.devcontainer-type
+```
+
+Damit wird der `cmk25`-Typ unabhängig von `.env` injiziert. Kein VNC-Eintrag in `.env` nötig.
+
 ### Codespaces-Badge in Sub-Repos
 
 Sub-Repos, die ein `.devcontainer/` haben, erhalten beim Sync automatisch einen
@@ -519,7 +618,7 @@ zur Sync-Zeit via `gh api` ermittelt (s. `.github/scripts/sync-examples.sh`).
 
 ---
 
-## 9. Sub-Repo-Sync
+## 10. Sub-Repo-Sync
 
 Jedes Beispiel in `examples/` wird als Snapshot in ein eigenes GitHub-Repo
 (`robotmk/example-<name>`) gespiegelt — damit Nutzer ein einzelnes Repo klonen oder
