@@ -42,7 +42,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 | Robot Framework Suite | Description | Repository Link |
 |---|---|---|
 | [cryptolibrary-simple](examples/cryptolibrary-simple) | A minimalistic example of how to use the **CryptoLibrary**, without bells and whistles. | [try out](https://github.com/robotmk/example-cryptolibrary-simple) |
-| [rf-custom-library](examples/rf-custom-library) | This suite demonstrates the use of a custom library, written with a simple Python class. | [try out](https://github.com/robotmk/example-rf-custom-library) |
+| [rf-custom-library](examples/rf-custom-library) | This suite demonstrates the use of a **custom library**, written with a simple Python class. | [try out](https://github.com/robotmk/example-rf-custom-library) |
 | [rf-python-varfiles](examples/rf-python-varfiles) | A suite to demonstrate how to load **variables** from **Python**, **JSON** and **YAML** variable files, including nested data structures. | [try out](https://github.com/robotmk/example-rf-python-varfiles) |
 | [web-cryptolibrary](examples/web-cryptolibrary) | A example of how to use the **CryptoLibrary** in a web test (**BrowserLibrary**). | [try out](https://github.com/robotmk/example-web-cryptolibrary) |
 | [web-webshop](examples/web-webshop) | A **BrowserLibrary** suite running against a demo web shop, showing a full user journey: login → add items to cart → checkout. | [try out](https://github.com/robotmk/example-web-webshop) |
