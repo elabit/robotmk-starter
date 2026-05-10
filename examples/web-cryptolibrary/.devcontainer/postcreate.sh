@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# .devcontainer/setup.sh — Runs once after the container is created.
-# Downloads RCC, builds the holotree environment, and configures VS Code.
+# .devcontainer/postcreate.sh — Runs each time a Codespace is created (not prebuild-cached).
+# Configures the user session: PATH, VS Code settings, and VNC desktop resolution.
 
 set -euo pipefail
 
@@ -15,30 +15,8 @@ step()  { echo -e "\n${CYAN}${BOLD}▶ $*${RESET}"; }
 ok()    { echo -e "${GREEN}✓ $*${RESET}"; }
 info()  { echo -e "  ${YELLOW}$*${RESET}"; }
 
-RCC_URL="https://github.com/elabit/robotmk/releases/download/v4.0.0/rcc_linux64"
-RCC_BIN="$HOME/bin/rcc"
-
-# ── Step 1: Download RCC ──────────────────────────────────────────────────────
-step "Downloading RCC ..."
-mkdir -p "$HOME/bin"
-curl -fsSL -o "$RCC_BIN" "$RCC_URL"
-chmod +x "$RCC_BIN"
-ok "RCC $(${RCC_BIN} --version 2>&1 | head -1) ready at ${RCC_BIN}"
-
-# ── Step 2: Build holotree environment ────────────────────────────────────────
-step "Building RCC holotree environment (this takes a few minutes on first run) ..."
-info "robot.yaml: $(pwd)/robot.yaml"
-SPACE_ROOT=$(
-  "$RCC_BIN" holotree vars --robot robot.yaml 2>&1 \
-    | grep '^export RCC_HOLOTREE_SPACE_ROOT=' \
-    | cut -d= -f2
-)
-ok "Environment ready at ${SPACE_ROOT}"
-
-# ── Step 3: Symlink ~/.rcc-env ────────────────────────────────────────────────
-step "Creating symlink ~/.rcc-env → ${SPACE_ROOT} ..."
-ln -sfn "${SPACE_ROOT}" "$HOME/.rcc-env"
-ok "~/.rcc-env → ${SPACE_ROOT}"
+# Resolve SPACE_ROOT from the symlink created during oncreate
+SPACE_ROOT="$(readlink -f "$HOME/.rcc-env")"
 
 # ── Step 4: Add to PATH in ~/.bashrc ─────────────────────────────────────────
 step "Configuring PATH in ~/.bashrc ..."
@@ -67,7 +45,6 @@ ok "python.defaultInterpreterPath → ${SPACE_ROOT}/bin/python"
 # ── Step 6: Configure fluxbox resolution ─────────────────────────────────────
 step "Configuring fluxbox resolution ..."
 FLUXBOX_STARTUP="$HOME/.fluxbox/startup"
-# Read VNC_RESOLUTION from .env if present, otherwise fall back to default
 VNC_RESOLUTION="1280x1024"
 if grep -q '^VNC_RESOLUTION=' .env 2>/dev/null; then
   VNC_RESOLUTION="$(grep '^VNC_RESOLUTION=' .env | cut -d= -f2 | tr -d '[:space:]')"

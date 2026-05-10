@@ -18,7 +18,8 @@
       ]
     }
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "onCreateCommand": "bash .devcontainer/oncreate.sh",
+  "postCreateCommand": "bash .devcontainer/postcreate.sh",
   "remoteEnv": {
     "DISPLAY": ":1"
   },
