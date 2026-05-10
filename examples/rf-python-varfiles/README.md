@@ -22,7 +22,8 @@ This is the easiest way to run the example — no local installation needed. Jus
 
 ### Manually with RCC
 
-To run the example manually, refer to the blog post with the step-by-step instructions:   
+To run Robot Framework suites manually, refer to the Robotmk blog post with the step-by-step instructions for RCC:
+   
 → [How to Run Robot Framework Examples with RCC](https://www.robotmk.org/en/blog/rcc-efficient-python-integration/)  
 → [Troubleshooting RCC](https://www.robotmk.org/en/blog/rcctrouble/)
 

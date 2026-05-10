@@ -99,4 +99,17 @@ Get-ChildItem -Path $TemplatesSrc -Directory | ForEach-Object {
 }
 
 Write-Host ""
+Write-Host "=== labs\ (Checkmk practice labs) ==="
+$LabsSrc = Join-Path $RepoRoot "_dev\_labs"
+$LabsOut = Join-Path $RepoRoot "labs"
+if (Test-Path $LabsSrc) {
+    Get-ChildItem -Path $LabsSrc -Directory | ForEach-Object {
+        $name = $_.Name
+        if ([string]::IsNullOrEmpty($Filter) -or $name -eq $Filter) {
+            Generate-Item -Name $name -SrcBase $LabsSrc -DstBase $LabsOut -Label "labs"
+        }
+    }
+}
+
+Write-Host ""
 Write-Host "All done."

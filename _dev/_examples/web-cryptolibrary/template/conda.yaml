@@ -8,7 +8,7 @@ dependencies:
       - robotframework==7.4
       - robotframework-browser==19.14.2
       - robotframework-crypto==0.3
-# foo
+
 # Install Browser Library binaries after environment creation.
 rccPostInstall:
   - rfbrowser init
