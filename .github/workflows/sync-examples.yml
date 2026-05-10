@@ -6,11 +6,15 @@ on:
     workflows: ["Run Suites"]
     types: [completed]
     branches: [main]
-  # Manual trigger (e.g. to sync a single example or force a full sync)
+  # Manual trigger (e.g. to sync a single example or lab, or force a full sync)
   workflow_dispatch:
     inputs:
       example:
         description: "Single example to sync (leave empty for all)"
+        required: false
+        default: ""
+      lab:
+        description: "Single lab to sync (leave empty for all)"
         required: false
         default: ""
 
@@ -36,4 +40,4 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          bash .github/scripts/sync-examples.sh ${{ github.event.inputs.example }}
+          bash .github/scripts/sync-examples.sh "${{ github.event.inputs.example }}" "${{ github.event.inputs.lab }}"
