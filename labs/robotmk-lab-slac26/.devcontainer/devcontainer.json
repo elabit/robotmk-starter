@@ -12,7 +12,8 @@
   },
   "containerEnv": {
     "CMK_PASSWORD": "cmk",
-    "CMK_SITE_ID": "cmk"
+    "CMK_SITE_ID": "cmk",
+    "RMKCRYPTPW": "rmksecret"
   },
   "customizations": {
     "vscode": {
