@@ -55,7 +55,7 @@ _dev/
 │           └── .env             ← RMKS_ENVIRONMENT, RMKS_DEVCONTAINER, VNC_RESOLUTION optional
 ├── config/
 │   └── versions.env     ← Versionspins (einzige Pflegestelle!)
-├── .rcc/                ← RCC-Binaries (NICHT committed)
+├── .rcc/                ← Nur RCC-Binaries (NICHT für Konfiguration, NICHT committed)
 └── scripts/
     ├── generate-all.sh   ← Alle examples/ und templates/ generieren (Linux/macOS)
     └── generate-all.ps1  ← Alle examples/ und templates/ generieren (Windows)
@@ -83,7 +83,7 @@ Oder manuell:
 
 ```bash
 task install-copier   # Copier ins .venv installieren
-task download-rcc     # RCC-Binary nach _dev/.rcc/ laden (Linux/macOS)
+task download-rcc     # RCC-Binary nach _dev/.rcc/ laden (Linux/macOS, nur Binary, keine .rcc-Konfig mehr)
 task download-rcc-windows  # RCC-Binary laden (Windows)
 ```
 
@@ -393,6 +393,7 @@ task shell EXAMPLE=cryptolibrary
 ### RCC Binary herunterladen
 
 Binaries werden **nicht committed** (`.gitignore`-Eintrag: `_dev/.rcc/rcc*`).
+Hinweis: Die `.rcc`-Verzeichnisse enthalten nur noch die RCC-Binaries, nicht mehr die Konfigurationsdateien. Die Auswahl der Umgebung erfolgt jetzt ausschließlich über `.env` mit `RMKS_ENVIRONMENT` und `RMKS_DEVCONTAINER`.
 
 ```bash
 task download-rcc          # Linux/macOS
@@ -565,7 +566,7 @@ Alle Typen führen `setup.sh` per `postCreateCommand` aus.
 
 1. Lädt RCC nach `~/bin/rcc`
 2. Baut das holotree-Environment (`rcc holotree vars`)
-3. Legt Symlink `~/.rcc-env` → holotree-Root an
+3. Legt Symlink `~/.rcc-env` → holotree-Root an (betrifft nur die Nutzung von RCC als Binary, nicht mehr für Konfigurationszwecke)
 4. Ergänzt `~/.bashrc` mit `PATH` (idempotent, Marker-basiert)
 5. Schreibt `.vscode/settings.json` (Python-Interpreter, RobotCode-Settings)
 6. *(nur `desktop`)* Trägt `xrandr --output VNC-0 --mode <VNC_RESOLUTION>` in

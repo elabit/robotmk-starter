@@ -1,6 +1,6 @@
 # Copier template for the cryptolibrary example.
 # Maintainer-only: generates examples/cryptolibrary/ from this template.
-# The conda.yaml is injected automatically from _dev/_environments/ based on .rcc.
+# The conda.yaml is injected automatically from _dev/_environments/ based on RMKS_ENVIRONMENT.
 # Run via: task generate
 
 _subdirectory: template

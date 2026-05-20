@@ -3,7 +3,7 @@
 update_suite_table.py — Updates the suite version table and CI badge URL in README.md.
 
 Reads conda.yaml from each examples/ and templates/ subdirectory to extract
-the exact library versions, and reads .rcc for the space name.
+the exact library versions, and reads RMKS_ENVIRONMENT from .env for the space name.
 
 Usage:
     python3 update_suite_table.py <repo_root>
@@ -81,11 +81,11 @@ def parse_conda_versions(conda_yaml: Path) -> dict:
 
 
 def get_space(suite_dir: Path) -> str:
-    rcc_file = suite_dir / ".rcc"
-    if not rcc_file.exists():
+    env_file = suite_dir / ".env"
+    if not env_file.exists():
         return "—"
-    for line in rcc_file.read_text().splitlines():
-        if line.startswith("SPACE="):
+    for line in env_file.read_text().splitlines():
+        if line.startswith("RMKS_ENVIRONMENT="):
             return line.split("=", 1)[1].strip()
     return "—"
 
