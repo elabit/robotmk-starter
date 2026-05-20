@@ -63,22 +63,22 @@ tasks:
     vars:
       EXAMPLE: '{{.EXAMPLE | default "cryptolibrary"}}'
       RCC: _dev/.rcc/rcc
-      SPACE:
-        sh: grep '^SPACE=' examples/{{.EXAMPLE}}/.rcc | cut -d= -f2 | tr -d '[:space:]'
+      RMKS_ENVIRONMENT:
+        sh: grep '^RMKS_ENVIRONMENT=' examples/{{.EXAMPLE}}/.env | cut -d= -f2 | tr -d '[:space:]'
     cmds:
-      - '{{.RCC}} holotree vars --space {{.SPACE}} --robot examples/{{.EXAMPLE}}/robot.yaml'
-      - '{{.RCC}} task script --space {{.SPACE}} --robot examples/{{.EXAMPLE}}/robot.yaml -- robot .'
+      - '{{.RCC}} holotree vars --space {{.RMKS_ENVIRONMENT}} --robot examples/{{.EXAMPLE}}/robot.yaml'
+      - '{{.RCC}} task script --space {{.RMKS_ENVIRONMENT}} --robot examples/{{.EXAMPLE}}/robot.yaml -- robot .'
 
   test-windows:
     desc: "Run a Robot Framework example locally via RCC (Windows). Usage: task test-windows EXAMPLE=cryptolibrary"
     platforms: [windows]
     vars:
       EXAMPLE: '{{.EXAMPLE | default "cryptolibrary"}}'
-      SPACE:
-        sh: grep '^SPACE=' examples/{{.EXAMPLE}}/.rcc | cut -d= -f2 | tr -d '[:space:]'
+      RMKS_ENVIRONMENT:
+        sh: grep '^RMKS_ENVIRONMENT=' examples/{{.EXAMPLE}}/.env | cut -d= -f2 | tr -d '[:space:]'
     cmds:
-      - '_dev\.rcc\rcc.exe holotree vars --space {{.SPACE}} --robot examples\{{.EXAMPLE}}\robot.yaml'
-      - '_dev\.rcc\rcc.exe task script --space {{.SPACE}} --robot examples\{{.EXAMPLE}}\robot.yaml -- robot .'
+      - '_dev\.rcc\rcc.exe holotree vars --space {{.RMKS_ENVIRONMENT}} --robot examples\{{.EXAMPLE}}\robot.yaml'
+      - '_dev\.rcc\rcc.exe task script --space {{.RMKS_ENVIRONMENT}} --robot examples\{{.EXAMPLE}}\robot.yaml -- robot .'
 
   # ── Shell ──────────────────────────────────────────────────────────────────
 
@@ -88,7 +88,7 @@ tasks:
     vars:
       EXAMPLE: '{{.EXAMPLE | default "cryptolibrary"}}'
       RCC: _dev/.rcc/rcc
-      SPACE:
-        sh: grep '^SPACE=' examples/{{.EXAMPLE}}/.rcc | cut -d= -f2 | tr -d '[:space:]'
+      RMKS_ENVIRONMENT:
+        sh: grep '^RMKS_ENVIRONMENT=' examples/{{.EXAMPLE}}/.env | cut -d= -f2 | tr -d '[:space:]'
     cmds:
-      - '{{.RCC}} task shell --space {{.SPACE}} --robot examples/{{.EXAMPLE}}/robot.yaml'
+      - '{{.RCC}} task shell --space {{.RMKS_ENVIRONMENT}} --robot examples/{{.EXAMPLE}}/robot.yaml'

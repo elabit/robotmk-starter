@@ -1,7 +1,7 @@
 # generate-all.ps1 — Regenerates examples\ and templates\ from _dev\_examples\ and _dev\_templates\.
-# Each source directory may contain a .rcc file with SPACE=<env-name>.
-# If present, the matching environment from _dev\_environments\<env-name>\ is injected
-# (via Copier) into the template\ subfolder before the main generation step.
+# Each source's template\.env must contain RMKS_ENVIRONMENT=<env-name> and
+# RMKS_DEVCONTAINER=<type>. These replace the former .rcc and .devcontainer-type
+# files and drive environment and devcontainer injection via Copier.
 #
 # Usage:
 #   .\_dev\scripts\generate-all.ps1
@@ -44,9 +44,9 @@ $CommonData = @(
 
 function Invoke-EnvInject {
     param([string]$Src)
-    $rccFile = Join-Path $Src ".rcc"
-    if (-not (Test-Path $rccFile)) { return }
-    $space = (Get-Content $rccFile | Where-Object { $_ -match '^SPACE=' }) -replace '^SPACE=', '' | ForEach-Object { $_.Trim() }
+    $envFile = Join-Path $Src "template\.env"
+    if (-not (Test-Path $envFile)) { return }
+    $space = (Get-Content $envFile | Where-Object { $_ -match '^RMKS_ENVIRONMENT=' }) -replace '^RMKS_ENVIRONMENT=', '' | ForEach-Object { $_.Trim() }
     if ([string]::IsNullOrEmpty($space)) { return }
     $envSrc = Join-Path $Environments $space
     if (-not (Test-Path $envSrc)) { throw "Environment '$space' not found in _dev\_environments\" }
