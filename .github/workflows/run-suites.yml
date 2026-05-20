@@ -82,11 +82,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read RCC space from .rcc file
-        id: rcc-space
+      - name: Read RMKS environment from .env
+        id: suite-env
         shell: bash
         run: |
-          SPACE=$(grep '^SPACE=' ${{ matrix.suite }}/.rcc | cut -d= -f2 | tr -d '[:space:]')
+          ENV_FILE="${{ matrix.suite }}/.env"
+          SPACE=$(grep '^RMKS_ENVIRONMENT=' "${ENV_FILE}" | cut -d= -f2 | tr -d '[:space:]')
+          if [[ -z "${SPACE}" ]]; then
+            echo "ERROR: RMKS_ENVIRONMENT is missing in ${ENV_FILE}" >&2
+            exit 1
+          fi
           echo "space=${SPACE}" >> "$GITHUB_OUTPUT"
           # Sanitize matrix.suite (e.g. examples/cryptolibrary → examples-cryptolibrary)
           echo "safe_name=$(echo '${{ matrix.suite }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
@@ -109,13 +114,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.robocorp/holotree
-          key: rcc-holotree-${{ steps.rcc-space.outputs.space }}-${{ runner.os }} 
+          key: rcc-holotree-${{ steps.suite-env.outputs.space }}-${{ runner.os }} 
 
       - name: Build RCC holotree environment
         shell: bash
         run: |
           $RCC_BIN holotree vars \
-            --space ${{ steps.rcc-space.outputs.space }} \
+            --space ${{ steps.suite-env.outputs.space }} \
             --robot ${{ matrix.suite }}/robot.yaml
 
       - name: Load .env if present
@@ -138,7 +143,7 @@ jobs:
         shell: bash
         run: |
           $RCC_BIN task script \
-            --space ${{ steps.rcc-space.outputs.space }} \
+            --space ${{ steps.suite-env.outputs.space }} \
             --robot ${{ matrix.suite }}/robot.yaml \
             -- robot .
 
@@ -146,6 +151,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rf-output-${{ steps.rcc-space.outputs.safe_name }}-${{ matrix.os }}
+          name: rf-output-${{ steps.suite-env.outputs.safe_name }}-${{ matrix.os }}
           path: ${{ matrix.suite }}/log.html
           if-no-files-found: ignore

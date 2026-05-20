@@ -1,5 +1,5 @@
 # Environment: RF + Browser Library + CryptoLibrary
-# Shared by all examples/templates that declare SPACE=rf-libbrowser-libcrypto in their .rcc file.
+# Shared by all examples/templates that declare RMKS_ENVIRONMENT=rf-libbrowser-libcrypto in their .env file.
 
 _subdirectory: template
 _answers_file: .copier-env-answers.yml

@@ -1,5 +1,5 @@
 # Environment: RF
-# Shared by all examples/templates that declare SPACE=rfin their .rcc file.
+# Shared by all examples/templates that declare RMKS_ENVIRONMENT=rfin in their .env file.
 
 _subdirectory: template
 _answers_file: .copier-env-answers.yml
