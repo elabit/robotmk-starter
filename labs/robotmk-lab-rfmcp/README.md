@@ -1,13 +1,14 @@
 <!-- First include the example/template's partial. Examples include the exmaple-intro.partial in turn. -->
 
-# Checkmk Workshop
+# RF-MCP Lab - Say it, test it, ship it!
 
-<!-- Lab-specific intro injected after H1 in every lab README.
-     Edit this file in _dev/_shared/ — do not edit the generated copy. -->
+This repository provides you a hands-on environment for learning [Robotmk](https://www.robotmk.org) Synthetic Monitoring with [Checkmk](https://checkmk.com) and [Robot Framework](https://robotframework.org/).
 
-This repository is a **Checkmk practice lab** — a hands-on environment for learning [Robotmk](https://www.robotmk.org) Synthetic Monitoring with [Checkmk](https://checkmk.com) and [Robot Framework](https://robotframework.org/).
+## About this Repository
 
-The lab contains multiple exercise suites. Some may be intentionally incomplete — that is part of the challenge.
+Here you can play around with the Robot Framework [MCP-Server](https://github.com/manykarim/rf-mcp/tree/main/docker) which helps you to implement, refactor and debug your Robot Framework tests **with the help of AI**.  
+To have something to test against, we have set up a **Checkmk instance**, which you can also use to integrate the tests you are creating. 
+
 
 ## How to Open the Lab
 
@@ -26,11 +27,6 @@ Click the button below to open this lab in a fully configured VS Code environmen
 Clone this repository and open it in VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).  
 VS Code will detect `.devcontainer/devcontainer.json` and prompt you to reopen in container.
 
-
-## About this Repository
-
-This is a complete playground to test out the Robot Framework [MCP-Server](https://github.com/manykarim/rf-mcp/tree/main/docker) which helps you to implement, refactor and debug your Robot Framework tests in a more efficient way.  
-To have something to test against, we have set up a Checkmk instance, which you can also use to integrate the tests you are creating. 
 
 ## Links
 
