@@ -31,7 +31,7 @@ You want to...
 
 ## Content
 
-### Folder "/examples"
+### 👀 Folder "/examples"
 
 A great starting point to **learn** from working Robot Framework test suites. 
 
@@ -51,7 +51,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 ---
 
-### Folder "/templates"
+### 🗍 Folder "/templates"
 
 These templates provide useful **skeletons** when you want to start your own Robot Framework suite.  
 
@@ -67,7 +67,7 @@ Each template focuses on a specific use case or integration, providing a ready-t
 
 ---
 
-### Folder "/labs"
+### ⚗️ Folder "/labs"
 
 Structured labs to learn and test Robotmk in self-contained scenarios.
 

@@ -19,7 +19,7 @@ Create a Robot Framework test suite that verifies the login functionality of the
 
 **Guardrails:**
 
-- Use the #robotmcp for the creation
+- Use the robotmcp-claude/vscode MCP server for the creation
 - Implement the whole suite, validate each step
 - Use Variables for common values (e.g., username, password, URL, selectors).
 - Use Browser Library (start browser with UI)
