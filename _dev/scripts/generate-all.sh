@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # generate-all.sh — Regenerates examples/ and templates/ from _dev/_examples/ and _dev/_templates/.
 #
-# Each source directory may contain a .rcc file with SPACE=<env-name>.
-# If present, the matching environment from _dev/_environments/<env-name>/ is injected
-# (via Copier) into the template/ subfolder before the main generation step.
+# Each source's template/.env must contain RMKS_ENVIRONMENT=<env-name> and
+# RMKS_DEVCONTAINER=<type>. These replace the former .rcc and .devcontainer-type
+# files and drive environment and devcontainer injection via Copier.
 #
 # Usage:
 #   task generate
@@ -52,46 +52,26 @@ DEVCONTAINERS="${REPO_ROOT}/_dev/_devcontainers"
 
 # inject_devcontainer: reads VNC from template/.env, injects the
 # matching devcontainer config (headless or desktop) into template/.devcontainer/
-# VNC=true → desktop (with VNC/noVNC); absent or VNC=false → headless
+# inject_devcontainer: reads RMKS_DEVCONTAINER from template/.env and injects
+# the matching devcontainer config into template/.devcontainer/.
 inject_devcontainer() {
   local src="$1"   # e.g. _dev/_examples/cryptolibrary-simple
   local name
   name="$(basename "${src}")"
 
-  # Check for explicit .devcontainer-type override (used by labs)
-  local type_file="${src}/.devcontainer-type"
-  if [[ -f "${type_file}" ]]; then
-    local dc_type
-    dc_type=$(tr -d '[:space:]' < "${type_file}")
-    local dc_src="${DEVCONTAINERS}/${dc_type}"
-    if [[ ! -d "${dc_src}" ]]; then
-      echo "  Error: devcontainer type '${dc_type}' (from .devcontainer-type) not found in _dev/_devcontainers/" >&2
-      exit 1
-    fi
-    echo "  ↳ Injecting devcontainer '${dc_type}' (from .devcontainer-type) ..."
-    "${COPIER}" copy --overwrite --defaults \
-      --data "example_name=${name}" \
-      "${dc_src}" "${src}/template"
-    rm -f "${src}/template/.copier-devcontainer-answers.yml"
-    return
-  fi
-
   local env_file="${src}/template/.env"
-  local vnc="false"
-  if [[ -f "${env_file}" ]]; then
-    local val
-    val=$(grep '^VNC=' "${env_file}" | cut -d= -f2 | tr -d '[:space:]' || true)
-    [[ "${val}" == "true" ]] && vnc="true"
-  else
+  if [[ ! -f "${env_file}" ]]; then
     echo "  (no .env found in ${src}/template/, skipping devcontainer injection)"
     return
   fi
+
   local dc_type
-  if [[ "${vnc}" == "true" ]]; then
-    dc_type="desktop"
-  else
-    dc_type="headless"
+  dc_type=$(grep '^RMKS_DEVCONTAINER=' "${env_file}" | cut -d= -f2 | tr -d '[:space:]' || true)
+  if [[ -z "${dc_type}" ]]; then
+    echo "  (no RMKS_DEVCONTAINER in ${src}/template/.env, skipping devcontainer injection)"
+    return
   fi
+
   local dc_src="${DEVCONTAINERS}/${dc_type}"
   if [[ ! -d "${dc_src}" ]]; then
     echo "  Error: devcontainer type '${dc_type}' not found in _dev/_devcontainers/" >&2
@@ -104,16 +84,17 @@ inject_devcontainer() {
   rm -f "${src}/template/.copier-devcontainer-answers.yml"
 }
 
-# inject_env: reads .rcc from source dir, injects conda.yaml from matching environment
+# inject_env: reads RMKS_ENVIRONMENT from template/.env, injects conda.yaml
+# from the matching environment directory.
 inject_env() {
   local src="$1"   # e.g. _dev/_examples/cryptolibrary
-  local rcc_file="${src}/template/.rcc"
-  if [[ ! -f "${rcc_file}" ]]; then
-    echo "  (no .rcc file found in ${src}/, skipping environment injection)"
+  local env_file="${src}/template/.env"
+  if [[ ! -f "${env_file}" ]]; then
+    echo "  (no .env file found in ${src}/template/, skipping environment injection)"
     return
   fi
   local space
-  space=$(grep '^SPACE=' "${rcc_file}" | cut -d= -f2 | tr -d '[:space:]')
+  space=$(grep '^RMKS_ENVIRONMENT=' "${env_file}" | cut -d= -f2 | tr -d '[:space:]')
   [[ -z "${space}" ]] && return
   local env_src="${ENVIRONMENTS}/${space}"
   if [[ ! -d "${env_src}" ]]; then

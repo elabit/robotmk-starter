@@ -10,13 +10,13 @@
 ```
 _dev/
 ├── _devcontainers/      ← Zentralisierte Devcontainer-Templates
-│   ├── headless/        ← Für Beispiele ohne VNC (VNC=false oder nicht gesetzt)
+│   ├── headless/        ← Für Beispiele mit RMKS_DEVCONTAINER=headless
 │   │   ├── copier.yml
 │   │   └── template/
 │   │       └── .devcontainer/
 │   │           ├── devcontainer.json.jinja
 │   │           └── setup.sh
-│   └── desktop/         ← Für Beispiele mit VNC (VNC=true)
+│   └── desktop/         ← Für Beispiele mit RMKS_DEVCONTAINER=desktop
 │       ├── copier.yml
 │       └── template/
 │           └── .devcontainer/
@@ -33,16 +33,15 @@ _dev/
 │           └── versions.partial.md.jinja   ← Versions-Tabelle für README
 ├── _examples/           ← Copier-Quellen für examples/ (vollständige Beispiele)
 │   ├── cryptolibrary-simple/
-│   │   ├── .rcc                 ← SPACE=rf-libcrypto
 │   │   ├── copier.yml
 │   │   ├── README.partial.md    ← Beispiel-spezifischer README-Teil
 │   │   └── template/
+│   │       └── .env             ← RMKS_ENVIRONMENT, RMKS_DEVCONTAINER, VNC_RESOLUTION optional
 │   ├── web-cryptolibrary/
-│   │   ├── .rcc                 ← SPACE=rf-libbrowser-libcrypto
 │   │   ├── copier.yml
 │   │   ├── README.partial.md
 │   │   └── template/
-│   │       └── .env             ← VNC=true, VNC_RESOLUTION optional
+│   │       └── .env             ← RMKS_ENVIRONMENT, RMKS_DEVCONTAINER, VNC_RESOLUTION optional
 │   └── web-webshop/
 │       └── …
 ├── _shared/
@@ -50,11 +49,10 @@ _dev/
 ├── _templates/          ← Copier-Quellen für templates/ (minimale Skeletons)
 ├── _labs/               ← Copier-Quellen für labs/ (Checkmk-Praxislabs für Studenten)
 │   └── robotmk-lab-slac26/
-│       ├── .devcontainer-type   ← Zeigt auf den cmk25-Devcontainer-Typ
-│       ├── .rcc                 ← SPACE=rf-full
 │       ├── copier.yml
 │       ├── README.partial.md    ← Lab-spezifischer README-Teil
 │       └── template/
+│           └── .env             ← RMKS_ENVIRONMENT, RMKS_DEVCONTAINER, VNC_RESOLUTION optional
 ├── config/
 │   └── versions.env     ← Versionspins (einzige Pflegestelle!)
 ├── .rcc/                ← RCC-Binaries (NICHT committed)
@@ -124,14 +122,13 @@ Jeder Beispieltyp hat ein eigenes Template (kein Mono-Template mit `{% if %}`-Ch
 
 ```
 _dev/_examples/cryptolibrary/
-├── .rcc                 ← Zeigt auf das RCC-Environment: SPACE=rf-libbrowser-libcrypto
 ├── copier.yml           ← Variablen-Definitionen (werden von versions.env befüllt)
 └── template/            ← Inhalt, der nach examples/cryptolibrary/ kopiert wird
+    ├── .env             ← RMKS_ENVIRONMENT + RMKS_DEVCONTAINER + projekt-spezifische Vars
     ├── robot.yaml       ← Statische Datei (wird unverändert kopiert)
     ├── suite.robot      ← Statische Datei
     ├── robot.toml       ← Statische Datei
     ├── keys/            ← Statische Dateien (CryptoLibrary-Schlüssel)
-    ├── .rcc             ← Wird ins generierte Beispiel kopiert (Space-Name)
     └── .copier-answers.yml.jinja  ← Tracking-Datei (wird generiert)
     # conda.yaml fehlt hier absichtlich — wird vom Environment injiziert (s. u.)
 ```
@@ -139,7 +136,7 @@ _dev/_examples/cryptolibrary/
 > **`_subdirectory: template`** in `copier.yml` ist entscheidend: Copier kopiert nur den
 > Inhalt von `template/`, nicht `copier.yml` selbst.
 
-### Shared Environments — `_environments/` und `.rcc`
+### Shared Environments — `_environments/` und `RMKS_ENVIRONMENT`
 
 Mehrere Beispiele teilen sich oft dieselbe `conda.yaml` (z. B. alle, die Browser + Crypto
 benötigen). Statt die `conda.yaml.jinja` in jedes Template zu duplizieren, gibt es eine
@@ -147,9 +144,9 @@ zentrale Quelle in `_environments/`.
 
 **Ablauf beim Generieren:**
 
-1. `generate-all.sh` liest die `.rcc`-Datei im Quell-Verzeichnis:
+1. `generate-all.sh` liest `RMKS_ENVIRONMENT` aus `template/.env`:
    ```ini
-   SPACE=rf-libbrowser-libcrypto
+   RMKS_ENVIRONMENT=rf-libbrowser-libcrypto
    ```
 2. Es ruft Copier für `_environments/rf-libbrowser-libcrypto/` auf und **injiziert**
    `conda.yaml` in `_dev/_examples/<name>/template/` (temporär, für den nächsten Schritt).
@@ -169,8 +166,9 @@ Der **Space-Name** (`rf-libbrowser-libcrypto`) hat zwei Bedeutungen:
 - Verzeichnisname in `_environments/` → Copier findet das richtige Template
 - RCC Holotree Space-Name → Beispiele mit demselben Space teilen sich den Environment-Cache
 
-Das generierte `examples/<name>/.rcc` (mit `SPACE=rf-libbrowser-libcrypto`) wird auch von
-`task test` und dem GitHub-Actions-Workflow gelesen, um den richtigen Space zu übergeben.
+`RMKS_ENVIRONMENT` in `template/.env` wird von `generate-all.sh` gelesen, um den richtigen
+Space zu injizieren, und von `task test` / `task shell`, um den richtigen Space an RCC zu
+übergeben.
 
 ### `.copier-answers.yml` — Tracking-Datei
 
@@ -284,7 +282,8 @@ Falls das neue Beispiel Browser + Crypto benötigt (wie alle bisherigen):
 
 1. **Quellen anlegen**:
    - `_dev/_examples/<name>/copier.yml` (minimalst: nur `_subdirectory: template`)
-   - `_dev/_examples/<name>/.rcc` mit `SPACE=rf-libbrowser-libcrypto`
+   - `_dev/_examples/<name>/template/.env` mit `RMKS_ENVIRONMENT=rf-libbrowser-libcrypto`
+     und `RMKS_DEVCONTAINER=desktop` (oder `headless`)
    - `_dev/_examples/<name>/template/` mit `robot.yaml`, `suite.robot`, `robot.toml`, ...
    - Analog für `_dev/_templates/<name>/` (Skeleton-Variante)
 2. **Generieren**: `task generate EXAMPLE=<name>`
@@ -302,9 +301,9 @@ Falls das neue Beispiel andere Dependencies braucht (z. B. nur SeleniumLibrary):
    └── template/
        └── conda.yaml.jinja ← conda-Abhängigkeiten mit Jinja2-Variablen
    ```
-2. **`.rcc` im Quell-Verzeichnis** auf den neuen Space zeigen lassen:
+2. **`RMKS_ENVIRONMENT`** in `template/.env` auf den neuen Space-Namen setzen:
    ```ini
-   SPACE=<space-name>
+   RMKS_ENVIRONMENT=<space-name>
    ```
 3. Falls neue Versionen nötig: in `versions.env` ergänzen und in `generate-all.sh/ps1` als
    `--data`-Parameter aufnehmen.
@@ -323,7 +322,7 @@ GitHub-Repos veröffentlicht, die direkt als Codespace geöffnet werden können.
 |---|---|---|---|
 | Zweck | Vollständige Beispiele | Minimale Skeletons | Praxislabs (mehrere Suites) |
 | Devcontainer | `desktop` oder `headless` | keiner | `cmk25` (Checkmk-Image) |
-| Devcontainer-Steuerung | VNC in `.env` | — | `.devcontainer-type`-Datei |
+| Devcontainer-Steuerung | `RMKS_DEVCONTAINER` in `template/.env` | — | `RMKS_DEVCONTAINER` in `template/.env` |
 | CI (GitHub Actions) | ✓ | — | — |
 | Codespace-Zielrepo | `robotmk/example-<name>` | — | eigenes Repo (manuell pushen) |
 | Suiten-Status | vollständig & lauffähig | Skeleton | können unvollständig sein |
@@ -333,34 +332,27 @@ GitHub-Repos veröffentlicht, die direkt als Codespace geöffnet werden können.
 1. **Quellen anlegen**:
    ```
    _dev/_labs/<name>/
-   ├── .devcontainer-type   ← Inhalt: cmk25
-   ├── .rcc                 ← SPACE=<env-name>
    ├── copier.yml           ← minimal: nur _subdirectory: template
    ├── README.partial.md    ← Lab-spezifischer README-Teil (s. u.)
    └── template/
+       ├── .env             ← RMKS_ENVIRONMENT=<env-name>, RMKS_DEVCONTAINER=cmk25
        ├── robot.yaml
-       ├── .env
        └── rf-suites/       ← oder beliebige Struktur
            ├── robot.toml
            └── suite.robot
    ```
 
-2. **`.devcontainer-type` anlegen**:
-   ```bash
-   echo "cmk25" > _dev/_labs/<name>/.devcontainer-type
-   ```
-
-3. **`README.partial.md` anlegen** — enthält `{% include 'how-to-run-lab.partial.md' %}`
+2. **`README.partial.md` anlegen** — enthält `{% include 'how-to-run-lab.partial.md' %}`
    statt `how-to-run.partial.md`. Als Vorlage kann `_dev/_labs/robotmk-lab-slac26/README.partial.md`
    dienen.
 
-4. **Generieren**:
+3. **Generieren**:
    ```bash
    task generate EXAMPLE=<name>
    ```
    Erzeugt `labs/<name>/` mit fertigem `.devcontainer/`.
 
-5. **Veröffentlichen** (manuell):
+4. **Veröffentlichen** (manuell):
    ```bash
    cd labs/<name>
    git init && git add . && git commit -m "initial"
@@ -539,20 +531,17 @@ _dev/_devcontainers/
         └── install_cmk_agent.sh
 ```
 
-**Steuerung über `.env` oder `.devcontainer-type`:**
+**Steuerung über `RMKS_DEVCONTAINER` in `template/.env`:**
 
-`generate-all.sh` wählt den Devcontainer-Typ nach folgender Priorität:
+`generate-all.sh` liest `RMKS_DEVCONTAINER` direkt aus `template/.env` und injiziert
+den passenden Devcontainer-Typ. Kein separates `.devcontainer-type`-File nötig.
 
-1. **`.devcontainer-type`-Datei** im Quell-Verzeichnis (für Labs): Enthält den gewünschten
-   Typ explizit (z. B. `cmk25`). Überschreibt die VNC-Erkennung vollständig.
-2. **`VNC`-Variable** in `template/.env` (für Beispiele): Wie bisher.
-
-| Mechanismus | Wert | Injizierter Typ | Beschreibung |
-|---|---|---|---|
-| `.devcontainer-type` | `cmk25` | `cmk25` | Checkmk Pro 2.5 + desktop-lite + RCC |
-| `.env` | `VNC=true` | `desktop` | Python-Image + noVNC-Desktop |
-| `.env` | `VNC=false` oder fehlend | `headless` | Python-Image, kein VNC |
-| keine `.env`, kein `.devcontainer-type` | — | kein Devcontainer | Injektion übersprungen |
+| `RMKS_DEVCONTAINER` | Injizierter Typ | Beschreibung |
+|---|---|---|
+| `desktop` | `desktop` | Python-Image + noVNC-Desktop |
+| `headless` | `headless` | Python-Image, kein VNC |
+| `cmk25` | `cmk25` | Checkmk Pro 2.5 + desktop-lite + RCC |
+| nicht gesetzt / keine `.env` | — | Injektion übersprungen |
 
 ### VNC-Auflösung (`VNC_RESOLUTION`)
 
@@ -591,24 +580,25 @@ Alle Typen führen `setup.sh` per `postCreateCommand` aus.
 
 ### Devcontainer für ein neues Beispiel (examples/templates)
 
-Kein manuelles Anlegen nötig — einfach in `template/.env` eintragen:
+In `template/.env` eintragen:
 
 ```dotenv
-VNC=true          # → desktop-Devcontainer wird injiziert
-# oder weglassen  # → headless-Devcontainer wird injiziert
+RMKS_DEVCONTAINER=desktop    # → desktop-Devcontainer wird injiziert
+# oder:
+RMKS_DEVCONTAINER=headless   # → headless-Devcontainer wird injiziert
 ```
 
 `task generate EXAMPLE=<name>` erledigt den Rest.
 
 ### Devcontainer für ein neues Lab
 
-Eine `.devcontainer-type`-Datei im Lab-Verzeichnis anlegen:
+In `template/.env` eintragen:
 
-```bash
-echo "cmk25" > _dev/_labs/<name>/.devcontainer-type
+```dotenv
+RMKS_DEVCONTAINER=cmk25
 ```
 
-Damit wird der `cmk25`-Typ unabhängig von `.env` injiziert. Kein VNC-Eintrag in `.env` nötig.
+Damit wird der `cmk25`-Typ injiziert.
 
 ### Codespaces-Badge in Sub-Repos
 
