@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/elabit/robotmk-starter/compare/v1.1.0...v1.1.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* improved rf-mcp lab ([a1550f8](https://github.com/elabit/robotmk-starter/commit/a1550f8411da83c114bf295addfdeaeb1203f995))
+* renamed the labs ([62ddc73](https://github.com/elabit/robotmk-starter/commit/62ddc737a9624a95ea38c86ea6289e79fe0d9c58))
+
 ## [1.1.0](https://github.com/elabit/robotmk-starter/compare/v1.0.1...v1.1.0) (2026-05-20)
 
 
