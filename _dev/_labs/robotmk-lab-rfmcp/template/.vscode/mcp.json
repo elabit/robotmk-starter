@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "robotmcp-vsc": {
+      "type": "stdio",
+      "command": "/root/.rcc-env/bin/python",
+      "args": ["-m", "robotmcp.server"],
+      "env": {
+        "PATH": "/root/.rcc-env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      }
+    }
+  }
+}

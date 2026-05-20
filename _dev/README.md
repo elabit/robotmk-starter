@@ -658,9 +658,9 @@ Root-`README.md` automatisch:
 
 - Liest `conda.yaml` jedes `examples/`- und `templates/`-Verzeichnisses für Versionen
 - Liest die `Documentation`-Sektion aus der ersten `.robot`-Datei als Beschreibung
-- Schreibt zwischen die Marker `<!-- EXAMPLES-TABLE-START/END -->` und
-  `<!-- TEMPLATES-TABLE-START/END -->`
-- Für `examples/`: 4. Spalte „try out online" mit Link auf `robotmk/example-<name>`
+- Schreibt zwischen die Marker `<!-- EXAMPLES-TABLE-START/END -->`,
+  `<!-- TEMPLATES-TABLE-START/END -->` und `<!-- LABS-TABLE-START/END -->`
+- Für `examples/` und `labs/`: 4. Spalte „try out online" mit Link auf `robotmk/example-<name>`
 
 ```bash
 # Lokal ausführen (setzt pyyaml voraus):
