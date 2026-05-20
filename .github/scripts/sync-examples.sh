@@ -193,7 +193,7 @@ sync_example() {
 sync_lab() {
   local name="$1"
   local src="${LABS_DIR}/${name}"
-  local repo="${ORG}/${name}"
+  local repo="${ORG}/lab-${name}"
   local tmpdir
   tmpdir="$(mktemp -d)"
 

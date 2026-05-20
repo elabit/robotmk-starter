@@ -1,10 +1,10 @@
 {
-  "name": "robotmk-lab-rfmcp",
+  "name": "rfmcp",
   "image": "checkmk/check-mk-pro:2.5.0-latest",
-  "workspaceFolder": "/workspaces/robotmk-lab-rfmcp",
+  "workspaceFolder": "/workspaces/rfmcp",
   "overrideCommand": false,
   "mounts": [
-    "source=${localWorkspaceFolder},target=/workspaces/robotmk-lab-rfmcp,type=bind"
+    "source=${localWorkspaceFolder},target=/workspaces/rfmcp,type=bind"
   ],  
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {

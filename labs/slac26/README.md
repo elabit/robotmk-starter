@@ -17,7 +17,7 @@ Together with a series of Robot Framework test suites, it serves as a playground
 
 Click the button below to open this lab in a fully configured VS Code environment in the browser — Checkmk, Robot Framework, Firefox, and a VNC desktop included, no local installation needed:
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/robotmk/robotmk-lab-slac26)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/robotmk/slac26)
 
 > **What is a GitHub Codespace?**  
 > A Codespace is a browser-based VS Code environment hosted by GitHub.  

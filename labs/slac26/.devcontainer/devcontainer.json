@@ -1,7 +1,7 @@
 {
-  "name": "robotmk-lab-slac26",
+  "name": "slac26",
   "image": "checkmk/check-mk-pro:2.5.0-latest",
-  "workspaceFolder": "/workspaces/robotmk-lab-slac26",
+  "workspaceFolder": "/workspaces/slac26",
   "overrideCommand": false,
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {
