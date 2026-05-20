@@ -67,6 +67,20 @@ Each template focuses on a specific use case or integration, providing a ready-t
 
 ---
 
+### Folder "/labs"
+
+Structured labs to learn and test Robotmk in self-contained scenarios.
+
+To try them out, just click on "*try out*" which opens the repository, where you find instructions.
+
+<!-- LABS-TABLE-START -->
+
+| Robot Framework Suite | Description | Repository Link |
+|---|---|---|
+<!-- LABS-TABLE-END -->
+
+---
+
 ## For maintainers
 
 Examples and templates are generated from Copier sources in `_dev/`.
