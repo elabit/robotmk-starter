@@ -2,7 +2,7 @@
 """
 update_suite_table.py — Updates the suite version table and CI badge URL in README.md.
 
-Reads conda.yaml from each examples/ and templates/ subdirectory to extract
+Reads conda.yaml from each examples/, templates/, and labs/ subdirectory to extract
 the exact library versions, and reads RMKS_ENVIRONMENT from .env for the space name.
 
 Usage:
@@ -91,9 +91,9 @@ def get_space(suite_dir: Path) -> str:
 
 
 def build_table(repo_root: Path, parent: str) -> str:
-    is_examples = parent == "examples"
-    header = "| Robot Framework Suite | Description |" + (" Repository Link |" if is_examples else "")
-    sep    = "|---|---|" + ("---|" if is_examples else "")
+    has_repo_link = parent in ("examples", "labs")
+    header = "| Robot Framework Suite | Description |" + (" Repository Link |" if has_repo_link else "")
+    sep    = "|---|---|" + ("---|" if has_repo_link else "")
     rows = []
     parent_dir = repo_root / parent
     if parent_dir.exists():
@@ -104,7 +104,7 @@ def build_table(repo_root: Path, parent: str) -> str:
             doc = parse_suite_doc(suite_dir)
             rel = f"{parent}/{name}"
             repo_col = ""
-            if is_examples:
+            if has_repo_link:
                 repo_col = f" [try out](https://github.com/robotmk/example-{name}) |"
             rows.append(f"| [{name}]({rel}) | {doc} |{repo_col}")
     return "\n".join([header, sep] + rows)
@@ -154,7 +154,14 @@ def main():
         "<!-- TEMPLATES-TABLE-END -->",
         build_table(repo_root, "templates"),
     )
-    if t1 or t2:
+    # Update labs table
+    content, t3 = replace_between_markers(
+        content,
+        "<!-- LABS-TABLE-START -->",
+        "<!-- LABS-TABLE-END -->",
+        build_table(repo_root, "labs"),
+    )
+    if t1 or t2 or t3:
         print("Suite tables updated.")
         changed = True
 
