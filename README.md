@@ -77,8 +77,8 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 | Robot Framework Suite | Description | Repository Link |
 |---|---|---|
-| [robotmk-lab-rfmcp](labs/robotmk-lab-rfmcp) | — | [try out](https://github.com/robotmk/example-robotmk-lab-rfmcp) |
-| [robotmk-lab-slac26](labs/robotmk-lab-slac26) | — | [try out](https://github.com/robotmk/example-robotmk-lab-slac26) |
+| [rfmcp](labs/rfmcp) | — | [try out](https://github.com/robotmk/example-rfmcp) |
+| [slac26](labs/slac26) | — | [try out](https://github.com/robotmk/example-slac26) |
 
 <!-- LABS-TABLE-END -->
 
