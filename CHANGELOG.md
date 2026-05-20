@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/elabit/robotmk-starter/compare/v1.0.0...v1.0.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* Refactored env settings ([693f86d](https://github.com/elabit/robotmk-starter/commit/693f86debfcd93e026da74a13bb10533bb3c5ba5))
+
 ## 1.0.0 (2026-05-20)
 
 
