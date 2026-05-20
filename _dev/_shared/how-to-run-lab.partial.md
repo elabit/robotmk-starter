@@ -1,9 +1,3 @@
-<!-- Lab-specific intro injected after H1 in every lab README.
-     Edit this file in _dev/_shared/ — do not edit the generated copy. -->
-
-This repository is a **Checkmk practice lab** — a hands-on environment for learning [Robotmk](https://www.robotmk.org) Synthetic Monitoring with [Checkmk](https://checkmk.com) and [Robot Framework](https://robotframework.org/).
-
-The lab contains multiple exercise suites. Some may be intentionally incomplete — that is part of the challenge.
 
 ## How to Open the Lab
 

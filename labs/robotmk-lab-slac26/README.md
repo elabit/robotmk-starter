@@ -2,12 +2,13 @@
 
 # Checkmk Workshop
 
-<!-- Lab-specific intro injected after H1 in every lab README.
-     Edit this file in _dev/_shared/ — do not edit the generated copy. -->
+This repository provides you a hands-on environment for learning [Robotmk](https://www.robotmk.org) Synthetic Monitoring with [Checkmk](https://checkmk.com) and [Robot Framework](https://robotframework.org/).
 
-This repository is a **Checkmk practice lab** — a hands-on environment for learning [Robotmk](https://www.robotmk.org) Synthetic Monitoring with [Checkmk](https://checkmk.com) and [Robot Framework](https://robotframework.org/).
+## About this Repository
 
-The lab contains multiple exercise suites. Some may be intentionally incomplete — that is part of the challenge.
+This is a special example - it does not ony contain Robot Framework tests, but also a Checkmk instance.  
+Together with a series of Robot Framework test suites, it serves as a playground for learning how to use Robotmk for testing Checkmk.
+
 
 ## How to Open the Lab
 
@@ -26,11 +27,6 @@ Click the button below to open this lab in a fully configured VS Code environmen
 Clone this repository and open it in VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).  
 VS Code will detect `.devcontainer/devcontainer.json` and prompt you to reopen in container.
 
-
-## About this Repository
-
-This is a special example - it does not ony contain Robot Framework tests, but also a Checkmk instance.  
-Together with a series of Robot Framework test suites, it serves as a playground for learning how to use Robotmk for testing Checkmk.
 
 
 ## Links
