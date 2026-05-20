@@ -1,0 +1,61 @@
+<!-- First include the example/template's partial. Examples include the exmaple-intro.partial in turn. -->
+
+# Checkmk Workshop
+
+<!-- Lab-specific intro injected after H1 in every lab README.
+     Edit this file in _dev/_shared/ — do not edit the generated copy. -->
+
+This repository is a **Checkmk practice lab** — a hands-on environment for learning [Robotmk](https://www.robotmk.org) Synthetic Monitoring with [Checkmk](https://checkmk.com) and [Robot Framework](https://robotframework.org/).
+
+The lab contains multiple exercise suites. Some may be intentionally incomplete — that is part of the challenge.
+
+## How to Open the Lab
+
+### Run in a GitHub Codespace (recommended)
+
+Click the button below to open this lab in a fully configured VS Code environment in the browser — Checkmk, Robot Framework, Firefox, and a VNC desktop included, no local installation needed:
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/robotmk/robotmk-lab-rfmcp)
+
+> **What is a GitHub Codespace?**  
+> A Codespace is a browser-based VS Code environment hosted by GitHub.  
+> The devcontainer automatically installs Checkmk, RCC, and all RF dependencies on first start.
+
+### Run locally with Docker
+
+Clone this repository and open it in VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).  
+VS Code will detect `.devcontainer/devcontainer.json` and prompt you to reopen in container.
+
+
+## About this Repository
+
+This is a complete playground to test out the Robot Framework [MCP-Server](https://github.com/manykarim/rf-mcp/tree/main/docker) which helps you to implement, refactor and debug your Robot Framework tests in a more efficient way.  
+To have something to test against, we have set up a Checkmk instance, which you can also use to integrate the tests you are creating. 
+
+## Links
+
+TBD
+
+
+## Libraries and Versions used in this example
+
+| Library | Version |
+|---|---|
+| Python | `3.12` |
+| Node.js | `22.11.0` |
+| Robot Framework | `7.4` |
+| robotframework-browser | `19.14.2` |
+| rf-mcp | `0.31.2` |
+
+
+## About
+
+Also try the other [RF example suites](https://github.com/elabit/robotmk-starter#content), they all work in the Codespace environment.  
+
+🪲 Found a bug or have a suggestion?  
+→ [Open an issue](https://github.com/robotmk/robotmk-starter/issues) or submit a [pull request](https://github.com/robotmk/robotmk-starter/pulls) — contributions are welcome.
+
+📖 Want to go deeper? Want ot get a certified professional?  
+→ I offer [Synthetic Monitoring Trainings](https://lp.robotmk.org/robotmk-masterclass-4d-en) or book a free [call](https://meet.brevo.com/simon-meggle).
+
+**Simon Meggle** — Founder of Robotmk, Product Manager Synthetic Monitoring at Checkmk
