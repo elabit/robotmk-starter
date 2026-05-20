@@ -91,7 +91,8 @@ def get_space(suite_dir: Path) -> str:
 
 
 def build_table(repo_root: Path, parent: str) -> str:
-    has_repo_link = parent in ("examples", "labs")
+    repo_link_parents = {"examples", "labs"}
+    has_repo_link = parent in repo_link_parents
     header = "| Robot Framework Suite | Description |" + (" Repository Link |" if has_repo_link else "")
     sep    = "|---|---|" + ("---|" if has_repo_link else "")
     rows = []
@@ -105,7 +106,8 @@ def build_table(repo_root: Path, parent: str) -> str:
             rel = f"{parent}/{name}"
             repo_col = ""
             if has_repo_link:
-                repo_col = f" [try out](https://github.com/robotmk/example-{name}) |"
+                repo_prefix = f"{parent[:-1]}-" if parent.endswith("s") else f"{parent}-"
+                repo_col = f" [try out](https://github.com/robotmk/{repo_prefix}{name}) |"
             rows.append(f"| [{name}]({rel}) | {doc} |{repo_col}")
     return "\n".join([header, sep] + rows)
 
