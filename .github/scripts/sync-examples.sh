@@ -61,7 +61,7 @@ build_header() {
   local badge
   # no button at the beginning
   #badge="$(build_codespaces_badge "${repo_id}" "${has_devcontainer}")"
-  [[ -n "${badge}" ]] && printf '%s\n\n' "${badge}"
+  #[[ -n "${badge}" ]] && printf '%s\n\n' "${badge}"
 
 # <picture>
 #   <source media="(prefers-color-scheme: dark)" srcset="https://www.robotmk.org/rmk_crop_transp_w150.png">

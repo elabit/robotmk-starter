@@ -4,7 +4,7 @@ This is a collection of prompts that can be used in the RF-MCP Lab. They are des
 
 ## Checkmk Login 
 
-Create a Robot Framework test suite that verifies the login functionality of the Checkmk instance provided in this lab. The test should cover the following scenarios:
+Create a Robot Framework test suite cmk.robot that verifies the login functionality of the Checkmk instance provided in this lab. The test should cover the following scenarios:
 
 **Steps:**
 
@@ -21,6 +21,6 @@ Create a Robot Framework test suite that verifies the login functionality of the
 
 - Use the robotmcp-claude/vscode MCP server for the creation
 - Implement the whole suite, validate each step
-- Use Variables for common values (e.g., username, password, URL, selectors).
+- Use Variables for common values (e.g., username, password, URL,...).
 - Use Browser Library (start browser with UI)
 - Create User Keywords for reusable actions (e.g., login, navigate to profile).
