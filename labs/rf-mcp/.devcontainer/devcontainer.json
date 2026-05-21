@@ -1,11 +1,8 @@
 {
-  "name": "{{ example_name }}",
+  "name": "rf-mcp",
   "image": "checkmk/check-mk-pro:2.5.0-latest",
-  "workspaceFolder": "/workspaces/{{ example_name }}",
+  "workspaceFolder": "/workspaces/rf-mcp",
   "overrideCommand": false,
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspaces/{{ example_name }},type=bind"
-  ],  
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {
       "password": "vscode",
@@ -24,7 +21,7 @@
         "ms-python.python",
         "d-biehl.robotcode"
       ]
-    }, 
+    }
   },
   "runArgs": ["--shm-size=1g"],
   "onCreateCommand": "bash .devcontainer/oncreate.sh",
