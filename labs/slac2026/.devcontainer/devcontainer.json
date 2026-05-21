@@ -1,7 +1,6 @@
 {
   "name": "slac2026",
   "image": "checkmk/check-mk-pro:2.5.0-latest",
-  "workspaceFolder": "/workspaces/slac2026",
   "overrideCommand": false,
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {
