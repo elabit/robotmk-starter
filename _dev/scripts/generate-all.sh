@@ -129,6 +129,12 @@ generate() {
   echo "  src: ${src_base}/${name}"
   echo "  dst: ${dst_base}/${name}"
 
+  # Purge destination to ensure idempotency
+  if [[ -d "${dst_base}/${name}" ]]; then
+    echo "  ↳ Purging ${dst_base}/${name} ..."
+    rm -rf "${dst_base}/${name}"
+  fi
+
   # Inject shared README template if the example has a partial
   local shared_readme="${SHARED_DIR}/README.md.jinja"
   local partial="${src_base}/${name}/README.partial.md"

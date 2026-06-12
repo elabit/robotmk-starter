@@ -73,6 +73,13 @@ function Generate-Item {
     $src = Join-Path $SrcBase $Name
     Write-Host "→ ${Label}\$Name"
 
+    # Purge destination to ensure idempotency
+    $dst = Join-Path $DstBase $Name
+    if (Test-Path $dst) {
+        Write-Host "  ↳ Purging $dst ..."
+        Remove-Item -Recurse -Force $dst
+    }
+
     # Inject shared README template if the example has a partial
     $sharedReadme = Join-Path $SharedDir "README.md.jinja"
     $partial = Join-Path $src "README.partial.md"
