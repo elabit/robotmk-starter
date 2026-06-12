@@ -33,6 +33,16 @@ Get-Content $VersionsFile | Where-Object { $_ -match '^\s*[^#]\S+=\S+' } | ForEa
 }
 # ──────────────────────────────────────────────────────────────────────────────
 
+# Resolve Python executable (prefer venv, fall back to PATH)
+$PythonExe = Join-Path $RepoRoot ".venv\Scripts\python.exe"
+if (-not (Test-Path $PythonExe)) {
+    $PythonExe = (Get-Command python3 -ErrorAction SilentlyContinue)?.Source
+    if (-not $PythonExe) {
+        $PythonExe = (Get-Command python -ErrorAction SilentlyContinue)?.Source
+    }
+    if (-not $PythonExe) { throw "python not found — required for populate step" }
+}
+
 $CommonData = @(
     "--data", "rf_version=$RF_VERSION",
     "--data", "rf_lib_browser_version=$RF_LIB_BROWSER_VERSION",
@@ -74,6 +84,14 @@ function Generate-Item {
     Invoke-EnvInject -Src $src
     & copier copy --overwrite --defaults @CommonData $src (Join-Path $DstBase $Name)
     if ($LASTEXITCODE -ne 0) { throw "copier failed for $Name" }
+
+    # Post-copier populate: copy additional files/dirs defined in populate.yaml
+    $populateFile = Join-Path $src "populate.yaml"
+    if (Test-Path $populateFile) {
+        Write-Host "  ↳ Running populate.yaml ..."
+        & $PythonExe (Join-Path $RepoRoot "_dev\scripts\populate.py") $populateFile $RepoRoot (Join-Path $DstBase $Name)
+        if ($LASTEXITCODE -ne 0) { throw "populate failed for $Name" }
+    }
 
     # Remove the injected shared README template from the source tree
     Remove-Item -Path (Join-Path $src "template\README.md.jinja") -ErrorAction SilentlyContinue

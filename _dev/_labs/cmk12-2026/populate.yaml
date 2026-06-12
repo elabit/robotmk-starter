@@ -1,0 +1,51 @@
+populate:
+
+  - src: examples/cryptolibrary-simple
+    dst: examples/cryptolibrary-simple
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+  - src: examples/rf-custom-library
+    dst: examples/rf-custom-library
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+  - src: examples/rf-python-varfiles
+    dst: examples/rf-python-varfiles
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+  - src: examples/web-cryptolibrary
+    dst: examples/web-cryptolibrary
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+  - src: examples/web-webshop
+    dst: examples/web-webshop
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+  - src: examples/web-todomvc
+    dst: examples/web-todomvc
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+  - src: _dev/_shared/examples/api-checkmk
+    dst: examples/api-checkmk
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+  - src: _dev/_shared/lib/CheckmkRESTAPI
+    dst: examples/lib/CheckmkRESTAPI
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+

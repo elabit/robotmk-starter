@@ -29,6 +29,16 @@ if [[ ! -x "${COPIER}" ]]; then
   fi
 fi
 
+# Prefer the venv python if present, otherwise fall back to PATH.
+PYTHON="${REPO_ROOT}/.venv/bin/python3"
+if [[ ! -x "${PYTHON}" ]]; then
+  PYTHON="$(command -v python3 || command -v python || true)"
+  if [[ -z "${PYTHON}" ]]; then
+    echo "Error: python3 not found." >&2
+    exit 1
+  fi
+fi
+
 # ─── Version pins (read from _dev/config/versions.env) ──────────────────────
 VERSIONS_FILE="${REPO_ROOT}/_dev/config/versions.env"
 if [[ ! -f "${VERSIONS_FILE}" ]]; then
@@ -150,6 +160,15 @@ generate() {
   "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" \
     --data "example_name=${name}" \
     "${src_base}/${name}" "${dst_base}/${name}"
+
+  # Post-copier populate: copy additional files/dirs defined in populate.yaml
+  if [[ -f "${src_base}/${name}/populate.yaml" ]]; then
+    echo "  ↳ Running populate.yaml ..."
+    "${PYTHON}" "${REPO_ROOT}/_dev/scripts/populate.py" \
+      "${src_base}/${name}/populate.yaml" \
+      "${REPO_ROOT}" \
+      "${dst_base}/${name}"
+  fi
 
   # Remove the injected shared README template from the source tree
   rm -f "${src_base}/${name}/template/README.md.jinja"
