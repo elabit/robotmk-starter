@@ -36,6 +36,12 @@ populate:
       - "*.pyc"
       - "__pycache__/"
 
+  - src: examples/web-carinsurance
+    dst: examples/web-carinsurance
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
   - src: _dev/_shared/examples/api-checkmk
     dst: examples/api-checkmk
     exclude:            
