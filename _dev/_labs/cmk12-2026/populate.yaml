@@ -43,7 +43,14 @@ populate:
       - "__pycache__/"
 
   - src: _dev/_shared/lib/CheckmkRESTAPI
-    dst: examples/lib/CheckmkRESTAPI
+    dst: lib/CheckmkRESTAPI
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+
+  - src: _dev/_shared/examples/web-cmk-tutorial
+    dst: examples/web-cmk-tutorial
     exclude:            
       - "*.pyc"
       - "__pycache__/"
