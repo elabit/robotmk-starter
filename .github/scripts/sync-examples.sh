@@ -44,6 +44,8 @@ ensure_repo() {
     echo "  → Creating ${repo} ..."
     gh repo create "${repo}" --public --description "${description}"
   fi
+  gh api -X PATCH "repos/${repo}" -f is_template=true --silent
+  echo "  ✓ Template flag set on ${repo}"
 }
 
 build_codespaces_badge() {
