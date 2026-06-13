@@ -45,6 +45,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 | [rf-custom-library](examples/rf-custom-library) | This suite demonstrates the use of a **custom library**, written with a simple Python class. | [try out](https://github.com/robotmk/example-rf-custom-library) |
 | [rf-python-varfiles](examples/rf-python-varfiles) | A suite to demonstrate how to load **variables** from **Python**, **JSON** and **YAML** variable files, including nested data structures. | [try out](https://github.com/robotmk/example-rf-python-varfiles) |
 | [web-cryptolibrary](examples/web-cryptolibrary) | A example of how to use the **CryptoLibrary** in a web test (**BrowserLibrary**). | [try out](https://github.com/robotmk/example-web-cryptolibrary) |
+| [web-todomvc](examples/web-todomvc) | A simple web test on the famous todoMVC web application, with a special emphasis on the assertion after actions. | [try out](https://github.com/robotmk/example-web-todomvc) |
 | [web-webshop](examples/web-webshop) | A **BrowserLibrary** suite running against a demo web shop, showing a full user journey: login → add items to cart → checkout. | [try out](https://github.com/robotmk/example-web-webshop) |
 
 <!-- EXAMPLES-TABLE-END -->
@@ -77,6 +78,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 | Robot Framework Suite | Description | Repository Link |
 |---|---|---|
+| [cmk12-2026](labs/cmk12-2026) | — | [try out](https://github.com/robotmk/lab-cmk12-2026) |
 | [rf-mcp](labs/rf-mcp) | — | [try out](https://github.com/robotmk/lab-rf-mcp) |
 | [slac2026](labs/slac2026) | — | [try out](https://github.com/robotmk/lab-slac2026) |
 
