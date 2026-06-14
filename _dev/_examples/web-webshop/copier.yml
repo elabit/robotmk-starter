@@ -1,9 +1,0 @@
-# Copier template for the web-webshop example.
-# Maintainer-only: generates examples/web-webshop/ from this template.
-# The conda.yaml is injected automatically from _dev/_environments/ based on RMKS_ENVIRONMENT.
-# Run via: task generate
-
-_subdirectory: template
-_answers_file: .copier-answers.yml
-
-

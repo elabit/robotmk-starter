@@ -24,12 +24,6 @@ populate:
       - "*.pyc"
       - "__pycache__/"
 
-  - src: examples/web-webshop
-    dst: examples/web-webshop
-    exclude:            
-      - "*.pyc"
-      - "__pycache__/"
-
   - src: examples/web-todomvc
     dst: examples/web-todomvc
     exclude:            

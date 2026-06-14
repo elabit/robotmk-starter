@@ -1,6 +1,3 @@
-# Copier template for the web-webshop example.
-# Maintainer-only: generates examples/web-webshop/ from this template.
-# Run via: _dev/scripts/generate-all.sh
 
 _subdirectory: template
 _answers_file: .copier-answers.yml
