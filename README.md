@@ -47,7 +47,6 @@ To try them out, just click on "*try out*" which opens the repository, where you
 | [web-carinsurance](examples/web-carinsurance) | A car insurance quote workflow on a sample application using the Browser Library. Covers the complete process from vehicle and insurant data entry through product configuration, price selection, and quote submission via email. | [try out](https://github.com/robotmk/example-web-carinsurance) |
 | [web-cryptolibrary](examples/web-cryptolibrary) | A example of how to use the **CryptoLibrary** in a web test (**BrowserLibrary**). | [try out](https://github.com/robotmk/example-web-cryptolibrary) |
 | [web-todomvc](examples/web-todomvc) | A simple web test on the famous todoMVC web application, with a special emphasis on the assertion after actions. | [try out](https://github.com/robotmk/example-web-todomvc) |
-| [web-webshop](examples/web-webshop) | A **BrowserLibrary** suite running against a demo web shop, showing a full user journey: login → add items to cart → checkout. | [try out](https://github.com/robotmk/example-web-webshop) |
 
 <!-- EXAMPLES-TABLE-END -->
 
