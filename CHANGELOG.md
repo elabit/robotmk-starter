@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.2.0](https://github.com/elabit/robotmk-starter/compare/v1.1.1...v1.2.0) (2026-06-19)
+
+
+### Features
+
+* Added cmk12 lab ([7305fca](https://github.com/elabit/robotmk-starter/commit/7305fcade202dc0ee81c5b43f9abe9c1bd746534))
+* Added todoMVC ([931c889](https://github.com/elabit/robotmk-starter/commit/931c889e455da085bf99763926f8e052e7daf813))
+* CarInsurance ([373ba6d](https://github.com/elabit/robotmk-starter/commit/373ba6df330002344ba501862c749be2458952ca))
+* Tutorial for rfmcp ([cdedbd0](https://github.com/elabit/robotmk-starter/commit/cdedbd074458a32fd048c2de06b96f7939acc23d))
+
+
+### Bug Fixes
+
+* added claude settings.json ([cdedbd0](https://github.com/elabit/robotmk-starter/commit/cdedbd074458a32fd048c2de06b96f7939acc23d))
+* cmk agent install script kills scheduler before restarting ([e6a855f](https://github.com/elabit/robotmk-starter/commit/e6a855f33976debd27d9c2bef542bfa7f22c5e25))
+* CMK12lab ([7305fca](https://github.com/elabit/robotmk-starter/commit/7305fcade202dc0ee81c5b43f9abe9c1bd746534))
+* Generate Script now purges dest dirs ([acadf8d](https://github.com/elabit/robotmk-starter/commit/acadf8d4e3e9ecd39cb258638a84ee64999e3a99))
+* lab ([7305fca](https://github.com/elabit/robotmk-starter/commit/7305fcade202dc0ee81c5b43f9abe9c1bd746534))
+* Lab examples ([9dd41a2](https://github.com/elabit/robotmk-starter/commit/9dd41a2b37a3f14544a6db4dad37b66c8c4041a3))
+* links in repo tables ([09ebc57](https://github.com/elabit/robotmk-starter/commit/09ebc5742194e7af24ae553663f4c7296b43e80f))
+* removed webshop example ([e6a855f](https://github.com/elabit/robotmk-starter/commit/e6a855f33976debd27d9c2bef542bfa7f22c5e25))
+* removed webshop, fix agend install script, rfbrowser init ([e6a855f](https://github.com/elabit/robotmk-starter/commit/e6a855f33976debd27d9c2bef542bfa7f22c5e25))
+* rfbrowser init - only chromium ([e6a855f](https://github.com/elabit/robotmk-starter/commit/e6a855f33976debd27d9c2bef542bfa7f22c5e25))
+* sync script badge ([cdedbd0](https://github.com/elabit/robotmk-starter/commit/cdedbd074458a32fd048c2de06b96f7939acc23d))
+* todomvc ([931c889](https://github.com/elabit/robotmk-starter/commit/931c889e455da085bf99763926f8e052e7daf813))
+* TodoMVC ([931c889](https://github.com/elabit/robotmk-starter/commit/931c889e455da085bf99763926f8e052e7daf813))
+
 ## [1.1.1](https://github.com/elabit/robotmk-starter/compare/v1.1.0...v1.1.1) (2026-05-20)
 
 
