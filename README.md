@@ -62,6 +62,7 @@ Each template focuses on a specific use case or integration, providing a ready-t
 
 | Robot Framework Suite | Description |
 |---|---|
+| [rf-skeleton](templates/rf-skeleton) | A minimal Robot Framework skeleton |
 | [web-browserlibrary](templates/web-browserlibrary) | A minimal skeleton to start with BrowserLibrary and Resource files. |
 
 <!-- TEMPLATES-TABLE-END -->
@@ -80,6 +81,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 |---|---|---|
 | [cmk12-2026](labs/cmk12-2026) | — | [try out](https://github.com/robotmk/lab-cmk12-2026) |
 | [rf-mcp](labs/rf-mcp) | — | [try out](https://github.com/robotmk/lab-rf-mcp) |
+| [robotmk-bridge](labs/robotmk-bridge) | — | [try out](https://github.com/robotmk/lab-robotmk-bridge) |
 | [slac2026](labs/slac2026) | — | [try out](https://github.com/robotmk/lab-slac2026) |
 
 <!-- LABS-TABLE-END -->
