@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/elabit/robotmk-starter/compare/v1.2.0...v1.3.0) (2026-07-06)
+
+
+### Features
+
+* Bridge lab ([ddf121b](https://github.com/elabit/robotmk-starter/commit/ddf121bfe7d0aa7dd2f5cbbde1e4c2e78cfe9341))
+
 ## [1.2.0](https://github.com/elabit/robotmk-starter/compare/v1.1.1...v1.2.0) (2026-06-19)
 
 
