@@ -1,0 +1,9 @@
+populate:
+
+  - src: templates/rf-skeleton
+    dst: suites/simpletest
+    exclude:            
+      - "*.pyc"
+      - "__pycache__/"
+
+
