@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # .devcontainer/oncreate.sh — Runs once when the container image is built (prebuild-cached).
-# Downloads RCC, builds the holotree environment, installs the Checkmk agent and Firefox.
+# Downloads RCC and builds the holotree environment.
 
 set -euo pipefail
 
@@ -39,29 +39,6 @@ ok "Environment ready at ${SPACE_ROOT}"
 step "Creating symlink ~/.rcc-env → ${SPACE_ROOT} ..."
 ln -sfn "${SPACE_ROOT}" "$HOME/.rcc-env"
 ok "~/.rcc-env → ${SPACE_ROOT}"
-
-# ── Step 7: Install Checkmk agent ────────────────────────────────────────────
-step "Installing Checkmk agent ..."
-bash "$(dirname "$0")/install_cmk_agent.sh" vanilla
-ok "Checkmk agent installed."
-
-# ── Step 8: Install Firefox via Mozilla PPA ───────────────────────────────────
-step "Installing Firefox via Mozilla PPA ..."
-apt-get update -qq
-apt-get install -y --no-install-recommends software-properties-common
-add-apt-repository -y ppa:mozillateam/ppa
-# Pin Mozilla PPA above Ubuntu's snap redirect (priority 1001 > default 500)
-cat > /etc/apt/preferences.d/mozilla-firefox <<'EOF'
-Package: *
-Pin: release o=LP-PPA-mozillateam
-Pin-Priority: 1001
-EOF
-apt-get update -qq
-apt-get install -y --no-install-recommends firefox-esr
-ok "Firefox installed."
-
-# install additional tools
-apt-get install -y --no-install-recommends jq curl wget vim htop sudo python3-pip
 
 echo ""
 echo -e "${GREEN}${BOLD}Container creation complete.${RESET}"
