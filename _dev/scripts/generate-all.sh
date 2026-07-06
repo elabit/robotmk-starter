@@ -222,4 +222,8 @@ if [[ -d "${LABS_SRC}" ]]; then
 fi
 
 echo ""
+echo "=== Generating .code-workspace ==="
+"${PYTHON}" "${REPO_ROOT}/_dev/scripts/generate-workspace.py" "${REPO_ROOT}"
+
+echo ""
 echo "All done."
