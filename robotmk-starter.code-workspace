@@ -1,0 +1,217 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "robotmk-starter"
+    },
+    {
+      "path": "examples/cryptolibrary-simple",
+      "name": "[example] cryptolibrary-simple"
+    },
+    {
+      "path": "examples/rf-custom-library",
+      "name": "[example] rf-custom-library"
+    },
+    {
+      "path": "examples/rf-python-varfiles",
+      "name": "[example] rf-python-varfiles"
+    },
+    {
+      "path": "examples/web-carinsurance",
+      "name": "[example] web-carinsurance"
+    },
+    {
+      "path": "examples/web-cryptolibrary",
+      "name": "[example] web-cryptolibrary"
+    },
+    {
+      "path": "examples/web-todomvc",
+      "name": "[example] web-todomvc"
+    },
+    {
+      "path": "templates/rf-skeleton",
+      "name": "[template] rf-skeleton"
+    },
+    {
+      "path": "templates/web-browserlibrary",
+      "name": "[template] web-browserlibrary"
+    },
+    {
+      "path": "labs/cmk12-2026",
+      "name": "[lab] cmk12-2026"
+    },
+    {
+      "path": "labs/rf-mcp",
+      "name": "[lab] rf-mcp"
+    },
+    {
+      "path": "labs/robotmk-bridge",
+      "name": "[lab] robotmk-bridge"
+    },
+    {
+      "path": "labs/slac2026",
+      "name": "[lab] slac2026"
+    }
+  ],
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "devcontainer: open [example] cryptolibrary-simple",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/examples/cryptolibrary-simple"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [example] rf-custom-library",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/examples/rf-custom-library"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [example] rf-python-varfiles",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/examples/rf-python-varfiles"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [example] web-carinsurance",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/examples/web-carinsurance"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [example] web-cryptolibrary",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/examples/web-cryptolibrary"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [example] web-todomvc",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/examples/web-todomvc"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [template] rf-skeleton",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/templates/rf-skeleton"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [template] web-browserlibrary",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/templates/web-browserlibrary"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [lab] cmk12-2026",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/labs/cmk12-2026"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [lab] rf-mcp",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/labs/rf-mcp"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [lab] robotmk-bridge",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/labs/robotmk-bridge"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "devcontainer: open [lab] slac2026",
+        "type": "shell",
+        "command": "code",
+        "args": [
+          "${workspaceFolder:robotmk-starter}/labs/slac2026"
+        ],
+        "presentation": {
+          "reveal": "never",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+}
