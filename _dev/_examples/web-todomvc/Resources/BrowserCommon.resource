@@ -3,6 +3,7 @@ Library     Browser
 ...             enable_playwright_debug=disabled
 ...             auto_delete_passed_tracing=True
 ...             run_on_failure=Take A Screenshot
+...             timeout=20s
 
 
 *** Keywords ***

@@ -1,0 +1,18 @@
+populate:
+  - src: _dev/_ansible
+    dst: .devcontainer/ansible
+    exclude:
+      - "*.pyc"
+      - "__pycache__"
+
+  - src: templates/web-browserlibrary
+    dst: templates/web-browserlibrary
+    exclude:
+      - "*.pyc"
+      - "__pycache__"
+      - "output"
+      - "log.html"
+      - "report.html"
+      - "output.xml"
+      - "browser"
+      - "playwright-log.txt"

@@ -69,7 +69,7 @@ function Invoke-EnvInject {
 }
 
 function Generate-Item {
-    param([string]$Name, [string]$SrcBase, [string]$DstBase, [string]$Label)
+    param([string]$Name, [string]$SrcBase, [string]$DstBase, [string]$Label, [string[]]$ExtraData = @())
     $src = Join-Path $SrcBase $Name
     Write-Host "→ ${Label}\$Name"
 
@@ -88,8 +88,13 @@ function Generate-Item {
         Copy-Item $sharedReadme (Join-Path $src "README.md.jinja")
     }
 
-    Invoke-EnvInject -Src $src
-    & copier copy --overwrite --defaults @CommonData $src (Join-Path $DstBase $Name)
+    # os/ never uses the .env-driven RMKS_ENVIRONMENT indirection (each
+    # os/<slug> devcontainer is authored directly in its Copier source) --
+    # guarded explicitly, matching generate-all.sh.
+    if ($Label -ne "os") {
+        Invoke-EnvInject -Src $src
+    }
+    & copier copy --overwrite --defaults @CommonData @ExtraData $src (Join-Path $DstBase $Name)
     if ($LASTEXITCODE -ne 0) { throw "copier failed for $Name" }
 
     # Post-copier populate: copy additional files/dirs defined in populate.yaml
@@ -132,6 +137,38 @@ if (Test-Path $LabsSrc) {
         $name = $_.Name
         if ([string]::IsNullOrEmpty($Filter) -or $name -eq $Filter) {
             Generate-Item -Name $name -SrcBase $LabsSrc -DstBase $LabsOut -Label "labs"
+        }
+    }
+}
+
+Write-Host ""
+Write-Host "=== os\ (Ansible-provisioned OS install verification) ==="
+$OsSrc = Join-Path $RepoRoot "_dev\_os"
+$OsOut = Join-Path $RepoRoot "os"
+if (Test-Path $OsSrc) {
+    Get-ChildItem -Path $OsSrc -Directory | ForEach-Object {
+        $name = $_.Name
+        if ([string]::IsNullOrEmpty($Filter) -or $name -eq $Filter) {
+            if ($name -notmatch '^[a-z0-9_]+$') {
+                throw "os/ slug '$name' must be lowercase letters/digits/underscore only (needed to derive a valid <SLUG>_IMAGE variable name)"
+            }
+            # Derive the version-pin key generically from the slug (debian -> DEBIAN_IMAGE)
+            # so adding a new OS target never requires editing this script. The
+            # rhel slug is the one flagged exception (Story 1.1): its
+            # versions.env key is RHEL_COMPAT_IMAGE, not the
+            # generically-derived RHEL_IMAGE, because the slug names the
+            # target FAMILY while the pin documents that the actual image is
+            # a RHEL-compatible substitute (Rocky Linux), not RHEL itself.
+            if ($name -eq "rhel") {
+                $imageVar = "RHEL_COMPAT_IMAGE"
+            } else {
+                $imageVar = "$($name.ToUpper())_IMAGE"
+            }
+            $imageValue = (Get-Variable -Name $imageVar -ErrorAction SilentlyContinue)?.Value
+            if ([string]::IsNullOrEmpty($imageValue)) {
+                throw "$imageVar not set in versions.env for os/$name"
+            }
+            Generate-Item -Name $name -SrcBase $OsSrc -DstBase $OsOut -Label "os" -ExtraData @("--data", "${name}_image=$imageValue")
         }
     }
 }

@@ -1,0 +1,3 @@
+---
+- name: Include OS-family-specific package list
+  include_tasks: "{{ ansible_facts['os_family'] | lower }}.yml"

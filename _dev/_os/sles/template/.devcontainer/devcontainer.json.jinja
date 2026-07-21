@@ -1,0 +1,23 @@
+{
+  "name": "os-sles",
+  "image": "{{ sles_image }}",
+  // gawk: SLE_BCI ships no awk/gawk by default, but VS Code Server's own
+  // check-requirements.sh needs it to attach at all (unrelated to this
+  // project's own provisioning proof). Must be a build-time feature, not an
+  // oncreate.sh step -- the VS Code Server bootstrap runs before
+  // onCreateCommand, so installing it there would be too late.
+  "features": {
+    "./features/gawk": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "d-biehl.robotcode",
+        "redhat.ansible"
+      ]
+    }
+  },
+  "onCreateCommand": "bash .devcontainer/oncreate.sh",
+  "postCreateCommand": "bash .devcontainer/postcreate.sh"
+}

@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
-# generate-all.sh — Regenerates examples/ and templates/ from _dev/_examples/ and _dev/_templates/.
+# generate-all.sh — Regenerates examples/, templates/, labs/, and os/ from
+# their _dev/_examples/, _dev/_templates/, _dev/_labs/, and _dev/_os/ sources.
 #
-# Each source's template/.env must contain RMKS_ENVIRONMENT=<env-name> and
-# RMKS_DEVCONTAINER=<type>. These replace the former .rcc and .devcontainer-type
-# files and drive environment and devcontainer injection via Copier.
+# Each examples/templates/labs source's template/.env must contain
+# RMKS_ENVIRONMENT=<env-name> and RMKS_DEVCONTAINER=<type>. These replace the
+# former .rcc and .devcontainer-type files and drive environment and
+# devcontainer injection via Copier.
+#
+# os/ sources do NOT use the .env/RMKS_* convention — each os/<slug>'s
+# devcontainer is authored directly in its Copier source (no injection), and
+# its base-image tag is looked up from versions.env as <SLUG-UPPER>_IMAGE.
 #
 # Usage:
 #   task generate
-#   task generate EXAMPLE=cryptolibrary   # single name (both examples/ and templates/)
+#   task generate EXAMPLE=cryptolibrary   # single name (matches across every content type)
 
 set -euo pipefail
+shopt -s nullglob  # so an empty source dir (e.g. no os/ instances yet) iterates zero times instead of passing the literal glob through
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
@@ -124,6 +131,8 @@ generate() {
   local src_base="$2"
   local dst_base="$3"
   local label="$4"
+  shift 4
+  local extra_data=("$@")  # optional additional --data args (used by the os/ loop)
 
   echo "→ ${label}/${name}"
   echo "  src: ${src_base}/${name}"
@@ -156,14 +165,20 @@ generate() {
     cp "${shared_lab_intro}" "${src_base}/${name}/how-to-run-lab.partial.md"
   fi
 
-  inject_devcontainer "${src_base}/${name}"
-  inject_env "${src_base}/${name}"
+  # os/ never uses the .env-driven RMKS_DEVCONTAINER/RMKS_ENVIRONMENT
+  # indirection (each os/<slug> devcontainer is authored directly in its
+  # Copier source) -- guarded explicitly, not just relying on os/ sources
+  # happening to have no template/.env today.
+  if [[ "${label}" != "os" ]]; then
+    inject_devcontainer "${src_base}/${name}"
+    inject_env "${src_base}/${name}"
+  fi
   # Move the generated versions partial from template/ to root so Jinja can find it
   # (Copier's include loader searches the source root, not the _subdirectory)
   if [[ -f "${src_base}/${name}/template/versions.partial.md" ]]; then
     mv "${src_base}/${name}/template/versions.partial.md" "${src_base}/${name}/versions.partial.md"
   fi
-  "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" \
+  "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" "${extra_data[@]}" \
     --data "example_name=${name}" \
     "${src_base}/${name}" "${dst_base}/${name}"
 
@@ -183,8 +198,13 @@ generate() {
   # Remove the injected how-to-run partials from the source tree
   rm -f "${src_base}/${name}/how-to-run.partial.md"
   rm -f "${src_base}/${name}/how-to-run-lab.partial.md"
-  # Remove the injected devcontainer files from the source tree
-  rm -rf "${src_base}/${name}/template/.devcontainer"
+  # Remove the injected devcontainer files from the source tree — except for
+  # the os/ content type, where .devcontainer/ is permanent, hand-authored
+  # source content (AD-10), not an injected/temporary artifact like every
+  # other content type's devcontainer files.
+  if [[ "${label}" != "os" ]]; then
+    rm -rf "${src_base}/${name}/template/.devcontainer"
+  fi
 
   echo "  ✓ Done"
 }
@@ -217,6 +237,40 @@ if [[ -d "${LABS_SRC}" ]]; then
     name="$(basename "${dir}")"
     if [[ -z "${FILTER}" || "${name}" == "${FILTER}" ]]; then
       generate "${name}" "${LABS_SRC}" "${LABS_OUT}" "labs"
+    fi
+  done
+fi
+
+echo ""
+echo "=== os/ (Ansible-provisioned OS install verification) ==="
+OS_SRC="${REPO_ROOT}/_dev/_os"
+OS_OUT="${REPO_ROOT}/os"
+if [[ -d "${OS_SRC}" ]]; then
+  for dir in "${OS_SRC}"/*/; do
+    name="$(basename "${dir}")"
+    if [[ -z "${FILTER}" || "${name}" == "${FILTER}" ]]; then
+      if [[ ! "${name}" =~ ^[a-z0-9_]+$ ]]; then
+        echo "  Error: os/ slug '${name}' must be lowercase letters/digits/underscore only (needed to derive a valid <SLUG>_IMAGE env var name)" >&2
+        exit 1
+      fi
+      # Derive the version-pin key generically from the slug (debian -> DEBIAN_IMAGE)
+      # so adding a new OS target never requires editing this script. The
+      # rhel slug is the one flagged exception (Story 1.1): its versions.env
+      # key is RHEL_COMPAT_IMAGE, not the generically-derived RHEL_IMAGE,
+      # because the slug names the target FAMILY while the pin documents that
+      # the actual image is a RHEL-compatible substitute (Rocky Linux), not
+      # RHEL itself.
+      if [[ "${name}" == "rhel" ]]; then
+        image_var="RHEL_COMPAT_IMAGE"
+      else
+        image_var="$(echo "${name}" | tr '[:lower:]' '[:upper:]')_IMAGE"
+      fi
+      image_value="${!image_var:-}"
+      if [[ -z "${image_value}" ]]; then
+        echo "  Error: ${image_var} not set in versions.env for os/${name}" >&2
+        exit 1
+      fi
+      generate "${name}" "${OS_SRC}" "${OS_OUT}" "os" --data "${name}_image=${image_value}"
     fi
   done
 fi
