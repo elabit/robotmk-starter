@@ -1,0 +1,39 @@
+# OS Install Report
+
+**Generated:** {{ generated_at }}
+
+## Steps
+
+| Step | Status |
+| --- | --- |
+{% for step in steps %}
+| {{ step.name | replace("|", "\\|") | replace("\n", " ") }} | {{ step.status }} |
+{% endfor %}
+
+## Installed Component Versions
+
+{% if versions %}
+{% for role, role_versions in versions.items() %}
+### {{ role }}
+
+{% for key, value in role_versions.items() %}
+- **{{ key | replace("|", "\\|") | replace("\n", " ") }}:** {{ value | replace("|", "\\|") | replace("\n", " ") }}
+{% endfor %}
+{% endfor %}
+{% else %}
+None recorded.
+{% endif %}
+
+## Deviations / Caveats
+
+{% if caveats %}
+{% for role, notes in caveats.items() %}
+### {{ role }}
+
+{% for note in notes %}
+- {{ note | replace("\n", " ") }}
+{% endfor %}
+{% endfor %}
+{% else %}
+None recorded.
+{% endif %}

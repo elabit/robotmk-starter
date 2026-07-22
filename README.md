@@ -88,6 +88,23 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 ---
 
+### 🐧 Folder "/os"
+
+Proof that each target OS can be provisioned from a stock install (via Ansible, in a devcontainer) and actually run a Robot Framework web test end-to-end — not just "packages installed", but "the browser test passes".
+
+<!-- OS-TABLE-START -->
+
+| OS | Base Image | Repository Link |
+|---|---|---|
+| [debian](os/debian) | `debian:13` | [try out](https://github.com/robotmk/os-debian) |
+| [rhel](os/rhel) | `rockylinux/rockylinux:10` | [try out](https://github.com/robotmk/os-rhel) |
+| [sles](os/sles) | `registry.suse.com/suse/sle15:15.7` | [try out](https://github.com/robotmk/os-sles) |
+| [ubuntu](os/ubuntu) | `ubuntu:24.04` | [try out](https://github.com/robotmk/os-ubuntu) |
+
+<!-- OS-TABLE-END -->
+
+---
+
 ## For maintainers
 
 Examples and templates are generated from Copier sources in `_dev/`.

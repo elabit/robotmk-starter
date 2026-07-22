@@ -1,0 +1,45 @@
+---
+- name: Install Chromium/Playwright system dependencies (Rocky Linux 10 / EL10 package names)
+  ansible.builtin.dnf:
+    name:
+      - alsa-lib
+      - at-spi2-atk
+      - atk
+      - at-spi2-core
+      - cairo
+      - cups-libs
+      - dbus-libs
+      - libdrm
+      - mesa-libgbm
+      - glib2
+      - nspr
+      - nss
+      - pango
+      - libX11
+      - libxcb
+      - libXcomposite
+      - libXdamage
+      - libXext
+      - libXfixes
+      - libxkbcommon
+      - libXrandr
+      - fontconfig
+      - freetype
+      - liberation-fonts
+      - xorg-x11-fonts-Type1
+    state: present
+    update_cache: true
+
+- name: Record Rocky's missing Xvfb/emoji/unifont packages as a caveat, not a silent gap
+  ansible.builtin.set_fact:
+    install_report_caveats:
+      browser-deps:
+        - >-
+          Rocky Linux 10's base+AppStream repos do not provide Xvfb, Google
+          Noto Color Emoji, or GNU Unifont (Noto Color Emoji is available via
+          EPEL, which this role deliberately does not enable, to stay close
+          to a stock install). Headless Chromium does not require Xvfb to
+          launch, so this does not block verification, but pages relying on
+          color emoji or Unifont's broad Unicode coverage may render with
+          fallback glyphs. Liberation fonts and scalable X fonts ARE
+          available here, unlike SLES's free BCI image.

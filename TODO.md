@@ -1,0 +1,2 @@
+- Labs README shoul dhave a clear instruction (shown in VS Code after start)
+- 

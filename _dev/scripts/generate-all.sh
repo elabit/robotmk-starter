@@ -1,15 +1,27 @@
 #!/usr/bin/env bash
-# generate-all.sh — Regenerates examples/ and templates/ from _dev/_examples/ and _dev/_templates/.
+# generate-all.sh — Regenerates examples/, templates/, labs/, and os/ from
+# their _dev/_examples/, _dev/_templates/, _dev/_labs/, and _dev/_os/ sources.
 #
-# Each source's template/.env must contain RMKS_ENVIRONMENT=<env-name> and
-# RMKS_DEVCONTAINER=<type>. These replace the former .rcc and .devcontainer-type
-# files and drive environment and devcontainer injection via Copier.
+# Each examples/templates/labs source's template/.env must contain
+# RMKS_ENVIRONMENT=<env-name> and RMKS_DEVCONTAINER=<type>. These replace the
+# former .rcc and .devcontainer-type files and drive environment and
+# devcontainer injection via Copier.
+#
+# os/ sources do NOT use the .env/RMKS_* convention — each os/<slug>'s
+# devcontainer.json/ansible.cfg are authored directly in its Copier source
+# (no injection), and its base-image tag is looked up from versions.env as
+# <SLUG-UPPER>_IMAGE. oncreate.sh/postcreate.sh, however, ARE injected from
+# the shared _dev/_os_common source (see inject_os_common below) -- the four
+# OS targets differ only in package-manager-specific bootstrap commands, so
+# duplicating the ~90 largely-identical lines per instance would just invite
+# drift.
 #
 # Usage:
 #   task generate
-#   task generate EXAMPLE=cryptolibrary   # single name (both examples/ and templates/)
+#   task generate EXAMPLE=cryptolibrary   # single name (matches across every content type)
 
 set -euo pipefail
+shopt -s nullglob  # so an empty source dir (e.g. no os/ instances yet) iterates zero times instead of passing the literal glob through
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
@@ -117,6 +129,24 @@ inject_env() {
   rm -f "${src}/template/.copier-env-answers.yml"
 }
 
+# inject_os_common: renders oncreate.sh/postcreate.sh from the shared
+# _dev/_os_common source into an os/<slug>'s template/.devcontainer/,
+# parameterized by os_family (drives which package manager the scripts use)
+# and image (used only in a couple of explanatory comments). Mirrors
+# inject_devcontainer's shape, but only ever called for the os/ content type.
+OS_COMMON_SRC="${REPO_ROOT}/_dev/_os_common"
+inject_os_common() {
+  local src="$1"        # e.g. _dev/_os/debian
+  local os_family="$2"
+  local image="$3"
+  echo "  ↳ Injecting shared oncreate.sh/postcreate.sh (os_family=${os_family}) ..."
+  "${COPIER}" copy --overwrite --defaults \
+    --data "os_family=${os_family}" \
+    --data "image=${image}" \
+    "${OS_COMMON_SRC}" "${src}/template"
+  rm -f "${src}/template/.devcontainer/.copier-oscommon-answers.yml"
+}
+
 SHARED_DIR="${REPO_ROOT}/_dev/_shared"
 
 generate() {
@@ -124,6 +154,8 @@ generate() {
   local src_base="$2"
   local dst_base="$3"
   local label="$4"
+  shift 4
+  local extra_data=("$@")  # optional additional --data args (used by the os/ loop)
 
   echo "→ ${label}/${name}"
   echo "  src: ${src_base}/${name}"
@@ -135,8 +167,13 @@ generate() {
     rm -rf "${dst_base}/${name}"
   fi
 
-  # Inject shared README template if the example has a partial
+  # Inject shared README template if the example has a partial. os/ uses its
+  # own skeleton (different shape: no conda.yaml versions section, an
+  # install-verification "how this works" section instead).
   local shared_readme="${SHARED_DIR}/README.md.jinja"
+  if [[ "${label}" == "os" ]]; then
+    shared_readme="${SHARED_DIR}/README-os.md.jinja"
+  fi
   local partial="${src_base}/${name}/README.partial.md"
   if [[ -f "${shared_readme}" && -f "${partial}" ]]; then
     echo "  ↳ Injecting shared README.md.jinja ..."
@@ -156,14 +193,24 @@ generate() {
     cp "${shared_lab_intro}" "${src_base}/${name}/how-to-run-lab.partial.md"
   fi
 
-  inject_devcontainer "${src_base}/${name}"
-  inject_env "${src_base}/${name}"
+  # os/ never uses the .env-driven RMKS_DEVCONTAINER/RMKS_ENVIRONMENT
+  # indirection (each os/<slug> devcontainer is authored directly in its
+  # Copier source) -- guarded explicitly, not just relying on os/ sources
+  # happening to have no template/.env today.
+  if [[ "${label}" != "os" ]]; then
+    inject_devcontainer "${src_base}/${name}"
+    inject_env "${src_base}/${name}"
+  else
+    # CURRENT_OS_FAMILY/CURRENT_OS_IMAGE are set by the os/ loop right before
+    # calling generate() -- same ambient-global idiom as COMMON_DATA/SHARED_DIR.
+    inject_os_common "${src_base}/${name}" "${CURRENT_OS_FAMILY}" "${CURRENT_OS_IMAGE}"
+  fi
   # Move the generated versions partial from template/ to root so Jinja can find it
   # (Copier's include loader searches the source root, not the _subdirectory)
   if [[ -f "${src_base}/${name}/template/versions.partial.md" ]]; then
     mv "${src_base}/${name}/template/versions.partial.md" "${src_base}/${name}/versions.partial.md"
   fi
-  "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" \
+  "${COPIER}" copy --overwrite --defaults "${COMMON_DATA[@]}" "${extra_data[@]}" \
     --data "example_name=${name}" \
     "${src_base}/${name}" "${dst_base}/${name}"
 
@@ -183,8 +230,23 @@ generate() {
   # Remove the injected how-to-run partials from the source tree
   rm -f "${src_base}/${name}/how-to-run.partial.md"
   rm -f "${src_base}/${name}/how-to-run-lab.partial.md"
-  # Remove the injected devcontainer files from the source tree
-  rm -rf "${src_base}/${name}/template/.devcontainer"
+  # Remove the injected devcontainer files from the source tree — except for
+  # the os/ content type, where .devcontainer/ is permanent, hand-authored
+  # source content (AD-10), not an injected/temporary artifact like every
+  # other content type's devcontainer files.
+  if [[ "${label}" != "os" ]]; then
+    rm -rf "${src_base}/${name}/template/.devcontainer"
+  else
+    # oncreate.sh/postcreate.sh ARE injected (from _dev/_os_common, unlike
+    # devcontainer.json/ansible.cfg) -- inject_os_common's copier copy already
+    # rendered them (dropping the .jinja suffix) into template/.devcontainer/
+    # above, and the main copier copy just above just consumed those rendered
+    # files to produce the destination's copies. Remove them from the SOURCE
+    # tree now so they don't sit duplicated (as plain, non-.jinja files) next
+    # to the hand-authored devcontainer.json.jinja/ansible.cfg.
+    rm -f "${src_base}/${name}/template/.devcontainer/oncreate.sh"
+    rm -f "${src_base}/${name}/template/.devcontainer/postcreate.sh"
+  fi
 
   echo "  ✓ Done"
 }
@@ -222,8 +284,70 @@ if [[ -d "${LABS_SRC}" ]]; then
 fi
 
 echo ""
-echo "=== Generating .code-workspace ==="
-"${PYTHON}" "${REPO_ROOT}/_dev/scripts/generate-workspace.py" "${REPO_ROOT}"
+echo "=== os/ (Ansible-provisioned OS install verification) ==="
+OS_SRC="${REPO_ROOT}/_dev/_os"
+OS_OUT="${REPO_ROOT}/os"
+# Slug -> ansible_os_family (lowercased), matching
+# _dev/_ansible/roles/*/tasks/<family>.yml filenames. Debian and Ubuntu share
+# the Debian family (AD-3/CAP-4); adding a same-family OS never needs a new
+# task file, just a new map entry here.
+declare -A OS_FAMILY_MAP=(
+  [debian]=debian
+  [ubuntu]=debian
+  [sles]=suse
+  [rhel]=redhat
+)
+if [[ -d "${OS_SRC}" ]]; then
+  for dir in "${OS_SRC}"/*/; do
+    name="$(basename "${dir}")"
+    if [[ -z "${FILTER}" || "${name}" == "${FILTER}" ]]; then
+      if [[ ! "${name}" =~ ^[a-z0-9_]+$ ]]; then
+        echo "  Error: os/ slug '${name}' must be lowercase letters/digits/underscore only (needed to derive a valid <SLUG>_IMAGE env var name)" >&2
+        exit 1
+      fi
+      # Derive the version-pin key generically from the slug (debian -> DEBIAN_IMAGE)
+      # so adding a new OS target never requires editing this script. The
+      # rhel slug is the one flagged exception (Story 1.1): its versions.env
+      # key is RHEL_COMPAT_IMAGE, not the generically-derived RHEL_IMAGE,
+      # because the slug names the target FAMILY while the pin documents that
+      # the actual image is a RHEL-compatible substitute (Rocky Linux), not
+      # RHEL itself.
+      if [[ "${name}" == "rhel" ]]; then
+        image_var="RHEL_COMPAT_IMAGE"
+      else
+        image_var="$(echo "${name}" | tr '[:lower:]' '[:upper:]')_IMAGE"
+      fi
+      image_value="${!image_var:-}"
+      if [[ -z "${image_value}" ]]; then
+        echo "  Error: ${image_var} not set in versions.env for os/${name}" >&2
+        exit 1
+      fi
+
+      family="${OS_FAMILY_MAP[${name}]:-}"
+      if [[ -z "${family}" ]]; then
+        echo "  Error: os/ slug '${name}' has no entry in OS_FAMILY_MAP (add one alongside its versions.env pin)" >&2
+        exit 1
+      fi
+
+      # README.partial.md is generated fresh from the Ansible role's task
+      # file every run (single source of truth, AD-3/AD-6) and cleaned up
+      # right after generate() consumes it -- same ephemeral-injection
+      # pattern as versions.partial.md/how-to-run.partial.md above, so no
+      # auto-generated content sits committed in _dev/_os/${name}/.
+      echo "  ↳ Rendering README.partial.md from tasks/${family}.yml ..."
+      "${PYTHON}" "${REPO_ROOT}/_dev/scripts/render_os_readme_partial.py" \
+        "${family}" "${name}" "${image_value}" \
+        "${OS_SRC}/${name}/README.partial.md"
+
+      CURRENT_OS_FAMILY="${family}"
+      CURRENT_OS_IMAGE="${image_value}"
+      generate "${name}" "${OS_SRC}" "${OS_OUT}" "os" \
+        --data "${name}_image=${image_value}" \
+        --data "image=${image_value}"
+      rm -f "${OS_SRC}/${name}/README.partial.md"
+    fi
+  done
+fi
 
 echo ""
 echo "All done."

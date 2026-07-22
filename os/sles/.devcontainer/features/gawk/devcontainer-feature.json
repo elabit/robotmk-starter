@@ -1,0 +1,6 @@
+{
+  "id": "gawk",
+  "version": "1.0.0",
+  "name": "gawk",
+  "description": "Installs gawk, which VS Code Server's own check-requirements.sh needs to attach at all -- SLE_BCI ships no awk/gawk by default, unlike Debian/Ubuntu/Rocky. Must be present in the image before the container is first created (features run at build time), not just installed later by onCreateCommand."
+}

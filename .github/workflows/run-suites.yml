@@ -6,10 +6,12 @@ on:
     paths:
       - "examples/**"
       - "templates/**"
+      - "os/**"
   pull_request:
     paths:
       - "examples/**"
       - "templates/**"
+      - "os/**"
   workflow_dispatch:
     inputs:
       suite:
@@ -153,4 +155,61 @@ jobs:
         with:
           name: rf-output-${{ steps.suite-env.outputs.safe_name }}-${{ matrix.os }}
           path: ${{ matrix.suite }}/log.html
+          if-no-files-found: ignore
+
+  # ── Stage 3: os content type (provision + verify + report) ────────────────
+  # Independent of the detect-changes/test pair above: exactly one job per OS
+  # family, added deliberately one epic at a time (Story 1.5 adds debian;
+  # Stories 2.2/3.2/4.2 each add one more matrix entry), never auto-detected
+  # from a directory listing the way the examples/templates matrix is.
+  os:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        slug: [debian, ubuntu, rhel, sles]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read pinned image from the generated devcontainer.json
+        id: os-env
+        run: |
+          # devcontainer.json is JSONC (allows // comments, per the Dev
+          # Container spec) -- jq can't parse that directly, so strip
+          # line-comments before feeding it to a JSON parser.
+          IMAGE=$(python3 -c "
+          import json, re
+          text = open('os/${{ matrix.slug }}/.devcontainer/devcontainer.json').read()
+          text = re.sub(r'//.*', '', text)
+          print(json.loads(text)['image'])
+          ")
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+
+      - name: Provision, verify, and report
+        run: |
+          # Mount ONLY os/<slug> (not the full repo root) -- this instance is
+          # self-contained (its own copy of the shared Ansible role + RF
+          # suite via populate.yaml, AD-3/AD-4), so this deliberately mirrors
+          # exactly what a standalone extracted repo would see, proving the
+          # self-containment property in CI rather than assuming it.
+          # No devcontainer CLI in CI (AD-9), so its onCreateCommand/
+          # postCreateCommand split isn't applied automatically here -- chain
+          # the same two scripts explicitly instead. `&&` gives the identical
+          # halt-then-propagate semantics the Dev Container lifecycle gives
+          # the interactive path: postcreate.sh only runs if oncreate.sh
+          # succeeded, and the final exit code reflects whichever of the two
+          # actually failed.
+          docker run --rm \
+            -v "${{ github.workspace }}/os/${{ matrix.slug }}:/workspace" \
+            -w "/workspace" \
+            "${{ steps.os-env.outputs.image }}" \
+            bash -c "bash .devcontainer/oncreate.sh && bash .devcontainer/postcreate.sh"
+
+      - name: Upload install report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: os-report-${{ matrix.slug }}
+          path: os/${{ matrix.slug }}/report.md
           if-no-files-found: ignore

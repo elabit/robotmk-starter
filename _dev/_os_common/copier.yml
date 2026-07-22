@@ -1,0 +1,20 @@
+# Shared os/ devcontainer lifecycle scripts (oncreate.sh/postcreate.sh).
+# Injected into each os/<slug>/template/.devcontainer/ at generate time
+# (mirrors _dev/_devcontainers/<type>'s injection pattern) -- the only thing
+# that varies per instance is os_family (drives which package manager the
+# scripts use) and image (used only in a couple of explanatory comments).
+
+_subdirectory: template
+_answers_file: .copier-oscommon-answers.yml
+
+os_family:
+  type: str
+  default: "debian"
+  choices:
+    - debian
+    - redhat
+    - suse
+
+image:
+  type: str
+  default: ""
