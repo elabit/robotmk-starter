@@ -160,14 +160,15 @@ jobs:
   # ── Stage 3: os content type (provision + verify + report) ────────────────
   # Independent of the detect-changes/test pair above: exactly one job per OS
   # family, added deliberately one epic at a time (Story 1.5 adds debian;
-  # Stories 2.2/3.2/4.2 each add one more matrix entry), never auto-detected
-  # from a directory listing the way the examples/templates matrix is.
+  # Stories 2.2/3.2/4.2 each add one more matrix entry; centos is a later
+  # addition sharing the redhat family with rhel), never auto-detected from a
+  # directory listing the way the examples/templates matrix is.
   os:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        slug: [debian, ubuntu, rhel, sles]
+        slug: [debian, ubuntu, rhel, sles, centos]
 
     steps:
       - uses: actions/checkout@v4

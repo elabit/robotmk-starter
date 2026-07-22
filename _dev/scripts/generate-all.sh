@@ -296,6 +296,7 @@ declare -A OS_FAMILY_MAP=(
   [ubuntu]=debian
   [sles]=suse
   [rhel]=redhat
+  [centos]=redhat
 )
 if [[ -d "${OS_SRC}" ]]; then
   for dir in "${OS_SRC}"/*/; do
