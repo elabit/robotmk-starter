@@ -6,7 +6,7 @@ populate:
       - "__pycache__"
 
   - src: templates/web-browserlibrary
-    dst: templates/web-browserlibrary
+    dst: tests/web-browserlibrary
     exclude:
       - "*.pyc"
       - "__pycache__"

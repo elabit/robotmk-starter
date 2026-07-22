@@ -51,15 +51,30 @@ EOF
 }
 
 # ── Step 1: Download RCC ─────────────────────────────────────────────────────────
-
-# rockylinux/rockylinux:10 ships curl preinstalled (unlike Debian/Ubuntu's stock images) --
+{% if os_family == "debian" %}
+# Unlike the generic devcontainer base image other content types use, the
+# stock {{ image }} image has no curl preinstalled -- install it first.
+step "Downloading RCC ..."
+if ! command -v curl > /dev/null; then
+  apt-get install -y curl || fail "apt-get install curl failed -- cannot download RCC."
+fi
+{% elif os_family == "redhat" %}
+# {{ image }} ships curl preinstalled (unlike Debian/Ubuntu's stock images) --
 # the guard below is a no-op here, kept for consistency across all four OSes
 # and to protect against a future base-image change.
 step "Downloading RCC ..."
 if ! command -v curl > /dev/null; then
   dnf -y install curl || fail "dnf install curl failed -- cannot download RCC."
 fi
-
+{% elif os_family == "suse" %}
+# {{ image }} ships curl preinstalled (like Rocky, unlike Debian/Ubuntu) --
+# the guard below is a no-op here, kept for consistency across all four OSes
+# and to protect against a future base-image change.
+step "Downloading RCC ..."
+if ! command -v curl > /dev/null; then
+  zypper --non-interactive install curl || fail "zypper install curl failed -- cannot download RCC."
+fi
+{% endif %}
 RCC_URL="https://github.com/elabit/robotmk/releases/download/v4.0.0/rcc_linux64"
 RCC_BIN="$HOME/bin/rcc"
 mkdir -p "$HOME/bin"

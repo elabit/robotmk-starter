@@ -7,6 +7,9 @@
 # (postCreateCommand): the Dev Container lifecycle only runs postCreateCommand
 # if this script exits 0, so postcreate.sh never needs to check whether
 # provisioning succeeded.
+#
+# Shared across every os/ target (rendered from _dev/_os_common) -- the only
+# per-family difference is how ansible-core gets bootstrapped (Step 1 below).
 
 set -euo pipefail
 
@@ -23,6 +26,7 @@ ok()    { echo -e "${GREEN}✓ $*${RESET}"; }
 info()  { echo -e "  ${YELLOW}$*${RESET}"; }
 fail()  { echo -e "${RED}${BOLD}✗ $*${RESET}" >&2; exit 1; }
 
+
 export DEBIAN_FRONTEND=noninteractive
 
 REPORT_FILE="$(pwd)/report.md"
@@ -33,9 +37,11 @@ export INSTALL_REPORT_PATH="${REPORT_FILE}"
 
 # ── Step 1: Bootstrap Ansible ──────────────────────────────────────────────────
 # Plain shell, not a role — Ansible doesn't exist in the container yet (AD-2).
-step "Bootstrapping ansible-core ..."
+
+step "Bootstrapping ansible-core via apt ..."
 apt-get update -qq || fail "apt-get update failed -- cannot bootstrap ansible-core."
 apt-get install -y ansible-core || fail "apt-get install ansible-core failed."
+
 ok "$(ansible-playbook --version | head -1)"
 
 # ── Step 2: Provision via Ansible ──────────────────────────────────────────────
@@ -63,7 +69,7 @@ if [[ ${ANSIBLE_EXIT} -ne 0 ]]; then
 
 ## Verification (Robot Framework)
 
-- **Suite:** templates/web-browserlibrary
+- **Suites:** all suites under tests/
 - **Result:** not-run
 - **Reason:** provisioning did not complete
 EOF
@@ -81,7 +87,7 @@ Ansible provisioning failed before any task ran (exit ${ANSIBLE_EXIT}) — no pe
 
 ## Verification (Robot Framework)
 
-- **Suite:** templates/web-browserlibrary
+- **Suites:** all suites under tests/
 - **Result:** not-run
 - **Reason:** provisioning did not complete
 EOF

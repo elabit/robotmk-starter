@@ -7,6 +7,9 @@
 # (postCreateCommand): the Dev Container lifecycle only runs postCreateCommand
 # if this script exits 0, so postcreate.sh never needs to check whether
 # provisioning succeeded.
+#
+# Shared across every os/ target (rendered from _dev/_os_common) -- the only
+# per-family difference is how ansible-core gets bootstrapped (Step 1 below).
 
 set -euo pipefail
 
@@ -23,6 +26,7 @@ ok()    { echo -e "${GREEN}✓ $*${RESET}"; }
 info()  { echo -e "  ${YELLOW}$*${RESET}"; }
 fail()  { echo -e "${RED}${BOLD}✗ $*${RESET}" >&2; exit 1; }
 
+
 REPORT_FILE="$(pwd)/report.md"
 # Single source of truth for where the report lives, read by the Ansible
 # callback plugin too (see AD-4/AD-6) -- avoids the plugin and this script
@@ -30,14 +34,17 @@ REPORT_FILE="$(pwd)/report.md"
 export INSTALL_REPORT_PATH="${REPORT_FILE}"
 
 # ── Step 1: Bootstrap Ansible ──────────────────────────────────────────────────
-# Plain shell, not a role (AD-2). Rocky's AppStream repo has ansible-core as a
-# native dnf package -- no pip/EPEL fallback needed here, unlike SLES's
-# SLE_BCI (which has no ansible package at all). ansible.builtin.dnf is a
-# built-in ansible-core module, so no community.general collection install is
-# needed either (unlike SLES's zypper module).
+# Plain shell, not a role — Ansible doesn't exist in the container yet (AD-2).
+
+# Rocky's AppStream repo has ansible-core as a native dnf package -- no
+# pip/EPEL fallback needed here, unlike SLES's SLE_BCI (which has no ansible
+# package at all). ansible.builtin.dnf is a built-in ansible-core module, so
+# no community.general collection install is needed either (unlike SLES's
+# zypper module).
 step "Bootstrapping ansible-core via dnf ..."
 dnf -y makecache || fail "dnf makecache failed -- cannot bootstrap ansible-core."
 dnf -y install ansible-core || fail "dnf install ansible-core failed."
+
 ok "$(ansible-playbook --version | head -1)"
 
 # ── Step 2: Provision via Ansible ──────────────────────────────────────────────
@@ -65,7 +72,7 @@ if [[ ${ANSIBLE_EXIT} -ne 0 ]]; then
 
 ## Verification (Robot Framework)
 
-- **Suite:** templates/web-browserlibrary
+- **Suites:** all suites under tests/
 - **Result:** not-run
 - **Reason:** provisioning did not complete
 EOF
@@ -83,7 +90,7 @@ Ansible provisioning failed before any task ran (exit ${ANSIBLE_EXIT}) — no pe
 
 ## Verification (Robot Framework)
 
-- **Suite:** templates/web-browserlibrary
+- **Suites:** all suites under tests/
 - **Result:** not-run
 - **Reason:** provisioning did not complete
 EOF

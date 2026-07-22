@@ -7,6 +7,9 @@
 # (postCreateCommand): the Dev Container lifecycle only runs postCreateCommand
 # if this script exits 0, so postcreate.sh never needs to check whether
 # provisioning succeeded.
+#
+# Shared across every os/ target (rendered from _dev/_os_common) -- the only
+# per-family difference is how ansible-core gets bootstrapped (Step 1 below).
 
 set -euo pipefail
 
@@ -23,6 +26,7 @@ ok()    { echo -e "${GREEN}✓ $*${RESET}"; }
 info()  { echo -e "  ${YELLOW}$*${RESET}"; }
 fail()  { echo -e "${RED}${BOLD}✗ $*${RESET}" >&2; exit 1; }
 
+
 REPORT_FILE="$(pwd)/report.md"
 # Single source of truth for where the report lives, read by the Ansible
 # callback plugin too (see AD-4/AD-6) -- avoids the plugin and this script
@@ -30,16 +34,19 @@ REPORT_FILE="$(pwd)/report.md"
 export INSTALL_REPORT_PATH="${REPORT_FILE}"
 
 # ── Step 1: Bootstrap Ansible ──────────────────────────────────────────────────
-# Plain shell, not a role (AD-2). Unlike Debian/Ubuntu, SLE_BCI's zypper repo
-# ships no ansible/ansible-core package at all (verified via live `zypper
-# search` -- no matches), so AD-2's pip fallback is used instead of a native
-# package. community.general is also needed explicitly: the zypper Ansible
-# module lives in that collection, not in ansible-core.
+# Plain shell, not a role — Ansible doesn't exist in the container yet (AD-2).
+
+# SLE_BCI's zypper repo ships no ansible/ansible-core package at all
+# (verified via live `zypper search` -- no matches), so AD-2's pip fallback
+# is used instead of a native package. community.general is also needed
+# explicitly: the zypper Ansible module lives in that collection, not in
+# ansible-core.
 step "Bootstrapping ansible-core via zypper+pip ..."
 zypper --non-interactive refresh || fail "zypper refresh failed -- cannot bootstrap ansible-core."
 zypper --non-interactive install python311 python311-pip || fail "zypper install python311/pip failed."
 python3.11 -m pip install --quiet ansible-core || fail "pip install ansible-core failed."
 ansible-galaxy collection install community.general || fail "ansible-galaxy collection install community.general failed."
+
 ok "$(ansible-playbook --version | head -1)"
 
 # ── Step 2: Provision via Ansible ──────────────────────────────────────────────
@@ -67,7 +74,7 @@ if [[ ${ANSIBLE_EXIT} -ne 0 ]]; then
 
 ## Verification (Robot Framework)
 
-- **Suite:** templates/web-browserlibrary
+- **Suites:** all suites under tests/
 - **Result:** not-run
 - **Reason:** provisioning did not complete
 EOF
@@ -85,7 +92,7 @@ Ansible provisioning failed before any task ran (exit ${ANSIBLE_EXIT}) — no pe
 
 ## Verification (Robot Framework)
 
-- **Suite:** templates/web-browserlibrary
+- **Suites:** all suites under tests/
 - **Result:** not-run
 - **Reason:** provisioning did not complete
 EOF

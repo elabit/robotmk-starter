@@ -12,6 +12,7 @@ Environment:
     GITHUB_REPOSITORY  — e.g. "myorg/robotmk-starter"  (optional, updates badge URL)
 """
 
+import json
 import os
 import re
 import sys
@@ -112,6 +113,38 @@ def build_table(repo_root: Path, parent: str) -> str:
     return "\n".join([header, sep] + rows)
 
 
+def build_os_table(repo_root: Path) -> str:
+    """Build the os/ target table, reading each instance's pinned base image
+    from its already-rendered devcontainer.json rather than versions.env, so
+    the table reflects what was actually last generated (AD-12: distinct
+    build function, os/ has no conda.yaml/robot-doc to parse like build_table
+    expects)."""
+    header = "| OS | Base Image | Repository Link |"
+    sep    = "|---|---|---|"
+    rows = []
+    os_dir = repo_root / "os"
+    if os_dir.exists():
+        for slug_dir in sorted(os_dir.iterdir()):
+            if not slug_dir.is_dir() or slug_dir.name.startswith("."):
+                continue
+            slug = slug_dir.name
+            devcontainer_json = slug_dir / ".devcontainer" / "devcontainer.json"
+            image = "—"
+            if devcontainer_json.exists():
+                # devcontainer.json is JSONC (// comments allowed) -- strip
+                # line-comments before parsing, same approach run-suites.yml's
+                # "os" job already uses to read the same file.
+                text = re.sub(r"//.*", "", devcontainer_json.read_text())
+                try:
+                    image = json.loads(text).get("image", "—")
+                except json.JSONDecodeError:
+                    image = "—"
+            rows.append(
+                f"| [{slug}](os/{slug}) | `{image}` | [try out](https://github.com/robotmk/os-{slug}) |"
+            )
+    return "\n".join([header, sep] + rows)
+
+
 def replace_between_markers(content: str, start: str, end: str, replacement: str) -> tuple[str, bool]:
     pattern = rf"({re.escape(start)}).*?({re.escape(end)})"
     new_content, count = re.subn(
@@ -163,7 +196,15 @@ def main():
         "<!-- LABS-TABLE-END -->",
         build_table(repo_root, "labs"),
     )
-    if t1 or t2 or t3:
+    # Update os table
+    content, t4 = replace_between_markers(
+        content,
+        "<!-- OS-TABLE-START -->",
+        "<!-- OS-TABLE-END -->",
+        build_os_table(repo_root),
+    )
+
+    if t1 or t2 or t3 or t4:
         print("Suite tables updated.")
         changed = True
 
