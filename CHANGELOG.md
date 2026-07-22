@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/elabit/robotmk-starter/compare/v1.2.0...v1.3.0) (2026-07-22)
+
+
+### Features
+
+* add centos to the OS matrix ([6bffacd](https://github.com/elabit/robotmk-starter/commit/6bffacdb56be407a5228f89767b1c9a5290c071e))
+* add centos to the OS matrix ([4eba836](https://github.com/elabit/robotmk-starter/commit/4eba836310729355ce2245be63c856f6278febca))
+* Bridge lab ([ddf121b](https://github.com/elabit/robotmk-starter/commit/ddf121bfe7d0aa7dd2f5cbbde1e4c2e78cfe9341))
+* Merge pull request [#17](https://github.com/elabit/robotmk-starter/issues/17) from elabit/feat/osmatrix ([a1fcc5a](https://github.com/elabit/robotmk-starter/commit/a1fcc5a8cf77f7197e131b6182cda142d034f88c))
+
+
+### Bug Fixes
+
+* remove leftover suite-orig.robot from web-carinsurance ([d0b442a](https://github.com/elabit/robotmk-starter/commit/d0b442ab2cc37a07cdffcd5547111371a3b5add1))
+* remove leftover suite-orig.robot from web-carinsurance ([335e940](https://github.com/elabit/robotmk-starter/commit/335e940fadad2e92d65b265af0bdf13ef9df3265))
+
 ## [1.2.0](https://github.com/elabit/robotmk-starter/compare/v1.1.1...v1.2.0) (2026-06-19)
 
 
