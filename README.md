@@ -96,6 +96,7 @@ Proof that each target OS can be provisioned from a stock install (via Ansible, 
 
 | OS | Base Image | Repository Link |
 |---|---|---|
+| [centos](os/centos) | `quay.io/centos/centos:stream9` | [try out](https://github.com/robotmk/os-centos) |
 | [debian](os/debian) | `debian:13` | [try out](https://github.com/robotmk/os-debian) |
 | [rhel](os/rhel) | `rockylinux/rockylinux:10` | [try out](https://github.com/robotmk/os-rhel) |
 | [sles](os/sles) | `registry.suse.com/suse/sle15:15.7` | [try out](https://github.com/robotmk/os-sles) |

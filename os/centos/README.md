@@ -3,11 +3,11 @@
      from README.partial.md, itself auto-generated from the Ansible role's
      task file by render_os_readme_partial.py — do not hand-edit that either. -->
 
-# os/rhel — OS Install Verification (`rockylinux/rockylinux:10`)
+# os/centos — OS Install Verification (`quay.io/centos/centos:stream9`)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/robotmk/os-rhel)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/robotmk/os-centos)
 
-A stock `rockylinux/rockylinux:10` container, provisioned with Ansible to install exactly the OS packages needed for the Robot Framework suites under `tests/` (Browser Library / Playwright) to run headless.
+A stock `quay.io/centos/centos:stream9` container, provisioned with Ansible to install exactly the OS packages needed for the Robot Framework suites under `tests/` (Browser Library / Playwright) to run headless.
 
 ## Packages installed by Ansible
 
@@ -49,7 +49,7 @@ Opening this folder as a devcontainer (or running it in CI via `docker run`) doe
 1. `.devcontainer/oncreate.sh` bootstraps Ansible and runs the shared `browser-deps` role to install the packages listed above.
 2. `.devcontainer/postcreate.sh` then runs every Robot Framework suite under `tests/` to verify the install actually works end-to-end — not just that packages installed, but that real headless browser tests pass.
 
-A full run log (per-step status, exact versions, this file's content again) is written to `report.md` inside the container. That file is not committed to this repo — see it after opening the devcontainer yourself, or download it from the `os-report-rhel` artifact on the upstream CI run.
+A full run log (per-step status, exact versions, this file's content again) is written to `report.md` inside the container. That file is not committed to this repo — see it after opening the devcontainer yourself, or download it from the `os-report-centos` artifact on the upstream CI run.
 
 ## About
 
