@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/elabit/robotmk-starter/compare/v1.4.0...v1.4.1) (2026-08-31)
+
+
+### Bug Fixes
+
+* **lab:** install procps — the agent's process section needs ps ([43e56f3](https://github.com/elabit/robotmk-starter/commit/43e56f3cbca74cafe9d45f79ee4537825e1734b4))
+* **lab:** the desktop was unusable, and Checkmk unreachable ([5667a90](https://github.com/elabit/robotmk-starter/commit/5667a90a562862b13ee89c87f3fb41740fa13208))
+
 ## [1.4.0](https://github.com/elabit/robotmk-starter/compare/v1.3.0...v1.4.0) (2026-08-31)
 
 
