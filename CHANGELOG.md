@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/elabit/robotmk-starter/compare/v1.4.2...v1.4.3) (2026-08-31)
+
+
+### Bug Fixes
+
+* **lab:** the Checkmk port opened before Checkmk was there ([43f7a43](https://github.com/elabit/robotmk-starter/commit/43f7a43ff6943a08b055499c35ef6ccb008ca9b8))
+
 ## [1.4.2](https://github.com/elabit/robotmk-starter/compare/v1.4.1...v1.4.2) (2026-08-31)
 
 
