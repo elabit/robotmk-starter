@@ -1,0 +1,28 @@
+# Two machines, on purpose: in a real setup the monitoring server and the
+# monitored host are never the same computer, and everything in module 2
+# depends on them being separate.
+services:
+  cmk:
+    image: checkmk/check-mk-pro:2.5.0-latest
+    environment:
+      CMK_PASSWORD: cmk
+      CMK_SITE_ID: cmk
+    ports:
+      - "5000:5000"
+
+  host:
+    build:
+      context: .
+      dockerfile: Dockerfile.host
+    privileged: true
+    cgroup: host
+    # Never mount anything at /tmp. Codespaces already binds /mnt/containerTmp
+    # there; a second mount on the same target makes `docker compose config`
+    # fail, and Codespaces then silently builds a recovery container instead.
+    tmpfs:
+      - /run
+      - /run/lock
+    volumes:
+      - ../..:/workspaces:cached
+    command: []
+    shm_size: 1gb
