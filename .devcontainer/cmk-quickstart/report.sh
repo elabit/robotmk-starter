@@ -17,9 +17,17 @@ for _ in $(seq 1 60); do
   [[ "$(systemctl is-system-running 2>&1)" =~ ^(running|degraded)$ ]] && break
   sleep 5
 done
-for _ in $(seq 1 60); do
+# How long the Checkmk site really needs on the two-core machine this lab
+# targets. The course has to tell the learner a number, and a guessed one is
+# worse than none: whoever waits less than the truth thinks it hung.
+CMK_WAIT_START=$(date +%s)
+CMK_SECONDS="over 1200"
+for _ in $(seq 1 240); do
   code=$(curl -s -o /dev/null -w '%{http_code}' "http://cmk:5000/cmk/" 2>/dev/null || echo 000)
-  [[ "$code" != "000" ]] && break
+  if [[ "$code" != "000" ]]; then
+    CMK_SECONDS=$(( $(date +%s) - CMK_WAIT_START ))
+    break
+  fi
   sleep 5
 done
 
@@ -32,6 +40,7 @@ done
   echo "novnc:             $(systemctl is-active novnc 2>&1)"
   echo "cmk resolves:      $(getent hosts cmk 2>/dev/null | awk '{print $1}' || echo NO)"
   echo "cmk port 5000:     $(timeout 3 bash -c '</dev/tcp/cmk/5000' 2>/dev/null && echo open || echo closed)"
+  echo "checkmk waited:    ${CMK_SECONDS} s after systemd settled"
   echo "checkmk reachable: $(curl -s -o /dev/null -w '%{http_code}' http://cmk:5000/cmk/ 2>&1)"
   echo "compose peers:     $(getent ahostsv4 cmk 2>/dev/null | head -1 || echo none)"
   echo "ROBOLAND_KEY set:  $(test -n "${ROBOLAND_KEY:-}" && echo yes || echo NO)"
