@@ -38,3 +38,4 @@ nohup.out
 __pycache__/*
 *.pyc
 .claude
+LAB-CHECK.txt

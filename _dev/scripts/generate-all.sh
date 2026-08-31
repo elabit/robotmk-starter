@@ -29,9 +29,17 @@ set -euo pipefail
 # CI runs Linux and never sees it, so say it here instead of letting someone
 # spend an afternoon on it.
 if (( BASH_VERSINFO[0] < 4 )); then
+  # Re-exec under a newer bash if one is installed. This matters beyond
+  # convenience: the pre-push hook calls `task generate`, so on a stock macOS
+  # nobody could push to this repository at all.
+  for _cand in /opt/homebrew/bin/bash /usr/local/bin/bash; do
+    if [[ -x "${_cand}" ]] && (( $("${_cand}" -c 'echo ${BASH_VERSINFO[0]}') >= 4 )); then
+      exec "${_cand}" "$0" "$@"
+    fi
+  done
   echo "Error: this script needs bash 4 or newer; running ${BASH_VERSION}." >&2
-  echo "       On macOS:  brew install bash" >&2
-  echo "       then run:  /opt/homebrew/bin/bash _dev/scripts/generate-all.sh [name]" >&2
+  echo "       macOS ships bash 3.2, which has no associative arrays." >&2
+  echo "       Fix:  brew install bash" >&2
   exit 1
 fi
 shopt -s nullglob  # so an empty source dir (e.g. no os/ instances yet) iterates zero times instead of passing the literal glob through
