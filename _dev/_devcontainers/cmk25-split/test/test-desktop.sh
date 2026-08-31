@@ -125,4 +125,12 @@ for h in "localhost:5000" "anything-5000.app.github.dev"; do
   esac
 done
 
-echo "OK: desktop, systemd, Checkmk, relative redirects, cmk-shell"
+# Checkmk must NOT be published on the machine. If it is, Codespaces forwards
+# that port straight to Apache and the proxy in this container is bypassed —
+# which is what made every redirect absolute and unusable.
+if docker compose -f "$D/docker-compose.yml" ps --format '{{.Publishers}}' cmk 2>/dev/null | grep -q "5000"; then
+  echo "FAIL: the cmk service publishes port 5000 on the machine; the proxy is bypassed"
+  exit 1
+fi
+
+echo "OK: desktop, systemd, Checkmk, relative redirects, no bypass, cmk-shell"
