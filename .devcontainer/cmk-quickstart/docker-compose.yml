@@ -30,7 +30,6 @@ services:
       # This hands the container control over the machine's Docker — acceptable
       # for a throwaway lab, and stated here so nobody adopts it by accident.
       - /var/run/docker.sock:/var/run/docker.sock
-      # This copy lives in <repo>/.devcontainer/cmk-quickstart/.
       - ../..:/workspaces:cached
     command: []
     shm_size: 1gb

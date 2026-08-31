@@ -10,7 +10,7 @@ FROM debian:12
 # installed the honest way. Measured — see ADR-0072.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus ca-certificates curl wget sudo git \
-      procps less socat \
+      procps less nginx-light \
       tigervnc-standalone-server tigervnc-common fluxbox \
       novnc websockify x11-utils x11-xserver-utils xterm \
  && rm -rf /var/lib/apt/lists/* \
@@ -33,8 +33,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN printf '%s\n' \
       '<!doctype html><meta charset="utf-8">' \
       '<title>Roboland Lab desktop</title>' \
-      '<meta http-equiv="refresh" content="0; url=vnc.html?autoconnect=true&amp;resize=remote">' \
-      '<p>Opening the desktop&hellip; <a href="vnc.html?autoconnect=true&amp;resize=remote">continue</a>' \
+      '<meta http-equiv="refresh" content="0; url=vnc.html?resize=remote">' \
+      '<p>Opening the desktop&hellip; <a href="vnc.html?resize=remote">continue</a>' \
       > /usr/share/novnc/index.html
 
 # The Docker client only — not the engine. Debian ships docker.io 20.10, which
@@ -49,10 +49,16 @@ RUN set -eux; \
     install -m 0755 /tmp/docker/docker /usr/local/bin/docker; \
     rm -rf /tmp/docker.tgz /tmp/docker
 
+COPY nginx/checkmk.conf /etc/nginx/sites-available/checkmk
+RUN rm -f /etc/nginx/sites-enabled/default \
+ && ln -sf /etc/nginx/sites-available/checkmk /etc/nginx/sites-enabled/checkmk
+
 COPY cmk-shell /usr/local/bin/cmk-shell
 COPY fluxbox/ /root/.fluxbox/
 COPY units/*.service /etc/systemd/system/
-RUN systemctl enable vncserver fluxbox novnc desktop-session checkmk-port
+RUN systemctl disable nginx 2>/dev/null || true; \
+    systemctl mask nginx; \
+    systemctl enable vncserver fluxbox novnc desktop-session checkmk-port
 
 STOPSIGNAL SIGRTMIN+3
 ENTRYPOINT ["/sbin/init"]
