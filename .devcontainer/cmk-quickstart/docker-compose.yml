@@ -26,9 +26,7 @@ services:
     # root. In a Codespace this bind is replaced by the one from Codespaces'
     # own overlay — compose merges volumes by target, and the later file wins.
     volumes:
-      # This copy lives in <repo>/.devcontainer/cmk-quickstart/, so the repo
-      # root is "../..". In a Codespace this bind is replaced anyway — compose
-      # merges volumes by target and Codespaces' overlay comes last.
+      # This copy lives in <repo>/.devcontainer/cmk-quickstart/.
       - ../..:/workspaces:cached
     command: []
     shm_size: 1gb

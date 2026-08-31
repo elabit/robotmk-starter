@@ -11,7 +11,7 @@ FROM debian:12
 RUN apt-get update && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus ca-certificates curl wget sudo git \
       tigervnc-standalone-server tigervnc-common fluxbox \
-      novnc websockify x11-utils \
+      novnc websockify x11-utils x11-xserver-utils xterm \
  && rm -rf /var/lib/apt/lists/* \
  && rm -f /lib/systemd/system/multi-user.target.wants/* \
           /etc/systemd/system/*.wants/* \
@@ -23,8 +23,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # RCC and the Checkmk agent are deliberately NOT installed here. Installing them
 # is what the course teaches; a lab that pre-installs them teaches nothing.
 
+# Debian's novnc ships vnc.html but no index.html, so websockify serves a bare
+# directory listing on port 6080. Send the learner straight into the viewer.
+RUN printf '%s\n' \
+      '<!doctype html><meta charset="utf-8">' \
+      '<title>Roboland Lab desktop</title>' \
+      '<meta http-equiv="refresh" content="0; url=vnc.html?autoconnect=true&amp;resize=remote">' \
+      '<p>Opening the desktop&hellip; <a href="vnc.html?autoconnect=true&amp;resize=remote">continue</a>' \
+      > /usr/share/novnc/index.html
+
+COPY fluxbox/ /root/.fluxbox/
 COPY units/*.service /etc/systemd/system/
-RUN systemctl enable vncserver fluxbox novnc
+RUN systemctl enable vncserver fluxbox novnc desktop-session
 
 STOPSIGNAL SIGRTMIN+3
 ENTRYPOINT ["/sbin/init"]

@@ -1,0 +1,20 @@
+[Unit]
+Description=Desktop background and a terminal to start from
+After=fluxbox.service
+Requires=fluxbox.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:1
+# Paint the root window ourselves. Left to fluxbox, it calls fbsetbg and
+# complains on every start that it cannot set the wallpaper.
+ExecStartPre=/bin/sh -c 'until DISPLAY=:1 xdpyinfo >/dev/null 2>&1; do sleep 1; done'
+ExecStartPre=/usr/bin/xsetroot -solid "#2e3436"
+# One terminal, open and waiting. fluxbox has no desktop icons, so without this
+# a learner has to find the right-click menu before they can type anything.
+ExecStart=/usr/bin/xterm -fa Monospace -fs 11 -bg black -fg white \
+          -geometry 100x30+60+40 -title "Lab terminal" -e /bin/bash -l
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
