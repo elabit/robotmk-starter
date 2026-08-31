@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/elabit/robotmk-starter/compare/v1.4.1...v1.4.2) (2026-08-31)
+
+
+### Bug Fixes
+
+* **lab:** Checkmk did not show up in the PORTS tab ([ff542e1](https://github.com/elabit/robotmk-starter/commit/ff542e19b4474b0ff8676dd43613f26b8a1733e8))
+
 ## [1.4.1](https://github.com/elabit/robotmk-starter/compare/v1.4.0...v1.4.1) (2026-08-31)
 
 
