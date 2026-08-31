@@ -37,9 +37,18 @@ case "$root" in
 esac
 # The root must hand the learner on to the viewer rather than make them guess a
 # filename. Do not assert on the wording of that page — assert on where it points.
-echo "$root" | grep -q "vnc.html" || { echo "FAIL: / does not lead to the viewer"; exit 1; }
-ex bash -lc 'curl -s http://127.0.0.1:6080/vnc.html' | grep -qi "noVNC" \
-  || { echo "FAIL: /vnc.html is not the noVNC client"; exit 1; }
+case "$root" in
+  *vnc.html*) : ;;
+  *) echo "FAIL: / does not lead to the viewer"; exit 1 ;;
+esac
+# Fetch first, match second. Piping curl into `grep -q` looks tidy and is a trap:
+# grep exits at the first match, curl gets SIGPIPE, and `set -o pipefail` turns
+# the success into a failure. The check fails precisely when it should pass.
+viewer=$(ex bash -lc 'curl -s http://127.0.0.1:6080/vnc.html' || true)
+case "$viewer" in
+  *noVNC*|*noVNC_*) : ;;
+  *) echo "FAIL: /vnc.html is not the noVNC client"; exit 1 ;;
+esac
 
 # A learner must be able to open a shell from the desktop.
 ex bash -lc 'command -v xterm' >/dev/null 2>&1 || { echo "FAIL: no terminal emulator"; exit 1; }
@@ -67,5 +76,18 @@ for _ in $(seq 1 90); do
   sleep 5
 done
 [ "$c" != "000" ] || { echo "FAIL: Checkmk not reachable on localhost:5000 (got $c)"; exit 1; }
+
+# The port must not exist while nothing is behind it: an open port with no
+# answer is what a forwarding proxy reports as 502.
+docker compose -f "$D/docker-compose.yml" stop cmk >/dev/null 2>&1
+sleep 3
+docker compose -f "$D/docker-compose.yml" restart host >/dev/null 2>&1
+sleep 20
+if ex bash -lc 'timeout 3 bash -c "</dev/tcp/127.0.0.1/5000"' 2>/dev/null; then
+  echo "FAIL: port 5000 is open while Checkmk is down — that is a 502 waiting to happen"
+  docker compose -f "$D/docker-compose.yml" start cmk >/dev/null 2>&1
+  exit 1
+fi
+docker compose -f "$D/docker-compose.yml" start cmk >/dev/null 2>&1
 
 echo "OK: desktop runs, systemd has PID 1, Checkmk answers on localhost:5000"

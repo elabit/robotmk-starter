@@ -5,6 +5,13 @@ After=network.target
 
 [Service]
 Type=simple
+# Do not open the port before there is something behind it. socat would listen
+# immediately while the Checkmk site still needs its first minute or so, the port
+# would show up in the PORTS tab straight away, and whoever clicks early gets a
+# 502 from the forwarding proxy — a port that answers nothing.
+# The site needs roughly 70 s on a two-core machine, measured; allow ten minutes.
+TimeoutStartSec=600
+ExecStartPre=/bin/sh -c 'until curl -s -o /dev/null --max-time 3 http://cmk:5000/cmk/; do sleep 2; done'
 # Codespaces only forwards ports that something listens on INSIDE the container
 # VS Code attaches to. The "service:port" form of forwardPorts, which the dev
 # container spec defines for exactly this case, is silently dropped there.
