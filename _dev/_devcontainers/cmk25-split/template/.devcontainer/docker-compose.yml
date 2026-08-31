@@ -22,7 +22,10 @@ services:
     tmpfs:
       - /run
       - /run/lock
+    # At runtime this file lives in <lab>/.devcontainer/, so `..` is the lab
+    # root. In a Codespace this bind is replaced by the one from Codespaces'
+    # own overlay — compose merges volumes by target, and the later file wins.
     volumes:
-      - ../..:/workspaces:cached
+      - ..:/workspaces:cached
     command: []
     shm_size: 1gb

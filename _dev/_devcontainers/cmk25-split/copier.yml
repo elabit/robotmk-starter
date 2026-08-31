@@ -1,0 +1,20 @@
+# Devcontainer: cmk25-split — Checkmk Pro 2.5 and a SEPARATE monitored host.
+#
+# Unlike cmk25, the Checkmk site and the monitored machine are two containers.
+# The monitored host runs systemd, so the Checkmk agent installs itself the way
+# it does on a real machine: dpkg deploys check-mk-agent.socket,
+# check-mk-agent-async.service, cmk-agent@.service and cmk-agent-ctl-daemon.
+# No systemctl stub, no xinetd, no artificial login shell, no scheduler started
+# by hand. See ADR-0072 in the academy repository for the measurements.
+#
+# Two rules for anyone editing the compose file:
+#   - Never mount anything at /tmp. Codespaces already binds it, and a clash
+#     makes it build a recovery container instead — silently.
+#   - No devcontainer features on the host. Features that carry "init" put tini
+#     at PID 1 and systemd then refuses to start.
+_subdirectory: template
+_answers_file: .copier-devcontainer-answers.yml
+
+example_name:
+  type: str
+  default: "example"
