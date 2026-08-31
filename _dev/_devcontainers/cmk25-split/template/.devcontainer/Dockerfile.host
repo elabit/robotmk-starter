@@ -10,6 +10,7 @@ FROM debian:12
 # installed the honest way. Measured — see ADR-0072.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus ca-certificates curl wget sudo git \
+      procps less \
       tigervnc-standalone-server tigervnc-common fluxbox \
       novnc websockify x11-utils x11-xserver-utils xterm \
  && rm -rf /var/lib/apt/lists/* \
@@ -17,6 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
           /etc/systemd/system/*.wants/* \
           /lib/systemd/system/sockets.target.wants/*udev*
 
+# procps is not optional here: the Checkmk agent builds its <<<ps_lnx>>> section
+# with `ps ax` (check_mk_agent.linux:870) and uses ps in three more places.
+# Debian's minimal image has none of it, so process monitoring would silently
+# come up empty — in a monitoring course.
 # No system browser either. Playwright brings its own, fetched by RCC, and the
 # Checkmk web interface is reached through the forwarded port in the learner's
 # own browser. The desktop exists only so the browser the TEST starts is visible.

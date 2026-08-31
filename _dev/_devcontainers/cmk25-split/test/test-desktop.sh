@@ -50,4 +50,8 @@ ex bash -lc 'command -v xsetroot' >/dev/null 2>&1 || { echo "FAIL: no xsetroot";
 ex test -f /root/.fluxbox/menu || { echo "FAIL: no fluxbox menu"; exit 1; }
 ex grep -q "Terminal" /root/.fluxbox/menu || { echo "FAIL: menu has no Terminal entry"; exit 1; }
 
+# The agent's <<<ps_lnx>>> section is built with `ps ax`. Without procps it comes
+# up empty and the learner sees no process monitoring at all.
+ex bash -lc 'ps ax >/dev/null' 2>/dev/null || { echo "FAIL: no working ps"; exit 1; }
+
 echo "OK: desktop runs and systemd still has PID 1"
