@@ -30,7 +30,10 @@ done
   echo "failed units:      $(systemctl --failed --no-legend 2>/dev/null | wc -l | tr -d ' ')"
   echo "vncserver:         $(systemctl is-active vncserver 2>&1)"
   echo "novnc:             $(systemctl is-active novnc 2>&1)"
+  echo "cmk resolves:      $(getent hosts cmk 2>/dev/null | awk '{print $1}' || echo NO)"
+  echo "cmk port 5000:     $(timeout 3 bash -c '</dev/tcp/cmk/5000' 2>/dev/null && echo open || echo closed)"
   echo "checkmk reachable: $(curl -s -o /dev/null -w '%{http_code}' http://cmk:5000/cmk/ 2>&1)"
+  echo "compose peers:     $(getent ahostsv4 cmk 2>/dev/null | head -1 || echo none)"
   echo "ROBOLAND_KEY set:  $(test -n "${ROBOLAND_KEY:-}" && echo yes || echo NO)"
   echo "rcc preinstalled:  $(command -v rcc >/dev/null 2>&1 && echo YES-BAD || echo no)"
 } > LAB-CHECK.txt
