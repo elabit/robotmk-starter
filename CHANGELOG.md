@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.4.0](https://github.com/elabit/robotmk-starter/compare/v1.3.0...v1.4.0) (2026-08-31)
+
+
+### Features
+
+* **lab:** add cmk-quickstart lab with the course suite ([a245037](https://github.com/elabit/robotmk-starter/commit/a245037dfaa08ff0034ed3a6c083b02bfc877ece))
+* **lab:** add devcontainer type cmk25-split ([a287d20](https://github.com/elabit/robotmk-starter/commit/a287d20f2497b0848eeddc4560a4ee66d485d525))
+* **lab:** desktop as systemd units, not a devcontainer feature ([a9a9e28](https://github.com/elabit/robotmk-starter/commit/a9a9e28ebbfeed6f3573b390144a1823ea24da7c))
+* **lab:** expose cmk-quickstart to Codespaces ([a48b1b4](https://github.com/elabit/robotmk-starter/commit/a48b1b4fa2a61d6232dda4e2d76b25a363dc42b0))
+* **lab:** systemd host and Checkmk server as two compose services ([acf1334](https://github.com/elabit/robotmk-starter/commit/acf1334f401b7fe7e42abacd2bfe89657621a798))
+
+
+### Bug Fixes
+
+* **dev:** say plainly that generate-all.sh needs bash 4 ([fdc14bb](https://github.com/elabit/robotmk-starter/commit/fdc14bb5121967dc6dea0263a31c2d849946a147))
+* **lab:** drop the system browser from the host image ([6a768d1](https://github.com/elabit/robotmk-starter/commit/6a768d1f957b3acecb92684c9c6458c44d47f21b))
+* **lab:** the preinstall check never checked anything ([ca37aaf](https://github.com/elabit/robotmk-starter/commit/ca37aaf104bdfe715aa1351c700ffa0275ab0dc6))
+* **lab:** the self-check measured while the machine was still booting ([7dd0cd8](https://github.com/elabit/robotmk-starter/commit/7dd0cd8a4cdf45efae6a5caa092b2fb816380a5c))
+* **lab:** the wait loop for Checkmk exited after one second ([8ca1469](https://github.com/elabit/robotmk-starter/commit/8ca14699eefb46b244693df1f2aab3d600fc656d))
+
 ## [1.3.0](https://github.com/elabit/robotmk-starter/compare/v1.2.0...v1.3.0) (2026-07-22)
 
 
