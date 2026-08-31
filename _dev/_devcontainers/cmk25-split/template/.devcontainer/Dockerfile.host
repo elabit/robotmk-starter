@@ -11,12 +11,15 @@ FROM debian:12
 RUN apt-get update && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus ca-certificates curl wget sudo git \
       tigervnc-standalone-server tigervnc-common fluxbox \
-      novnc websockify x11-utils firefox-esr \
+      novnc websockify x11-utils \
  && rm -rf /var/lib/apt/lists/* \
  && rm -f /lib/systemd/system/multi-user.target.wants/* \
           /etc/systemd/system/*.wants/* \
           /lib/systemd/system/sockets.target.wants/*udev*
 
+# No system browser either. Playwright brings its own, fetched by RCC, and the
+# Checkmk web interface is reached through the forwarded port in the learner's
+# own browser. The desktop exists only so the browser the TEST starts is visible.
 # RCC and the Checkmk agent are deliberately NOT installed here. Installing them
 # is what the course teaches; a lab that pre-installs them teaches nothing.
 

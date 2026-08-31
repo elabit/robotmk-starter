@@ -26,8 +26,7 @@ ex bash -c 'timeout 5 bash -c "</dev/tcp/127.0.0.1/6080"' \
   || { echo "FAIL: port 6080 closed"; exit 1; }
 ex bash -c 'DISPLAY=:1 xdpyinfo >/dev/null 2>&1' \
   || { echo "FAIL: no display on :1"; exit 1; }
-# A browser must be there — the learner watches the test drive it.
-# Through a shell: `command` is a builtin, and exec runs no shell.
-ex bash -lc 'command -v firefox-esr' >/dev/null 2>&1 \
-  || { echo "FAIL: no browser"; exit 1; }
+# No assertion about a system browser: Playwright brings its own, and Checkmk is
+# reached through the forwarded port. What has to hold is that X accepts a client
+# at all — that is what xdpyinfo above proves.
 echo "OK: desktop runs and systemd still has PID 1"
