@@ -1,0 +1,15 @@
+[Unit]
+Description=Fluxbox window manager
+After=vncserver.service
+Requires=vncserver.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:1
+ExecStartPre=/bin/sh -c 'until DISPLAY=:1 xdpyinfo >/dev/null 2>&1; do sleep 1; done'
+ExecStart=/usr/bin/fluxbox
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

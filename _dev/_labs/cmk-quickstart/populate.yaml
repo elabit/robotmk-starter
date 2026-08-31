@@ -1,0 +1,3 @@
+# The quickstart lab carries nothing but its own suite. A beginner who opens it
+# should see the test they are about to run and nothing else.
+populate: []
