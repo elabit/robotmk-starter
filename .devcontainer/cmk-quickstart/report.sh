@@ -41,5 +41,7 @@ git config user.email "lab@example.com"
 git config user.name  "lab"
 git add -f LAB-CHECK.txt
 git commit -m "chore: lab self-check from the codespace"
-git push "https://x-access-token:${GITHUB_TOKEN}@github.com/elabit/robotmk-starter" \
-  HEAD:feat/lab-cmk-quickstart
+# Push to a branch of its own, never to the one being worked on: two writers on
+# one ref means every result races with the next commit.
+git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/elabit/robotmk-starter" \
+  HEAD:lab-check-result
