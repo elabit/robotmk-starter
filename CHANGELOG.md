@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/elabit/robotmk-starter/compare/v1.4.3...v1.5.0) (2026-08-31)
+
+
+### Features
+
+* **lab:** a shell in the Checkmk container ([2a816e7](https://github.com/elabit/robotmk-starter/commit/2a816e7e0c2353f606e0eb070556282535846be9))
+
 ## [1.4.3](https://github.com/elabit/robotmk-starter/compare/v1.4.2...v1.4.3) (2026-08-31)
 
 
