@@ -45,6 +45,9 @@ done
   echo "compose peers:     $(getent ahostsv4 cmk 2>/dev/null | head -1 || echo none)"
   echo "ROBOLAND_KEY set:  $(test -n "${ROBOLAND_KEY:-}" && echo yes || echo NO)"
   echo "rcc preinstalled:  $(command -v rcc >/dev/null 2>&1 && echo YES-BAD || echo no)"
+  echo "novnc root page:   $(curl -s http://127.0.0.1:6080/ | grep -q vnc.html && echo "leads to viewer" || echo BROKEN)"
+  echo "terminal present:  $(command -v xterm >/dev/null 2>&1 && echo yes || echo NO)"
+  echo "desktop-session:   $(systemctl is-active desktop-session 2>&1)"
 } > LAB-CHECK.txt
 git config user.email "lab@example.com"
 git config user.name  "lab"

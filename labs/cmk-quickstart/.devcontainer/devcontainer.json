@@ -18,9 +18,9 @@
       "extensions": ["ms-python.python", "d-biehl.robotcode"]
     }
   },
-  "forwardPorts": [6080, 5000],
+  "forwardPorts": [6080, "cmk:5000"],
   "portsAttributes": {
     "6080": { "label": "Desktop (noVNC)", "onAutoForward": "openBrowser" },
-    "5000": { "label": "Checkmk", "onAutoForward": "notify" }
+    "cmk:5000": { "label": "Checkmk", "onAutoForward": "notify" }
   }
 }
