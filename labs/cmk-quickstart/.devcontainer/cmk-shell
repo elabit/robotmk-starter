@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# A shell in the Checkmk container, from the machine you are working on.
+#
+# This is a convenience for whoever builds the lab, not part of the course:
+# module 2 is done through Checkmk's web interface, and a learner never needs
+# this. It exists because debugging the lab without it is tedious.
+set -euo pipefail
+if ! command -v docker >/dev/null 2>&1; then
+  echo "docker client missing — is this the lab image?" >&2; exit 1
+fi
+id=$(docker ps --filter "label=com.docker.compose.service=cmk" --format '{{.ID}}' | head -1)
+if [ -z "$id" ]; then
+  echo "No running container labelled as the 'cmk' compose service." >&2
+  echo "Running containers:" >&2
+  docker ps --format '  {{.Names}}  ({{.Image}})' >&2
+  exit 1
+fi
+# Ask for a terminal only when there is one. `docker exec -it` fails with
+# "the input device is not a TTY" the moment this is used from a script — and it
+# will be, by the lab's own tests.
+flags=(-i)
+if [ -t 0 ] && [ -t 1 ]; then flags+=(-t); fi
+
+# No argument: a shell as the site user, which is what you usually want — omd,
+# cmk and the site's own environment are set up there.
+if [ $# -eq 0 ]; then
+  exec docker exec "${flags[@]}" "$id" bash -lc 'su - "${CMK_SITE_ID:-cmk}"'
+fi
+# With arguments: run them as the site user too, so `cmk-shell omd status` works
+# the way it reads.
+exec docker exec "${flags[@]}" "$id" bash -lc \
+  'su - "${CMK_SITE_ID:-cmk}" -c "$*"' _ "$@"

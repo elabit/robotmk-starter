@@ -90,4 +90,12 @@ if ex bash -lc 'timeout 3 bash -c "</dev/tcp/127.0.0.1/5000"' 2>/dev/null; then
 fi
 docker compose -f "$D/docker-compose.yml" start cmk >/dev/null 2>&1
 
-echo "OK: desktop runs, systemd has PID 1, Checkmk answers on localhost:5000"
+# cmk-shell must land in the Checkmk container, not merely exist. Asserting that
+# the docker client is installed would pass while the socket is unmounted.
+site=$(ex bash -lc 'cmk-shell omd version 2>&1 | head -1' || true)
+case "$site" in
+  *OMD*|*version*) : ;;
+  *) echo "FAIL: cmk-shell did not reach the Checkmk container: $site"; exit 1 ;;
+esac
+
+echo "OK: desktop runs, systemd has PID 1, Checkmk answers, cmk-shell reaches the site"

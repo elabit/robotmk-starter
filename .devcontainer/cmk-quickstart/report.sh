@@ -49,6 +49,7 @@ done
   echo "terminal present:  $(command -v xterm >/dev/null 2>&1 && echo yes || echo NO)"
   echo "desktop-session:   $(systemctl is-active desktop-session 2>&1)"
   echo "checkmk on localhost: $(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:5000/cmk/ 2>/dev/null)"
+  echo "cmk-shell reaches site: $(cmk-shell omd version 2>&1 | head -1)"
 } > LAB-CHECK.txt
 git config user.email "lab@example.com"
 git config user.name  "lab"
