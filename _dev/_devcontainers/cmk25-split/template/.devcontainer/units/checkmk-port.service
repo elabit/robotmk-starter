@@ -1,0 +1,18 @@
+[Unit]
+Description=Make the Checkmk site reachable on localhost:5000
+Documentation=https://github.com/orgs/community/discussions/37360
+After=network.target
+
+[Service]
+Type=simple
+# Codespaces only forwards ports that something listens on INSIDE the container
+# VS Code attaches to. The "service:port" form of forwardPorts, which the dev
+# container spec defines for exactly this case, is silently dropped there.
+# So we listen here and hand the connection next door. One hop, and the port
+# shows up in the PORTS tab like any other.
+ExecStart=/usr/bin/socat TCP-LISTEN:5000,fork,reuseaddr TCP:cmk:5000
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
