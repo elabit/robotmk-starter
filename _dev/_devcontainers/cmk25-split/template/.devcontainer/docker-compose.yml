@@ -26,6 +26,10 @@ services:
     # root. In a Codespace this bind is replaced by the one from Codespaces'
     # own overlay — compose merges volumes by target, and the later file wins.
     volumes:
+      # The host's Docker socket, so `cmk-shell` can reach the Checkmk container.
+      # This hands the container control over the machine's Docker — acceptable
+      # for a throwaway lab, and stated here so nobody adopts it by accident.
+      - /var/run/docker.sock:/var/run/docker.sock
       - ..:/workspaces:cached
     command: []
     shm_size: 1gb

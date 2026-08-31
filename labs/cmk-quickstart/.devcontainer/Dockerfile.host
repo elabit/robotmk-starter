@@ -37,6 +37,19 @@ RUN printf '%s\n' \
       '<p>Opening the desktop&hellip; <a href="vnc.html?autoconnect=true&amp;resize=remote">continue</a>' \
       > /usr/share/novnc/index.html
 
+# The Docker client only — not the engine. Debian ships docker.io 20.10, which
+# is the whole engine and older than the socket it would talk to. With the host's
+# socket mounted, this is enough to reach the Checkmk container next door.
+ARG DOCKER_CLI_VERSION=27.5.1
+RUN set -eux; \
+    arch="$(uname -m)"; \
+    curl -fsSL "https://download.docker.com/linux/static/stable/${arch}/docker-${DOCKER_CLI_VERSION}.tgz" \
+      -o /tmp/docker.tgz; \
+    tar -xzf /tmp/docker.tgz -C /tmp docker/docker; \
+    install -m 0755 /tmp/docker/docker /usr/local/bin/docker; \
+    rm -rf /tmp/docker.tgz /tmp/docker
+
+COPY cmk-shell /usr/local/bin/cmk-shell
 COPY fluxbox/ /root/.fluxbox/
 COPY units/*.service /etc/systemd/system/
 RUN systemctl enable vncserver fluxbox novnc desktop-session checkmk-port
