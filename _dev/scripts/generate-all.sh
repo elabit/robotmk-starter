@@ -21,6 +21,19 @@
 #   task generate EXAMPLE=cryptolibrary   # single name (matches across every content type)
 
 set -euo pipefail
+
+# This script needs bash 4 or newer: it uses associative arrays (declare -A) and
+# relies on "${arr[@]}" being harmless for empty arrays. macOS still ships bash
+# 3.2 as /bin/bash, where both of those fail — with messages that point at the
+# wrong line ("extra_data[@]: unbound variable", "debian: unbound variable").
+# CI runs Linux and never sees it, so say it here instead of letting someone
+# spend an afternoon on it.
+if (( BASH_VERSINFO[0] < 4 )); then
+  echo "Error: this script needs bash 4 or newer; running ${BASH_VERSION}." >&2
+  echo "       On macOS:  brew install bash" >&2
+  echo "       then run:  /opt/homebrew/bin/bash _dev/scripts/generate-all.sh [name]" >&2
+  exit 1
+fi
 shopt -s nullglob  # so an empty source dir (e.g. no os/ instances yet) iterates zero times instead of passing the literal glob through
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
