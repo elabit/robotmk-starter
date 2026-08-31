@@ -8,6 +8,21 @@
 exec > /var/log/lab-report.log 2>&1
 set -x
 cd /workspaces/robotmk-starter || exit 0
+
+# Wait before measuring. postCreateCommand runs while the machine is still
+# coming up, and a self-check that asks "is everything up?" during boot answers
+# its own question wrongly. Checkmk in particular takes minutes: measured, its
+# container briefly pulls over 1600 % CPU while the site starts.
+for _ in $(seq 1 60); do
+  [[ "$(systemctl is-system-running 2>&1)" =~ ^(running|degraded)$ ]] && break
+  sleep 5
+done
+for _ in $(seq 1 60); do
+  code=$(curl -s -o /dev/null -w '%{http_code}' "http://cmk:5000/cmk/" 2>/dev/null || echo 000)
+  [[ "$code" != "000" ]] && break
+  sleep 5
+done
+
 {
   echo "measured:          $(date -Is)"
   echo "PID 1:             $(cat /proc/1/comm)"
