@@ -23,14 +23,14 @@
   },
   "forwardPorts": [
     6080,
-    "cmk:5000"
+    5000
   ],
   "portsAttributes": {
     "6080": {
       "label": "Desktop (noVNC)",
       "onAutoForward": "openBrowser"
     },
-    "cmk:5000": {
+    "5000": {
       "label": "Checkmk",
       "onAutoForward": "notify"
     }

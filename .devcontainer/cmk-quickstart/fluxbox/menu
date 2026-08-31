@@ -1,8 +1,7 @@
 [begin] (Roboland Lab)
   [exec] (Terminal) {xterm -fa Monospace -fs 11 -bg black -fg white}
   [separator]
-  [nop] (Checkmk runs next door -- open port 5000)
-  [nop] (from the PORTS tab in VS Code.)
+  [nop] (Checkmk: open port 5000 in the PORTS tab)
   [separator]
   [restart] (Restart the desktop)
 [end]

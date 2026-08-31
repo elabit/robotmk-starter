@@ -10,7 +10,7 @@ FROM debian:12
 # installed the honest way. Measured — see ADR-0072.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus ca-certificates curl wget sudo git \
-      procps less \
+      procps less socat \
       tigervnc-standalone-server tigervnc-common fluxbox \
       novnc websockify x11-utils x11-xserver-utils xterm \
  && rm -rf /var/lib/apt/lists/* \
@@ -39,7 +39,7 @@ RUN printf '%s\n' \
 
 COPY fluxbox/ /root/.fluxbox/
 COPY units/*.service /etc/systemd/system/
-RUN systemctl enable vncserver fluxbox novnc desktop-session
+RUN systemctl enable vncserver fluxbox novnc desktop-session checkmk-port
 
 STOPSIGNAL SIGRTMIN+3
 ENTRYPOINT ["/sbin/init"]

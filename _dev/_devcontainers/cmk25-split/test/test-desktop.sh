@@ -8,12 +8,12 @@
 # override it. Measured, see ADR-0072.
 set -euo pipefail
 D="$(cd "$(dirname "$0")/../template/.devcontainer" && pwd)"
-docker compose -f "$D/docker-compose.yml" up -d --build host
+docker compose -f "$D/docker-compose.yml" up -d --build
 trap 'docker compose -f "$D/docker-compose.yml" down -v' EXIT
 ex() { docker compose -f "$D/docker-compose.yml" exec -T host "$@"; }
 
-for _ in $(seq 1 45); do
-  ex systemctl is-active novnc >/dev/null 2>&1 && break
+for _ in $(seq 1 60); do
+  ex bash -lc 'curl -s -o /dev/null --max-time 3 http://127.0.0.1:6080/' 2>/dev/null && break
   sleep 2
 done
 
@@ -31,7 +31,7 @@ ex bash -c 'DISPLAY=:1 xdpyinfo >/dev/null 2>&1' \
 # at all — that is what xdpyinfo above proves.
 # Port 6080 must open the viewer, not a directory listing. Debian's novnc ships
 # vnc.html and no index.html, so websockify serves the folder instead.
-root=$(ex bash -lc 'curl -s http://127.0.0.1:6080/')
+root=$(ex bash -lc 'curl -s http://127.0.0.1:6080/' || true)
 case "$root" in
   *"Directory listing"*) echo "FAIL: 6080 shows a directory listing, not the viewer"; exit 1 ;;
 esac
@@ -54,4 +54,18 @@ ex grep -q "Terminal" /root/.fluxbox/menu || { echo "FAIL: menu has no Terminal 
 # up empty and the learner sees no process monitoring at all.
 ex bash -lc 'ps ax >/dev/null' 2>/dev/null || { echo "FAIL: no working ps"; exit 1; }
 
-echo "OK: desktop runs and systemd still has PID 1"
+# Checkmk must answer on localhost INSIDE this container, or Codespaces will not
+# forward it: the "service:port" form of forwardPorts is dropped there.
+# Every command substitution here gets a fallback. Under `set -e` an assignment
+# takes the exit status of what it runs, so a curl that cannot connect does not
+# just yield an empty string — it kills the script.
+c=000
+for _ in $(seq 1 90); do
+  c=$(ex bash -lc "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:5000/cmk/" 2>/dev/null) || c=000
+  [ -n "$c" ] || c=000
+  [ "$c" != "000" ] && break
+  sleep 5
+done
+[ "$c" != "000" ] || { echo "FAIL: Checkmk not reachable on localhost:5000 (got $c)"; exit 1; }
+
+echo "OK: desktop runs, systemd has PID 1, Checkmk answers on localhost:5000"
