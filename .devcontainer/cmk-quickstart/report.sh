@@ -23,7 +23,7 @@ done
 CMK_WAIT_START=$(date +%s)
 CMK_SECONDS="over 1200"
 for _ in $(seq 1 240); do
-  code=$(curl -s -o /dev/null -w '%{http_code}' "http://cmk:5000/cmk/" 2>/dev/null || echo 000)
+  code=$(curl -s -o /dev/null -w '%{http_code}' "http://cmk:5000/cmk/" 2>/dev/null)
   if [[ "$code" != "000" ]]; then
     CMK_SECONDS=$(( $(date +%s) - CMK_WAIT_START ))
     break
@@ -41,7 +41,7 @@ done
   echo "cmk resolves:      $(getent hosts cmk 2>/dev/null | awk '{print $1}' || echo NO)"
   echo "cmk port 5000:     $(timeout 3 bash -c '</dev/tcp/cmk/5000' 2>/dev/null && echo open || echo closed)"
   echo "checkmk waited:    ${CMK_SECONDS} s after systemd settled"
-  echo "checkmk reachable: $(curl -s -o /dev/null -w '%{http_code}' http://cmk:5000/cmk/ 2>&1)"
+  echo "checkmk reachable: $(curl -s -o /dev/null -w '%{http_code}' http://cmk:5000/cmk/ 2>/dev/null)"
   echo "compose peers:     $(getent ahostsv4 cmk 2>/dev/null | head -1 || echo none)"
   echo "ROBOLAND_KEY set:  $(test -n "${ROBOLAND_KEY:-}" && echo yes || echo NO)"
   echo "rcc preinstalled:  $(command -v rcc >/dev/null 2>&1 && echo YES-BAD || echo no)"
