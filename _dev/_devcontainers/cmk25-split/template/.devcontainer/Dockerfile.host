@@ -5,8 +5,13 @@ FROM debian:12
 # exactly as it would on a real machine. Without systemd the package needs four
 # workarounds, and the learner would practise four handgrips that do not exist
 # outside a lab. See ADR-0072 in the academy repository.
+# The desktop runs as systemd units, never as a devcontainer feature: features
+# that carry "init" take PID 1 away from systemd, and then the agent cannot be
+# installed the honest way. Measured — see ADR-0072.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus ca-certificates curl wget sudo git \
+      tigervnc-standalone-server tigervnc-common fluxbox \
+      novnc websockify x11-utils firefox-esr \
  && rm -rf /var/lib/apt/lists/* \
  && rm -f /lib/systemd/system/multi-user.target.wants/* \
           /etc/systemd/system/*.wants/* \
@@ -14,6 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # RCC and the Checkmk agent are deliberately NOT installed here. Installing them
 # is what the course teaches; a lab that pre-installs them teaches nothing.
+
+COPY units/*.service /etc/systemd/system/
+RUN systemctl enable vncserver fluxbox novnc
 
 STOPSIGNAL SIGRTMIN+3
 ENTRYPOINT ["/sbin/init"]
