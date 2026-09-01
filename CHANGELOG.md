@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.1](https://github.com/elabit/robotmk-starter/compare/v1.5.0...v1.5.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* **lab:** Checkmk redirected the learner to their own machine ([c738fef](https://github.com/elabit/robotmk-starter/commit/c738fef761da8313a375fe8e894b6a5079466595))
+* **lab:** Checkmk was reachable past its own proxy ([c7b5945](https://github.com/elabit/robotmk-starter/commit/c7b5945833f8cea5891af48abe075867fba53e0b))
+* **lab:** pass the real hostname upstream ([0104f4a](https://github.com/elabit/robotmk-starter/commit/0104f4a9bc42b0e6a528abc26b014beb49681507))
+
 ## [1.5.0](https://github.com/elabit/robotmk-starter/compare/v1.4.3...v1.5.0) (2026-08-31)
 
 
