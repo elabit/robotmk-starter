@@ -7,8 +7,11 @@ services:
     environment:
       CMK_PASSWORD: cmk
       CMK_SITE_ID: cmk
-    ports:
-      - "5000:5000"
+    # Deliberately NOT published on the machine. Publishing it made Codespaces
+    # forward the VM's port straight to Checkmk's Apache, bypassing the proxy in
+    # the host container — so every redirect was built from "Host: localhost:5000"
+    # and sent the learner to their own machine. The only way in is through the
+    # host container, which is where the proxy lives.
 
   host:
     build:
@@ -30,7 +33,6 @@ services:
       # This hands the container control over the machine's Docker — acceptable
       # for a throwaway lab, and stated here so nobody adopts it by accident.
       - /var/run/docker.sock:/var/run/docker.sock
-      # This copy lives in <repo>/.devcontainer/cmk-quickstart/.
       - ../..:/workspaces:cached
     command: []
     shm_size: 1gb

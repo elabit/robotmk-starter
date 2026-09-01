@@ -69,13 +69,17 @@ ex bash -lc 'ps ax >/dev/null' 2>/dev/null || { echo "FAIL: no working ps"; exit
 # takes the exit status of what it runs, so a curl that cannot connect does not
 # just yield an empty string — it kills the script.
 c=000
-for _ in $(seq 1 90); do
+for _ in $(seq 1 240); do
   c=$(ex bash -lc "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:5000/cmk/" 2>/dev/null) || c=000
   [ -n "$c" ] || c=000
   [ "$c" != "000" ] && break
   sleep 5
 done
-[ "$c" != "000" ] || { echo "FAIL: Checkmk not reachable on localhost:5000 (got $c)"; exit 1; }
+[ "$c" != "000" ] || {
+  echo "FAIL: Checkmk never answered on localhost:5000 within 20 minutes."
+  echo "      Not an assertion about behaviour — the site simply did not come up."
+  exit 1
+}
 
 # The port must not exist while nothing is behind it: an open port with no
 # answer is what a forwarding proxy reports as 502.
@@ -90,6 +94,18 @@ if ex bash -lc 'timeout 3 bash -c "</dev/tcp/127.0.0.1/5000"' 2>/dev/null; then
 fi
 docker compose -f "$D/docker-compose.yml" start cmk >/dev/null 2>&1
 
+# Wait for the port to come back. The check above deliberately left it closed,
+# and anything asked before it reopens answers nothing — which reads like a
+# failed assertion but is only an impatient one.
+back=000
+for _ in $(seq 1 240); do
+  back=$(ex bash -lc "curl -s -o /dev/null -w '%{http_code}' --max-time 3 http://127.0.0.1:5000/cmk/" 2>/dev/null) || back=000
+  [ -n "$back" ] || back=000
+  [ "$back" != "000" ] && break
+  sleep 5
+done
+[ "$back" != "000" ] || { echo "FAIL: port 5000 never came back after restarting cmk"; exit 1; }
+
 # cmk-shell must land in the Checkmk container, not merely exist. Asserting that
 # the docker client is installed would pass while the socket is unmounted.
 site=$(ex bash -lc 'cmk-shell omd version 2>&1 | head -1' || true)
@@ -98,4 +114,23 @@ case "$site" in
   *) echo "FAIL: cmk-shell did not reach the Checkmk container: $site"; exit 1 ;;
 esac
 
-echo "OK: desktop runs, systemd has PID 1, Checkmk answers, cmk-shell reaches the site"
+# The redirect must be RELATIVE whatever Host arrives. GitHub forwarding sends
+# "Host: localhost:5000", and an absolute redirect built from that points at the
+# learner's own machine — which is exactly what broke the lab twice.
+for h in "localhost:5000" "anything-5000.app.github.dev"; do
+  loc=$(ex bash -lc "curl -s -o /dev/null -D - -H 'Host: $h' http://127.0.0.1:5000/cmk/ | grep -i '^location' | tr -d '\r'" || true)
+  case "$loc" in
+    *"Location: /cmk/check_mk/"*) : ;;
+    *) echo "FAIL: absolute redirect for Host $h -> $loc"; exit 1 ;;
+  esac
+done
+
+# Checkmk must NOT be published on the machine. If it is, Codespaces forwards
+# that port straight to Apache and the proxy in this container is bypassed —
+# which is what made every redirect absolute and unusable.
+if docker compose -f "$D/docker-compose.yml" ps --format '{{.Publishers}}' cmk 2>/dev/null | grep -q "5000"; then
+  echo "FAIL: the cmk service publishes port 5000 on the machine; the proxy is bypassed"
+  exit 1
+fi
+
+echo "OK: desktop, systemd, Checkmk, relative redirects, no bypass, cmk-shell"
