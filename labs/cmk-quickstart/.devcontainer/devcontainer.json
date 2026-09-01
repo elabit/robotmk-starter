@@ -18,9 +18,6 @@
       "extensions": ["ms-python.python", "d-biehl.robotcode"]
     }
   },
-  // Runs after every start, not only the first: visibility is a property of the
-  // codespace, and a rebuild resets it.
-  "postStartCommand": "bash .devcontainer/make-ports-public.sh",
   "forwardPorts": [6080, 5000],
   "portsAttributes": {
     "6080": { "label": "Desktop (noVNC)", "onAutoForward": "openBrowser" },

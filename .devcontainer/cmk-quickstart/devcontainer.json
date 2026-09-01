@@ -20,9 +20,8 @@
       "extensions": ["ms-python.python", "d-biehl.robotcode"]
     }
   },
-  // Absolute paths: workspaceFolder points at the lab, these live beside it.
+  // Absolute path: workspaceFolder points at the lab, this lives beside it.
   "postCreateCommand": "bash /workspaces/robotmk-starter/.devcontainer/cmk-quickstart/report.sh",
-  "postStartCommand": "bash /workspaces/robotmk-starter/.devcontainer/cmk-quickstart/make-ports-public.sh",
   "forwardPorts": [6080, 5000],
   "portsAttributes": {
     "6080": { "label": "Desktop (noVNC)", "onAutoForward": "openBrowser" },
