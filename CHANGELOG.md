@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/elabit/robotmk-starter/compare/v1.5.1...v1.5.2) (2026-09-01)
+
+
+### Bug Fixes
+
+* **lab:** the bare forwarded address now leads into Checkmk ([87fcd31](https://github.com/elabit/robotmk-starter/commit/87fcd31f686b248ce445cc8a531baebe200eebfc))
+
 ## [1.5.1](https://github.com/elabit/robotmk-starter/compare/v1.5.0...v1.5.1) (2026-09-01)
 
 
