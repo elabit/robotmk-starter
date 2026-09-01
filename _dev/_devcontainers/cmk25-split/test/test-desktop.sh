@@ -59,6 +59,17 @@ ex bash -lc 'command -v xsetroot' >/dev/null 2>&1 || { echo "FAIL: no xsetroot";
 ex test -f /root/.fluxbox/menu || { echo "FAIL: no fluxbox menu"; exit 1; }
 ex grep -q "Terminal" /root/.fluxbox/menu || { echo "FAIL: menu has no Terminal entry"; exit 1; }
 
+# No error dialog may greet the learner. fluxbox calls fbsetbg on every start and
+# pops an xmessage explaining how to install Eterm when it finds no wallpaper
+# setter. Counting log lines does not catch this — the message never reaches the
+# journal, it goes straight onto the desktop.
+dialogs=$(ex bash -lc 'ps -eo comm | grep -c "^xmessage$"' 2>/dev/null || echo 0)
+[ "${dialogs:-0}" = "0" ] || { echo "FAIL: $dialogs error dialog(s) on the desktop"; exit 1; }
+
+# Firefox is for the LEARNER — they fetch RCC from GitHub on this machine.
+ex bash -lc 'command -v firefox-esr' >/dev/null 2>&1 || { echo "FAIL: no browser for the learner"; exit 1; }
+ex grep -q Firefox /root/.fluxbox/menu || { echo "FAIL: no Firefox entry in the menu"; exit 1; }
+
 # The agent's <<<ps_lnx>>> section is built with `ps ax`. Without procps it comes
 # up empty and the learner sees no process monitoring at all.
 ex bash -lc 'ps ax >/dev/null' 2>/dev/null || { echo "FAIL: no working ps"; exit 1; }

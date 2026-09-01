@@ -5,6 +5,13 @@ FROM debian:12
 # exactly as it would on a real machine. Without systemd the package needs four
 # workarounds, and the learner would practise four handgrips that do not exist
 # outside a lab. See ADR-0072 in the academy repository.
+# feh is 335 kB and the only reason it is here: fluxbox calls fbsetbg on every
+# start, fbsetbg looks for something that can paint the root window, finds
+# nothing, and puts an xmessage dialog in the learner's face explaining how to
+# install Eterm. Setting rootCommand in ~/.fluxbox/init does not stop it, and
+# neither does "background: none" in an overlay — both measured. Giving it a
+# tool it accepts does: zero dialogs.
+#
 # The desktop runs as systemd units, never as a devcontainer feature: features
 # that carry "init" take PID 1 away from systemd, and then the agent cannot be
 # installed the honest way. Measured — see ADR-0072.
@@ -12,7 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       systemd systemd-sysv dbus ca-certificates curl wget sudo git \
       procps less nginx-light \
       tigervnc-standalone-server tigervnc-common fluxbox \
-      novnc websockify x11-utils x11-xserver-utils xterm \
+      novnc websockify x11-utils x11-xserver-utils xterm firefox-esr \
+      feh \
  && rm -rf /var/lib/apt/lists/* \
  && rm -f /lib/systemd/system/multi-user.target.wants/* \
           /etc/systemd/system/*.wants/* \
@@ -22,9 +30,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # with `ps ax` (check_mk_agent.linux:870) and uses ps in three more places.
 # Debian's minimal image has none of it, so process monitoring would silently
 # come up empty — in a monitoring course.
-# No system browser either. Playwright brings its own, fetched by RCC, and the
-# Checkmk web interface is reached through the forwarded port in the learner's
-# own browser. The desktop exists only so the browser the TEST starts is visible.
+# firefox-esr is here for the LEARNER, not for the test: they download RCC from
+# GitHub on the machine they work on. Playwright still brings its own browser,
+# fetched by RCC — the two do not overlap.
 # RCC and the Checkmk agent are deliberately NOT installed here. Installing them
 # is what the course teaches; a lab that pre-installs them teaches nothing.
 

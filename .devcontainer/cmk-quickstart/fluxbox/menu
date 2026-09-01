@@ -1,7 +1,6 @@
 [begin] (Roboland Lab)
   [exec] (Terminal) {xterm -fa Monospace -fs 11 -bg black -fg white}
-  [separator]
-  [nop] (Checkmk: open port 5000 in the PORTS tab)
+  [exec] (Firefox) {firefox-esr}
   [separator]
   [restart] (Restart the desktop)
 [end]
