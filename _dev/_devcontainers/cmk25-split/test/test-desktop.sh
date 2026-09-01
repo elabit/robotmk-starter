@@ -117,19 +117,25 @@ esac
 # The redirect must be RELATIVE whatever Host arrives. GitHub forwarding sends
 # "Host: localhost:5000", and an absolute redirect built from that points at the
 # learner's own machine — which is exactly what broke the lab twice.
-for h in "localhost:5000" "anything-5000.app.github.dev"; do
-  loc=$(ex bash -lc "curl -s -o /dev/null -D - -H 'Host: $h' http://127.0.0.1:5000/cmk/ | grep -i '^location' | tr -d '\r'" || true)
+for spec in "localhost:5000|/" "localhost:5000|/cmk/" "anything-5000.app.github.dev|/" "anything-5000.app.github.dev|/cmk/"; do
+  h=${spec%%|*}; path=${spec#*|}
+  loc=$(ex bash -lc "curl -s -o /dev/null -D - -H 'Host: $h' http://127.0.0.1:5000$path | grep -i '^location' | tr -d '\r'" || true)
   case "$loc" in
     *"Location: /cmk/check_mk/"*) : ;;
-    *) echo "FAIL: absolute redirect for Host $h -> $loc"; exit 1 ;;
+    *) echo "FAIL: bad redirect for Host $h path $path -> $loc"; exit 1 ;;
   esac
 done
 
 # Checkmk must NOT be published on the machine. If it is, Codespaces forwards
 # that port straight to Apache and the proxy in this container is bypassed —
 # which is what made every redirect absolute and unusable.
-if docker compose -f "$D/docker-compose.yml" ps --format '{{.Publishers}}' cmk 2>/dev/null | grep -q "5000"; then
-  echo "FAIL: the cmk service publishes port 5000 on the machine; the proxy is bypassed"
+# Ask docker what is actually BOUND on the machine. `docker compose ps` lists
+# exposed ports too, with PublishedPort 0 — grepping its output for "5000" says
+# yes even when nothing is published, which it did.
+cid=$(docker compose -f "$D/docker-compose.yml" ps -q cmk 2>/dev/null || true)
+if [ -n "$cid" ] && [ -n "$(docker port "$cid" 2>/dev/null)" ]; then
+  echo "FAIL: the cmk service publishes ports on the machine; the proxy is bypassed:"
+  docker port "$cid" | sed "s/^/       /"
   exit 1
 fi
 
