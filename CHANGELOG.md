@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/elabit/robotmk-starter/compare/v1.5.2...v1.6.0) (2026-09-01)
+
+
+### Features
+
+* **lab:** public ports by default, a browser for the learner, no error dialog ([0ac6735](https://github.com/elabit/robotmk-starter/commit/0ac673580e532355bcaa5c50c7948e05eb043660))
+
+
+### Bug Fixes
+
+* **lab:** the root config had lost its own settings ([589483f](https://github.com/elabit/robotmk-starter/commit/589483fc2073d08af662beacc554e5d6b76b8bca))
+
 ## [1.5.2](https://github.com/elabit/robotmk-starter/compare/v1.5.1...v1.5.2) (2026-09-01)
 
 
