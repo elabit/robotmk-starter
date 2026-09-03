@@ -35,7 +35,12 @@ instead of failing on a selector.
 ## Running the test
 
 ```bash
-rcc run
+rcc task shell        # builds the environment on first use, then drops you into it
+robot roboland.robot
 ```
+
+The first `rcc task shell` takes a few minutes — it is fetching a Python, Node, Robot
+Framework, the Browser library and a browser, and assembling them into an environment of
+their own. Every later start is seconds.
 
 The browser opens where you can see it — on the noVNC desktop, port 6080.
