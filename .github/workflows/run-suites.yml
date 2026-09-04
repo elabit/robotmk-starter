@@ -79,6 +79,13 @@ jobs:
       matrix:
         suite: ${{ fromJson(needs.detect-changes.outputs.matrix) }}        
         os: [ubuntu-latest, windows-latest]
+        exclude:
+          # web-roboland drives a real browser against demo.robotmk.org. Running
+          # it on Windows as well checks nothing Linux does not already check —
+          # same application, same selectors, same browser through RCC — and it
+          # doubles both the runtime and the exposure to somebody else's outage.
+          - suite: examples/web-roboland
+            os: windows-latest
         # os: [ubuntu-latest]
 
     steps:
@@ -143,6 +150,11 @@ jobs:
 
       - name: Run Robot Framework suite
         shell: bash
+        env:
+          # web-roboland needs a workspace of its own at demo.robotmk.org. The
+          # suite resets that workspace before it orders, so repeated CI runs
+          # leave nothing behind. Every other suite ignores this.
+          ROBOLAND_KEY: ${{ secrets.ROBOLAND_KEY }}
         run: |
           $RCC_BIN task script \
             --space ${{ steps.suite-env.outputs.space }} \

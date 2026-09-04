@@ -6,10 +6,3 @@
 # examples/cryptolibrary-simple
 # examples/web-cryptolibrary
 
-# web-roboland drives a real browser against demo.robotmk.org and needs a
-# personal workspace key (ROBOLAND_KEY). Neither belongs in CI: the key would
-# have to be a secret, and every run would place real orders in somebody's
-# workspace. It is exercised where it matters instead — in the lab it ships
-# with, and by TestKurssuite in the academy repository, which checks every
-# selector it uses against the rendered application.
-examples/web-roboland
