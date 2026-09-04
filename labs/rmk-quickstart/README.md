@@ -36,9 +36,13 @@ instead of failing on a selector.
 
 ## Running the test
 
+The suite lives in `examples/web-roboland/`, as a first-class example the lab
+borrows rather than owns:
+
 ```bash
+cd examples/web-roboland
 rcc task shell        # builds the environment on first use, then drops you into it
-robot roboland.robot
+robot suite.robot
 ```
 
 The first `rcc task shell` takes a few minutes — it is fetching a Python, Node, Robot
@@ -46,6 +50,20 @@ Framework, the Browser library and a browser, and assembling them into an enviro
 their own. Every later start is seconds.
 
 The browser opens where you can see it — on the noVNC desktop, port 6080.
+
+## One limit worth knowing before module 2
+
+The Checkmk in this lab is a **commercial edition, fully usable for testing** —
+nobody runs this container in production, and nothing here is crippled. It has
+exactly one boundary, and it is easy to walk into by accident:
+
+**At most three Robotmk test services may be discovered.** Discover a fourth and
+**all of them turn CRIT** — not the new one, all of them. Each test service also
+brings roughly five keyword services with it, so the number of services grows
+faster than the number of tests.
+
+If everything suddenly goes red at once and nothing changed in the application,
+count your discovered tests before you look for anything else.
 
 
 

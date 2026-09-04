@@ -1,5 +1,5 @@
 {
-  "name": "cmk-quickstart",
+  "name": "rmk-quickstart",
   "dockerComposeFile": "docker-compose.yml",
   "service": "host",
   "workspaceFolder": "/workspaces",

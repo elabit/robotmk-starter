@@ -1,0 +1,9 @@
+populate:
+
+  # The suite the course runs. It lives as a first-class example so it can be
+  # used, tested and versioned on its own — the lab only borrows it.
+  - src: examples/web-roboland
+    dst: examples/web-roboland
+    exclude:
+      - "*.pyc"
+      - "__pycache__/"

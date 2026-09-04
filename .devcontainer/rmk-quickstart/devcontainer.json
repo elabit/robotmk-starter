@@ -4,7 +4,7 @@
   "service": "host",
   // The lab, not the developer repository: this copy lives in the starter, and
   // VS Code should open only the folder the learner works in.
-  "workspaceFolder": "/workspaces/robotmk-starter/labs/cmk-quickstart",
+  "workspaceFolder": "/workspaces/robotmk-starter/labs/rmk-quickstart",
   "overrideCommand": false,
   "remoteUser": "root",
   "containerEnv": {
@@ -21,7 +21,7 @@
     }
   },
   // Absolute path: workspaceFolder points at the lab, this lives beside it.
-  "postCreateCommand": "bash /workspaces/robotmk-starter/.devcontainer/cmk-quickstart/report.sh",
+  "postCreateCommand": "bash /workspaces/robotmk-starter/.devcontainer/rmk-quickstart/report.sh",
   "forwardPorts": [6080, 5000],
   "portsAttributes": {
     "6080": { "label": "Desktop (noVNC)", "onAutoForward": "openBrowser" },

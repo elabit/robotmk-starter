@@ -79,7 +79,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 | Robot Framework Suite | Description | Repository Link |
 |---|---|---|
-| [cmk-quickstart](labs/cmk-quickstart) | Roboland — your first synthetic check. One question, asked the way a guest would ask it: can somebody still buy a burger? Before you run this, set the environment variable ROBOLAND_KEY to your own workspace key. You get one at https://demo.robotmk.org — it is free and lasts 30 days. | [try out](https://github.com/robotmk/lab-cmk-quickstart) |
+| [rmk-quickstart](labs/rmk-quickstart) | Roboland — your first synthetic check. One question, asked the way a guest would ask it: can somebody still buy a burger? Before you run this, set the environment variable ROBOLAND_KEY to your own workspace key. You get one at https://demo.robotmk.org — it is free and lasts 30 days. | [try out](https://github.com/robotmk/lab-rmk-quickstart) |
 | [cmk12-2026](labs/cmk12-2026) | — | [try out](https://github.com/robotmk/lab-cmk12-2026) |
 | [rf-mcp](labs/rf-mcp) | — | [try out](https://github.com/robotmk/lab-rf-mcp) |
 | [robotmk-bridge](labs/robotmk-bridge) | — | [try out](https://github.com/robotmk/lab-robotmk-bridge) |
