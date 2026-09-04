@@ -49,3 +49,17 @@ comes back to what you do then.
 It fails when the *journey* fails. A counter whose page loads, whose total adds
 up, and whose button quietly does nothing will fail here — and that is precisely
 the outage the course opens with.
+
+## In CI
+
+This suite runs in the repository's CI, on Linux only, against a workspace
+reserved for it. Two things make that workable:
+
+- **`ROBOLAND_KEY` is a repository secret**, not a key belonging to a person. If
+  you fork this repository the suite will not run for you until you set your own.
+- **It resets its workspace before it orders**, so repeated runs leave nothing
+  behind and never run the booth dry.
+
+Windows is deliberately excluded: it would exercise the same application through
+the same browser and the same selectors, at twice the runtime, and would turn the
+build red twice when `demo.robotmk.org` has a bad day.
