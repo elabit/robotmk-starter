@@ -46,6 +46,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 | [rf-python-varfiles](examples/rf-python-varfiles) | A suite to demonstrate how to load **variables** from **Python**, **JSON** and **YAML** variable files, including nested data structures. | [try out](https://github.com/robotmk/example-rf-python-varfiles) |
 | [web-carinsurance](examples/web-carinsurance) | A car insurance quote workflow on a sample application using the Browser Library. Covers the complete process from vehicle and insurant data entry through product configuration, price selection, and quote submission via email. | [try out](https://github.com/robotmk/example-web-carinsurance) |
 | [web-cryptolibrary](examples/web-cryptolibrary) | A example of how to use the **CryptoLibrary** in a web test (**BrowserLibrary**). | [try out](https://github.com/robotmk/example-web-cryptolibrary) |
+| [web-roboland](examples/web-roboland) | Roboland — your first synthetic check. One question, asked the way a guest would ask it: can somebody still buy a burger? Before you run this, set the environment variable ROBOLAND_KEY to your own workspace key. You get one at https://demo.robotmk.org — it is free and lasts 30 days. | [try out](https://github.com/robotmk/example-web-roboland) |
 | [web-todomvc](examples/web-todomvc) | A simple web test on the famous todoMVC web application, with a special emphasis on the assertion after actions. | [try out](https://github.com/robotmk/example-web-todomvc) |
 
 <!-- EXAMPLES-TABLE-END -->
@@ -79,9 +80,9 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 | Robot Framework Suite | Description | Repository Link |
 |---|---|---|
-| [rmk-quickstart](labs/rmk-quickstart) | Roboland — your first synthetic check. One question, asked the way a guest would ask it: can somebody still buy a burger? Before you run this, set the environment variable ROBOLAND_KEY to your own workspace key. You get one at https://demo.robotmk.org — it is free and lasts 30 days. | [try out](https://github.com/robotmk/lab-rmk-quickstart) |
 | [cmk12-2026](labs/cmk12-2026) | — | [try out](https://github.com/robotmk/lab-cmk12-2026) |
 | [rf-mcp](labs/rf-mcp) | — | [try out](https://github.com/robotmk/lab-rf-mcp) |
+| [rmk-quickstart](labs/rmk-quickstart) | — | [try out](https://github.com/robotmk/lab-rmk-quickstart) |
 | [robotmk-bridge](labs/robotmk-bridge) | — | [try out](https://github.com/robotmk/lab-robotmk-bridge) |
 | [slac2026](labs/slac2026) | — | [try out](https://github.com/robotmk/lab-slac2026) |
 
