@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/elabit/robotmk-starter/compare/v1.6.0...v1.6.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **lab:** rcc run does not run the suite ([865c0c3](https://github.com/elabit/robotmk-starter/commit/865c0c3ee6629b4370cf861d2f05247e401e725c))
+
 ## [1.6.0](https://github.com/elabit/robotmk-starter/compare/v1.5.2...v1.6.0) (2026-09-01)
 
 
