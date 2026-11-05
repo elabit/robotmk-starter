@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip=23.2.1
+  - pip:
+      - robotframework==7.5.1
+      - robotframework-browser[bb]==21.0.0
+
+# Install Browser Library binaries after environment creation.
+rccPostInstall:
+  - rfbrowser init chromium

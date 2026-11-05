@@ -47,7 +47,7 @@ TODO
 | Library | Version |
 |---|---|
 | Python | `3.12` |
-| Robot Framework | `7.4` |
+| Robot Framework | `7.5.1` |
 
 
 ## About

@@ -46,6 +46,7 @@ if (-not (Test-Path $PythonExe)) {
 $CommonData = @(
     "--data", "rf_version=$RF_VERSION",
     "--data", "rf_lib_browser_version=$RF_LIB_BROWSER_VERSION",
+    "--data", "rf_lib_browser_batteries_version=$RF_LIB_BROWSER_BATTERIES_VERSION",
     "--data", "rf_lib_crypto_version=$RF_LIB_CRYPTO_VERSION",
     "--data", "python_version=$PYTHON_VERSION",
     "--data", "pip_version=$PIP_VERSION",

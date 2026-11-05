@@ -84,8 +84,8 @@ the outage the course opens with.
 |---|---|
 | Python | `3.12` |
 | Node.js | `22.11.0` |
-| Robot Framework | `7.4` |
-| robotframework-browser | `19.14.2` |
+| Robot Framework | `7.5.1` |
+| robotframework-browser | `21.0.0` |
 
 
 ## About

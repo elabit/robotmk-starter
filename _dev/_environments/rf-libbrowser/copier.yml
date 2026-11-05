@@ -6,11 +6,11 @@ _answers_file: .copier-env-answers.yml
 
 rf_version:
   type: str
-  default: "7.1.1"
+  default: "7.5.1"
 
 rf_lib_browser_version:
   type: str
-  default: "19.12.5"
+  default: "21.0.0"
 
 python_version:
   type: str

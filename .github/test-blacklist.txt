@@ -13,3 +13,5 @@
 # with, and by TestKurssuite in the academy repository, which checks every
 # selector it uses against the rendered application.
 examples/web-roboland
+
+examples/web-recorder
