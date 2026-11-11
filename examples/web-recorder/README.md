@@ -100,8 +100,8 @@ typed into password fields.
 | Library | Version |
 |---|---|
 | Python | `3.12` |
-| Robot Framework | `7.5.1` |
-| robotframework-browser-batteries | `21.0.0` |
+| Robot Framework | `7.5` |
+| robotframework-browser-batteries | `21.0` |
 
 
 ## About

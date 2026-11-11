@@ -4,8 +4,8 @@ dependencies:
   - python={{ python_version }}
   - pip={{ pip_version }}
   - pip:
-      - robotframework=={{ rf_version }}
-      - robotframework-browser[bb]=={{ rf_lib_browser_batteries_version }}
+      - robotframework>={{ rf_version }}
+      - robotframework-browser[bb]>={{ rf_lib_browser_batteries_version }}
 
 # Install Browser Library binaries after environment creation.
 rccPostInstall:

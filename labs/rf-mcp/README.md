@@ -47,8 +47,8 @@ See the [tutorial.md](./TUTORIAL.md) for a step-by-step guide on how to use the 
 |---|---|
 | Python | `3.12` |
 | Node.js | `22.11.0` |
-| Robot Framework | `7.5.1` |
-| robotframework-browser | `21.0.0` |
+| Robot Framework | `7.5` |
+| robotframework-browser | `21.0` |
 | rf-mcp | `0.31.2` |
 
 

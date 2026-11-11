@@ -1,6 +1,5 @@
 *** Settings ***
-Documentation   This is an exmaple of keywords that have been recorded using the Keyword Recorder 
-...   of the Browser Library (new in 21.0.0). 
+Documentation   An example suite which demonstrates the usage of the new Keyword Recorder feature of the Robot Framework Browser Library (21.0.0)
 # Load common keywords from a shared file
 Resource  Resources/BrowserCommon.resource 
 

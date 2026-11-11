@@ -34,8 +34,8 @@ A minimal, ready-to-use skeleton for web UI testing with the Robot Framework Bro
 |---|---|
 | Python | `3.12` |
 | Node.js | `22.11.0` |
-| Robot Framework | `7.5.1` |
-| robotframework-browser | `21.0.0` |
+| Robot Framework | `7.5` |
+| robotframework-browser | `21.0` |
 | robotframework-crypto | `0.3` |
 
 
