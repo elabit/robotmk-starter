@@ -1,0 +1,30 @@
+# Environment: RF + RequestsLibrary (REST API testing)
+# Shared by all examples/templates that declare RMKS_ENVIRONMENT=rf-librequests in their .env file.
+# FastAPI + uvicorn are included so examples can ship a local demo API server.
+
+_subdirectory: template
+_answers_file: .copier-env-answers.yml
+
+rf_version:
+  type: str
+  default: "7.5"
+
+rf_lib_requests_version:
+  type: str
+  default: "0.9.7"
+
+fastapi_version:
+  type: str
+  default: "0.163.1"
+
+uvicorn_version:
+  type: str
+  default: "0.54.0"
+
+python_version:
+  type: str
+  default: "3.12"
+
+pip_version:
+  type: str
+  default: "23.2.1"

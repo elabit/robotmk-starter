@@ -1,0 +1,11 @@
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip=23.2.1
+  - pip:
+      - robotframework==7.5
+      - robotframework-requests==0.9.7
+      # Only needed for the local demo API server shipped with the examples
+      - fastapi==0.163.1
+      - uvicorn==0.54.0
