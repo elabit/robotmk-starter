@@ -41,6 +41,7 @@ To try them out, just click on "*try out*" which opens the repository, where you
 
 | Robot Framework Suite | Description | Repository Link |
 |---|---|---|
+| [api-roombooking](examples/api-roombooking) | REST API testing with the **RequestsLibrary** on a meeting room booking API: find a room, book it, reschedule and cancel it. Covers GET, HEAD, OPTIONS, POST, PUT, PATCH and DELETE, token login and error cases. A local demo API server is started in the Suite Setup. | [try out](https://github.com/robotmk/example-api-roombooking) |
 | [cryptolibrary-simple](examples/cryptolibrary-simple) | A minimalistic example of how to use the **CryptoLibrary**, without bells and whistles. | [try out](https://github.com/robotmk/example-cryptolibrary-simple) |
 | [rf-custom-library](examples/rf-custom-library) | This suite demonstrates the use of a **custom library**, written with a simple Python class. | [try out](https://github.com/robotmk/example-rf-custom-library) |
 | [rf-python-varfiles](examples/rf-python-varfiles) | A suite to demonstrate how to load **variables** from **Python**, **JSON** and **YAML** variable files, including nested data structures. | [try out](https://github.com/robotmk/example-rf-python-varfiles) |
