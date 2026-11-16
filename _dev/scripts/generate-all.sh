@@ -90,6 +90,9 @@ COMMON_DATA=(
   --data "python_version=${PYTHON_VERSION}"
   --data "pip_version=${PIP_VERSION}"
   --data "nodejs_version=${NODEJS_VERSION}"
+  --data "rf_lib_requests_version=${RF_LIB_REQUESTS_VERSION}"
+  --data "fastapi_version=${FASTAPI_VERSION}"
+  --data "uvicorn_version=${UVICORN_VERSION}"
 )
 
 DEVCONTAINERS="${REPO_ROOT}/_dev/_devcontainers"

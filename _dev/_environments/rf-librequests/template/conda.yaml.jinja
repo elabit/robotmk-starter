@@ -1,0 +1,11 @@
+channels:
+  - conda-forge
+dependencies:
+  - python={{ python_version }}
+  - pip={{ pip_version }}
+  - pip:
+      - robotframework=={{ rf_version }}
+      - robotframework-requests=={{ rf_lib_requests_version }}
+      # Only needed for the local demo API server shipped with the examples
+      - fastapi=={{ fastapi_version }}
+      - uvicorn=={{ uvicorn_version }}

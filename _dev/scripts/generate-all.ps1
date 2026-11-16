@@ -50,7 +50,10 @@ $CommonData = @(
     "--data", "rf_lib_crypto_version=$RF_LIB_CRYPTO_VERSION",
     "--data", "python_version=$PYTHON_VERSION",
     "--data", "pip_version=$PIP_VERSION",
-    "--data", "nodejs_version=$NODEJS_VERSION"
+    "--data", "nodejs_version=$NODEJS_VERSION",
+    "--data", "rf_lib_requests_version=$RF_LIB_REQUESTS_VERSION",
+    "--data", "fastapi_version=$FASTAPI_VERSION",
+    "--data", "uvicorn_version=$UVICORN_VERSION"
 )
 
 function Invoke-EnvInject {
