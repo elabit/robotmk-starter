@@ -1,9 +1,9 @@
 *** Settings ***
-Documentation       Keywords to talk to the meeting room booking API with the RequestsLibrary.
+Documentation       Technical layer: starts/stops the demo API server and manages the HTTP sessions.
+...                 Test cases don't use these keywords directly — see RoomBooking.resource.
 
 Library             RequestsLibrary
 Library             Process
-Library             DateTime
 Library             OperatingSystem
 
 
@@ -15,6 +15,8 @@ ${API_URL}              http://127.0.0.1:${API_PORT}
 ${SERVER_LOG}           ${EXECDIR}${/}output${/}booking-api.log
 # Response time limit in seconds — the number synthetic monitoring cares about
 ${MAX_RESPONSE_TIME}    1.0
+# Test users of the demo server
+&{PASSWORDS}            alice=wonderland    bob=builder
 
 
 *** Keywords ***
@@ -51,39 +53,17 @@ Stop Booking API Server
     Terminate All Processes
     Delete All Sessions
 
-Log In As
-    [Documentation]    Gets a bearer token and opens a session named after the user,
-    ...    which sends the token with every request.
-    [Arguments]    ${user}    ${password}
-    &{credentials}=    Create Dictionary    username=${user}    password=${password}
+Open User Session
+    [Documentation]    POST /auth/token: gets a bearer token and opens a session named after the
+    ...    user, which sends the token with every request.
+    [Arguments]    ${user}
+    &{credentials}=    Create Dictionary    username=${user}    password=${PASSWORDS}[${user}]
     ${resp}=    POST On Session    anonymous    /auth/token    json=${credentials}
     &{headers}=    Create Dictionary    Authorization=Bearer ${resp.json()}[access_token]
     Create Session    ${user}    ${API_URL}    headers=${headers}
-
-Book Room
-    [Documentation]    POSTs a booking for tomorrow (times as HH:MM) and checks the expected
-    ...    status code (201 by default).
-    [Arguments]    ${session}    ${room}    ${from}    ${to}
-    ...    ${title}=Team meeting    ${attendees: int}=2    ${expected_status}=201
-    &{booking}=    Create Dictionary    room_id=${room}    title=${title}
-    ...    start=${TOMORROW}T${from}:00    end=${TOMORROW}T${to}:00    attendees=${attendees}
-    ${resp}=    POST On Session    ${session}    /bookings    json=${booking}    expected_status=${expected_status}
-    RETURN    ${resp}
-
-Cancel All Bookings Of
-    [Documentation]    Cleanup: deletes every booking of the user, so tests stay independent.
-    [Arguments]    ${session}
-    ${resp}=    GET On Session    ${session}    /bookings
-    FOR    ${booking}    IN    @{resp.json()}
-        DELETE On Session    ${session}    /bookings/${booking}[id]
-    END
 
 Response Should Be Fast
     [Arguments]    ${resp}
     ${seconds}=    Set Variable    ${resp.elapsed.total_seconds()}
     Should Be True    ${seconds} < ${MAX_RESPONSE_TIME}
     ...    msg=Response took ${seconds}s (limit: ${MAX_RESPONSE_TIME}s)
-
-Get Date Of Tomorrow
-    ${day}=    Get Current Date    increment=1 day    result_format=%Y-%m-%d
-    RETURN    ${day}
