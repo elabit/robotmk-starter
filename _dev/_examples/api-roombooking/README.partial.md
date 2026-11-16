@@ -79,9 +79,17 @@ robot --variable START_SERVER:False --variable API_URL:https://booking.example.c
 
 ## Key Files
 
-- `suite.robot` — the test cases (user journeys)
-- `Resources/BookingApi.resource` — server start/stop, login, booking and check keywords
-- `server/app.py` — the demo API server
+The keywords are organized in layers, so that the test cases read like user journeys
+and the HTTP details stay out of them:
+
+| Layer | File | Contains |
+|---|---|---|
+| Test cases | `suite.robot` | User journeys in business language: *Book Room*, *Move Booking*, *Cancel Booking* |
+| Business keywords | `Resources/RoomBooking.resource` | One keyword per user action; each names the HTTP request it sends |
+| Technical keywords | `Resources/BookingApi.resource` | Server start/stop, sessions and token login, response time check |
+| System under test | `server/app.py` | The demo API server |
+
+If the API changes (a new URL, another field name), only the resource files change — the test cases stay the same.
 
 ## Links
 
