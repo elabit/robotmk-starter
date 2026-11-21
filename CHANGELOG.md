@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/elabit/robotmk-starter/compare/v1.6.1...v1.7.0) (2026-11-16)
+
+
+### Features
+
+* add api-roombooking example and rf-librequests environment ([194dfdc](https://github.com/elabit/robotmk-starter/commit/194dfdc9e961bdb4fcb9097af93889610ea331fd))
+* add api-roombooking example and rf-librequests environment ([ce85184](https://github.com/elabit/robotmk-starter/commit/ce8518446d265b0ea19236e487a208cc5d73af33))
+
 ## [1.6.1](https://github.com/elabit/robotmk-starter/compare/v1.6.0...v1.6.1) (2026-09-04)
 
 
